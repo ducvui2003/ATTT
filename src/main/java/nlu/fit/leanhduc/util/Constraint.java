@@ -23,4 +23,9 @@ public class Constraint {
 
     public static final Image APP_ICON_IMAGE = MetadataConfig.getINSTANCE().getImage();
 
+    public static final char FIRST_CHAR = 'a';
+    public static final char FIRST_CHAR_UPPER = 'A';
+    public static final char LAST_CHAR = 'z';
+    public static final char LAST_CHAR_UPPER = 'Z';
+    public static final int ALPHABET_SIZE = 26;
 }
