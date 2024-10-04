@@ -1,9 +1,13 @@
 package nlu.fit.leanhduc.config;
 
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
+
 import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
 
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class FontConfig {
     public static FontConfig INSTANCE;
     Font fontRegular;
