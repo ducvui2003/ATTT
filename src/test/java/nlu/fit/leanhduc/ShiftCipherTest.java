@@ -9,50 +9,49 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ShiftCipherTest {
-    private final IAsymmetricEncrypt<Integer> shiftCipher = new ShiftCipher();
+    int shift = 3;
+    private final IAsymmetricEncrypt shiftCipher = new ShiftCipher(shift);
 
     @Test
     void testDivisionThrowsException() {
-        String plaintext = "";
-        int key = 3;
+        String plaintext = null;
         assertThrows(CipherException.class, () -> {
-            shiftCipher.encrypt(plaintext, key);
+            shiftCipher.encrypt(plaintext);
         });
     }
 
     @Test
     void testEncrypt() throws CipherException {
         String plaintext = "HELLO";
-        int key = 3;
         String expected = "KHOOR";
-        String actual = shiftCipher.encrypt(plaintext, key);
+        String actual = shiftCipher.encrypt(plaintext);
         assertEquals(expected, actual);
     }
 
     @Test
     void testEncryptWithSpecialChar() throws CipherException {
         String plaintext = "HEL*LO";
-        int key = 3;
         String expected = "KHO*OR";
-        String actual = shiftCipher.encrypt(plaintext, key);
+        String actual = shiftCipher.encrypt(plaintext);
         assertEquals(expected, actual);
     }
 
     @Test
     void testDecrypt() throws CipherException {
         String plaintext = "KHOOR";
-        int key = 3;
         String expected = "HELLO";
-        String actual = shiftCipher.decrypt(plaintext, key);
+        String actual = shiftCipher.decrypt(plaintext);
         assertEquals(expected, actual);
     }
 
     @Test
     void testDecryptWithSpecialChar() throws CipherException {
         String plaintext = "KHO*O_R";
-        int key = 3;
         String expected = "HEL*L_O";
-        String actual = shiftCipher.decrypt(plaintext, key);
+        String actual = shiftCipher.decrypt(plaintext);
+
+        System.out.println((int)'A');
+        System.out.println((int)'Â');
         assertEquals(expected, actual);
     }
 }
