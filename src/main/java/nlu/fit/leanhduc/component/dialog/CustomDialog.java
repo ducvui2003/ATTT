@@ -1,11 +1,24 @@
 package nlu.fit.leanhduc.component.dialog;
 
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.FieldDefaults;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
+@Getter
+@Setter
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class CustomDialog extends JDialog {
+     Frame owner;
+     String title;
+     boolean modal;
+
     public CustomDialog(Frame owner, String title, boolean modal) {
         super(owner, title, modal);
         this.setLocationRelativeTo(owner);

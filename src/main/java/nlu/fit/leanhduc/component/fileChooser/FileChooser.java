@@ -1,5 +1,10 @@
 package nlu.fit.leanhduc.component.fileChooser;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.FieldDefaults;
+import nlu.fit.leanhduc.component.fileChooser.FileChooserEvent;
 import nlu.fit.leanhduc.util.Constraint;
 
 import javax.swing.*;
@@ -7,11 +12,14 @@ import javax.swing.border.Border;
 import java.awt.*;
 import java.io.File;
 
+@Getter
+@Setter
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class FileChooser extends JPanel {
-    private JFileChooser fileChooser;
-    private JLabel label;
-    private JButton button;
-    private FileChooserEvent event;
+    JFileChooser fileChooser;
+    JLabel label;
+    JButton button;
+    FileChooserEvent event;
 
     public FileChooser() {
         init();
@@ -41,7 +49,6 @@ public class FileChooser extends JPanel {
     private void createButton() {
         button = new JButton("Open");
         button.addActionListener(e -> click());
-
     }
 
     private void click() {
@@ -66,29 +73,5 @@ public class FileChooser extends JPanel {
 
     public void cancel() {
         label.setText("");
-    }
-
-    public JFileChooser getFileChooser() {
-        return fileChooser;
-    }
-
-    public void setFileChooser(JFileChooser fileChooser) {
-        this.fileChooser = fileChooser;
-    }
-
-    public JButton getButton() {
-        return button;
-    }
-
-    public void setButton(JButton button) {
-        this.button = button;
-    }
-
-    public FileChooserEvent getEvent() {
-        return event;
-    }
-
-    public void setEvent(FileChooserEvent event) {
-        this.event = event;
     }
 }

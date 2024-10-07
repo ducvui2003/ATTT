@@ -13,8 +13,8 @@ public class MainView extends JFrame {
     Menu menu;
     InputSection inputSection;
     JTabbedPane tabbedPane;
-
     Map<String, JPanel> panelMap;
+    Footer footer;
 
     private void createUIComponents() {
         createMenu();
@@ -25,6 +25,9 @@ public class MainView extends JFrame {
         this.add(inputSection, BorderLayout.NORTH);
         createTabPanel();
         this.add(tabbedPane, BorderLayout.CENTER);
+        footer = new Footer();
+        this.add(footer, BorderLayout.SOUTH);
+        footer.startLoading();
         setMetadata();
     }
 
@@ -52,4 +55,5 @@ public class MainView extends JFrame {
         this.setIconImage(Constraint.APP_ICON_IMAGE);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
+
 }
