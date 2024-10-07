@@ -28,7 +28,9 @@ public class Constraint {
     public static final char LAST_CHAR = 'z';
     public static final char LAST_CHAR_UPPER = 'Z';
     public static final int ALPHABET_SIZE = 26;
-    public static final String VIET_NAM_N = "aáàạảãăắằặẳẵâấầậẩẫbcdđeéẹẻẽêếềệểễfghiíìịỉĩjklmnoóòọỏõôốồộổỗơớờợởỡpqrstuúùụủũưứừựửữvwxyýỳỵỷỹAÁÀẠẢÃĂẮẰẶẲẴÂẤẦẬẨẪBCDĐEÉẸẺẼÊẾỀỆỂỄFGHIÍÌỊỈĨJKLMNOÓÒỌỎÕÔỐỒỘỔỖƠỚỜỢỞỠPQRSTUÚÙỤỦŨƯỨỪỰỬỮVWXYÝỲỴỶỸ0123456789`~!@#$%^&*()";
+    public static final String VIET_NAM_N = "aáàạảãăắằặẳẵâấầậẩẫbcdđeéẹẻẽêếềệểễfghiíìịỉĩjklmnoóòọỏõôốồộổỗơớờợởỡpqrstuúùụủũưứừựửữvxyýỳỵỷỹ";
+    public static final char[] VIET_NAME_ALPHA_BET = VIET_NAM_N.toCharArray();
+    public static final int VIET_NAME_ALPHA_BET_SIZE = VIET_NAME_ALPHA_BET.length;
 
     public static Language identifyLanguage(String text) {
         for (int i = 0; i < text.length(); i++)
