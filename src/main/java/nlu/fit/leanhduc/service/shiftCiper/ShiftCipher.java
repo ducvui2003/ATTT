@@ -18,6 +18,7 @@ import java.util.Random;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public abstract class ShiftCipher implements IAsymmetricEncrypt<Integer> {
     protected Integer shift;
+    protected Random rd = new Random();
 
     public ShiftCipher(Integer shift) {
         this.shift = shift;

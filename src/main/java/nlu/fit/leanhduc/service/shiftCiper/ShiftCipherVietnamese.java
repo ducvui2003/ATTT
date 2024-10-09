@@ -13,7 +13,6 @@ public class ShiftCipherVietnamese extends ShiftCipher {
 
     @Override
     public Integer generateKey() {
-        Random rd = new Random();
         return rd.nextInt(Constraint.VIET_NAME_ALPHA_BET_SIZE) + 1;
     }
 
