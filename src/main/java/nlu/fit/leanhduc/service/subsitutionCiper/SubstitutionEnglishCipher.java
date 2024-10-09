@@ -1,6 +1,5 @@
 package nlu.fit.leanhduc.service.subsitutionCiper;
 
-import nlu.fit.leanhduc.util.CipherException;
 import nlu.fit.leanhduc.util.EnglishAlphabetUtil;
 
 import java.util.*;
@@ -27,13 +26,4 @@ public class SubstitutionEnglishCipher extends SubstitutionCipher {
         return key;
     }
 
-    @Override
-    public String encrypt(String plainText) throws CipherException {
-        return null;
-    }
-
-    @Override
-    public String decrypt(String encryptText) throws CipherException {
-        return null;
-    }
 }

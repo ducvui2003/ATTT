@@ -28,14 +28,4 @@ public class SubstitutionVietnameseCipher extends SubstitutionCipher {
         }
         return key;
     }
-
-    @Override
-    public String encrypt(String plainText) throws CipherException {
-        return null;
-    }
-
-    @Override
-    public String decrypt(String encryptText) throws CipherException {
-        return null;
-    }
 }
