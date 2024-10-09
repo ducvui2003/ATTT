@@ -16,7 +16,7 @@ public class MainView extends JFrame {
     Map<String, JPanel> panelMap;
     Footer footer;
 
-    private void createUIComponents() {
+    public void createUIComponents() {
         createMenu();
 
         this.setLayout(new BorderLayout(5, 5));

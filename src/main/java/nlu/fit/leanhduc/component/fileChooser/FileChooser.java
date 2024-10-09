@@ -28,7 +28,6 @@ public class FileChooser extends JPanel {
     private void init() {
         this.setLayout(new BorderLayout(5, 5));
 
-
         createButton();
         createLabel();
         this.add(label, BorderLayout.CENTER);

@@ -14,7 +14,6 @@ public class ShiftCipherEnglish extends ShiftCipher {
 
     @Override
     public Integer generateKey() {
-        Random rd = new Random();
         return rd.nextInt(Constraint.ALPHABET_SIZE) + 1;
     }
 
