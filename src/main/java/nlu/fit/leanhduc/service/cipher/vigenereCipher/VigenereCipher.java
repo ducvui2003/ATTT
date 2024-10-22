@@ -1,4 +1,4 @@
-package nlu.fit.leanhduc.service.vigenereCipher;
+package nlu.fit.leanhduc.service.cipher.vigenereCipher;
 
 import lombok.Getter;
 import lombok.Setter;

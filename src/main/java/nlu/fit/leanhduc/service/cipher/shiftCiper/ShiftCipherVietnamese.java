@@ -1,10 +1,8 @@
-package nlu.fit.leanhduc.service.shiftCiper;
+package nlu.fit.leanhduc.service.cipher.shiftCiper;
 
 import nlu.fit.leanhduc.util.CipherException;
 import nlu.fit.leanhduc.util.Constraint;
 import nlu.fit.leanhduc.util.VietnameseAlphabetUtil;
-
-import java.util.Random;
 
 public class ShiftCipherVietnamese extends ShiftCipher {
     public ShiftCipherVietnamese(Integer shift) {

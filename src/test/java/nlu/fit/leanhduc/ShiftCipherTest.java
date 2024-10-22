@@ -1,8 +1,8 @@
 package nlu.fit.leanhduc;
 
-import nlu.fit.leanhduc.service.shiftCiper.ShiftCipher;
-import nlu.fit.leanhduc.service.shiftCiper.ShiftCipherEnglish;
-import nlu.fit.leanhduc.service.shiftCiper.ShiftCipherVietnamese;
+import nlu.fit.leanhduc.service.cipher.shiftCiper.ShiftCipher;
+import nlu.fit.leanhduc.service.cipher.shiftCiper.ShiftCipherEnglish;
+import nlu.fit.leanhduc.service.cipher.shiftCiper.ShiftCipherVietnamese;
 import nlu.fit.leanhduc.util.CipherException;
 import nlu.fit.leanhduc.util.Constraint;
 import org.junit.jupiter.api.Test;

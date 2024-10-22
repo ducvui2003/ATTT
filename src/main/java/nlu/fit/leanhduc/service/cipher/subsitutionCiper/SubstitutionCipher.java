@@ -1,4 +1,4 @@
-package nlu.fit.leanhduc.service.subsitutionCiper;
+package nlu.fit.leanhduc.service.cipher.subsitutionCiper;
 
 
 import lombok.Getter;

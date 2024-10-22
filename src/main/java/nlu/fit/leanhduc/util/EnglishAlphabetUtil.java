@@ -17,4 +17,27 @@ public class EnglishAlphabetUtil {
         }
         return alphabet;
     }
+
+    public static char getBaseChar(char c) {
+        return Character.isLowerCase(c) ? Constraint.FIRST_CHAR : Constraint.FIRST_CHAR_UPPER;
+    }
+
+    public static char shiftChar(char c, int shift) {
+        char base = getBaseChar(c);
+        return (char) ((c - base + shift) % Constraint.ALPHABET_SIZE + base);
+    }
+
+    public static char getChar(int oct) {
+        return getChar(oct, true);
+    }
+
+    public static char getChar(int oct, boolean isLowerCase) {
+        char base = isLowerCase ? Constraint.FIRST_CHAR : Constraint.FIRST_CHAR_UPPER;
+        char result = (char) ((oct - base) % Constraint.ALPHABET_SIZE + base);
+        return result;
+    }
+
+    public static char getChar(char c, int shift) {
+        return (char) ((c - 'A' + shift) % 26 + 'A');
+    }
 }

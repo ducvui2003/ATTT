@@ -1,9 +1,9 @@
 package nlu.fit.leanhduc;
 
 
-import nlu.fit.leanhduc.service.subsitutionCiper.SubstitutionCipher;
-import nlu.fit.leanhduc.service.subsitutionCiper.SubstitutionEnglishCipher;
-import nlu.fit.leanhduc.service.subsitutionCiper.SubstitutionVietnameseCipher;
+import nlu.fit.leanhduc.service.cipher.subsitutionCiper.SubstitutionCipher;
+import nlu.fit.leanhduc.service.cipher.subsitutionCiper.SubstitutionEnglishCipher;
+import nlu.fit.leanhduc.service.cipher.subsitutionCiper.SubstitutionVietnameseCipher;
 import nlu.fit.leanhduc.util.CipherException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

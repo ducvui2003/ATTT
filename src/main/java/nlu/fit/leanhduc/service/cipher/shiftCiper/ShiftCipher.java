@@ -1,4 +1,4 @@
-package nlu.fit.leanhduc.service.shiftCiper;
+package nlu.fit.leanhduc.service.cipher.shiftCiper;
 
 import lombok.AccessLevel;
 import lombok.Getter;
