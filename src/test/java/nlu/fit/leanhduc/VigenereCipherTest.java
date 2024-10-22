@@ -6,7 +6,7 @@
  */
 package nlu.fit.leanhduc;
 
-import nlu.fit.leanhduc.service.IAsymmetricEncrypt;
+import nlu.fit.leanhduc.service.vigenereCipher.VigenereCipher;
 import nlu.fit.leanhduc.service.vigenereCipher.VigenereEnglishCipher;
 import nlu.fit.leanhduc.service.vigenereCipher.VigenereVietnameseCipher;
 import nlu.fit.leanhduc.util.CipherException;
@@ -17,8 +17,8 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 class VigenereCipherTest {
-    private IAsymmetricEncrypt englishCipher;
-    private IAsymmetricEncrypt vietnameseCipher;
+    private VigenereCipher englishCipher;
+    private VigenereCipher vietnameseCipher;
 
     private List<Integer> keys;
 

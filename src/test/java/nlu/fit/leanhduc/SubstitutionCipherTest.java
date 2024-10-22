@@ -1,7 +1,7 @@
 package nlu.fit.leanhduc;
 
 
-import nlu.fit.leanhduc.service.IAsymmetricEncrypt;
+import nlu.fit.leanhduc.service.subsitutionCiper.SubstitutionCipher;
 import nlu.fit.leanhduc.service.subsitutionCiper.SubstitutionEnglishCipher;
 import nlu.fit.leanhduc.service.subsitutionCiper.SubstitutionVietnameseCipher;
 import nlu.fit.leanhduc.util.CipherException;
@@ -12,8 +12,8 @@ import java.util.Map;
 
 public class SubstitutionCipherTest {
 
-    IAsymmetricEncrypt<Map<Character, Character>> substitutionCipherVietnamese = new SubstitutionVietnameseCipher();
-    IAsymmetricEncrypt<Map<Character, Character>> substitutionCipherEnglish = new SubstitutionEnglishCipher();
+    SubstitutionCipher substitutionCipherVietnamese = new SubstitutionVietnameseCipher();
+    SubstitutionCipher substitutionCipherEnglish = new SubstitutionEnglishCipher();
     Map<Character, Character> keyEnglish = Map.of('a', 'b', 'c', 'd');
     Map<Character, Character> keyVietnamese = Map.of('â', 'b', 'đ', 'd');
 

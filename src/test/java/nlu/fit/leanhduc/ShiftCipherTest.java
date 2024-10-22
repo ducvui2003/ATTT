@@ -1,12 +1,10 @@
 package nlu.fit.leanhduc;
 
-import nlu.fit.leanhduc.service.IAsymmetricEncrypt;
 import nlu.fit.leanhduc.service.shiftCiper.ShiftCipher;
 import nlu.fit.leanhduc.service.shiftCiper.ShiftCipherEnglish;
 import nlu.fit.leanhduc.service.shiftCiper.ShiftCipherVietnamese;
 import nlu.fit.leanhduc.util.CipherException;
 import nlu.fit.leanhduc.util.Constraint;
-import nlu.fit.leanhduc.util.Language;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -14,8 +12,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ShiftCipherTest {
     int shift = 3;
-    private final IAsymmetricEncrypt<Integer> shiftCipher = new ShiftCipherEnglish(shift);
-    private final IAsymmetricEncrypt<Integer> shiftCipherVietnamese = new ShiftCipherVietnamese(shift);
+    private final ShiftCipher shiftCipher = new ShiftCipherEnglish(shift);
+    private final ShiftCipher shiftCipherVietnamese = new ShiftCipherVietnamese(shift);
 
     @Test
     void testVariable() {
