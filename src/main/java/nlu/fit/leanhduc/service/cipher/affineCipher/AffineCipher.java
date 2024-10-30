@@ -6,6 +6,7 @@ import nlu.fit.leanhduc.service.key.AffineKey;
 import nlu.fit.leanhduc.util.CipherException;
 import nlu.fit.leanhduc.util.Constraint;
 import nlu.fit.leanhduc.util.ModularUtil;
+import nlu.fit.leanhduc.util.alphabet.AlphabetUtil;
 
 import java.util.Random;
 
@@ -13,6 +14,7 @@ public abstract class AffineCipher implements IKeyGenerator<AffineKey>, ITextEnc
     protected AffineKey key;
     protected Random rd;
     protected int range;
+    protected AlphabetUtil alphabetUtil;
 
     public AffineCipher() {
         this.rd = new Random();
@@ -35,5 +37,38 @@ public abstract class AffineCipher implements IKeyGenerator<AffineKey>, ITextEnc
         int b = rd.nextInt(this.range);
         key.setB(b);
         return key;
+    }
+
+    @Override
+    public String encrypt(String plainText) throws CipherException {
+        char[] plainTextArray = plainText.toCharArray();
+        String result = "";
+        for (char c : plainTextArray) {
+            if (Character.isLetter(c)) {
+                boolean isLower = Character.isLowerCase(c);
+                //Công thức: Encrypt (x) = (a * x + b) mod m
+                int charEncrypt = this.key.getA() * c + this.key.getB();
+                result += alphabetUtil.getChar(charEncrypt, isLower);
+            } else
+                result += c;
+        }
+        return result;
+    }
+
+    @Override
+    public String decrypt(String encryptText) throws CipherException {
+        char[] plainTextArray = encryptText.toCharArray();
+        String result = "";
+        int modularInverse = ModularUtil.modularInverse(this.key.getA(), this.range);
+        for (char c : plainTextArray) {
+            if (Character.isLetter(c)) {
+                boolean isLower = Character.isLowerCase(c);
+                //Công thức: Decrypt (x) = a^(-1) * (x - b)
+                int charDecrypt = modularInverse * (c - this.key.getB());
+                result += alphabetUtil.getChar(charDecrypt, isLower);
+            } else
+                result += c;
+        }
+        return result;
     }
 }

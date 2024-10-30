@@ -1,21 +1,12 @@
 package nlu.fit.leanhduc.service.cipher.affineCipher;
 
-import nlu.fit.leanhduc.util.CipherException;
-import nlu.fit.leanhduc.util.Constraint;
+import nlu.fit.leanhduc.util.alphabet.EnglishAlphabetUtil;
+import nlu.fit.leanhduc.util.alphabet.VietnameseAlphabetUtil;
 
 public class AffineVietnameseCipher extends AffineCipher {
     public AffineVietnameseCipher() {
         super();
-        this.range = Constraint.VIET_NAME_ALPHA_BET_SIZE;
-    }
-
-    @Override
-    public String encrypt(String plainText) throws CipherException {
-        return "";
-    }
-
-    @Override
-    public String decrypt(String encryptText) throws CipherException {
-        return "";
+        this.alphabetUtil = new VietnameseAlphabetUtil();
+        this.range = this.alphabetUtil.getLength();
     }
 }

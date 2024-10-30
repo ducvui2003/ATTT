@@ -1,6 +1,6 @@
 package nlu.fit.leanhduc.service.cipher.subsitutionCiper;
 
-import nlu.fit.leanhduc.util.VietnameseAlphabetUtil;
+import nlu.fit.leanhduc.util.alphabet.VietnameseAlphabetUtil;
 
 import java.util.HashMap;
 import java.util.List;

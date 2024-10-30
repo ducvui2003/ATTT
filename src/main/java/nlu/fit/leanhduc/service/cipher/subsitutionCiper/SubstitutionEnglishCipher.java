@@ -1,6 +1,6 @@
 package nlu.fit.leanhduc.service.cipher.subsitutionCiper;
 
-import nlu.fit.leanhduc.util.EnglishAlphabetUtil;
+import nlu.fit.leanhduc.util.alphabet.EnglishAlphabetUtil;
 
 import java.util.*;
 
@@ -25,5 +25,4 @@ public class SubstitutionEnglishCipher extends SubstitutionCipher {
         }
         return key;
     }
-
 }
