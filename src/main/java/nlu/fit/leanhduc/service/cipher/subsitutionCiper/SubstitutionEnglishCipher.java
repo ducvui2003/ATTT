@@ -1,17 +1,14 @@
-package nlu.fit.leanhduc.service.subsitutionCiper;
+package nlu.fit.leanhduc.service.cipher.subsitutionCiper;
 
-import nlu.fit.leanhduc.util.CipherException;
-import nlu.fit.leanhduc.util.VietnameseAlphabetUtil;
+import nlu.fit.leanhduc.util.EnglishAlphabetUtil;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-public class SubstitutionVietnameseCipher extends SubstitutionCipher {
+public class SubstitutionEnglishCipher extends SubstitutionCipher {
     @Override
     public Map<Character, Character> generateKey() {
-        List<Character> alphabet = VietnameseAlphabetUtil.generateAlphabet(false);
-        List<Character> mappingAlphabet = VietnameseAlphabetUtil.generateAlphabet(true);
+        List<Character> alphabet = EnglishAlphabetUtil.generateAlphabet(false);
+        List<Character> mappingAlphabet = EnglishAlphabetUtil.generateAlphabet(true);
 
         for (int i = 0; i < alphabet.size(); i++) {
             if (alphabet.get(i).equals(mappingAlphabet.get(i))) {
@@ -28,4 +25,5 @@ public class SubstitutionVietnameseCipher extends SubstitutionCipher {
         }
         return key;
     }
+
 }

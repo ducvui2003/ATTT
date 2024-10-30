@@ -1,11 +1,8 @@
-package nlu.fit.leanhduc.service.shiftCiper;
+package nlu.fit.leanhduc.service.cipher.shiftCiper;
 
 import nlu.fit.leanhduc.util.CipherException;
 import nlu.fit.leanhduc.util.Constraint;
-import nlu.fit.leanhduc.util.VietnameseAlphabetUtil;
-
-import java.io.File;
-import java.util.Random;
+import nlu.fit.leanhduc.util.EnglishAlphabetUtil;
 
 public class ShiftCipherEnglish extends ShiftCipher {
     public ShiftCipherEnglish(Integer shift) {
@@ -26,7 +23,7 @@ public class ShiftCipherEnglish extends ShiftCipher {
             char c = plainText.charAt(i);
             char ce = c;
             if (Character.isLetter(c)) {
-                char base = Character.isLowerCase(c) ? Constraint.FIRST_CHAR : Constraint.FIRST_CHAR_UPPER;
+                char base = EnglishAlphabetUtil.getBaseChar(c);
                 ce = (char) ((c - base + shift) % Constraint.ALPHABET_SIZE + base);
             }
             result += ce;

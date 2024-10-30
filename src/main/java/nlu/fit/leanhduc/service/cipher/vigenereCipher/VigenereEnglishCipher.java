@@ -1,4 +1,4 @@
-package nlu.fit.leanhduc.service.vigenereCipher;
+package nlu.fit.leanhduc.service.cipher.vigenereCipher;
 
 import nlu.fit.leanhduc.util.CipherException;
 import nlu.fit.leanhduc.util.Constraint;

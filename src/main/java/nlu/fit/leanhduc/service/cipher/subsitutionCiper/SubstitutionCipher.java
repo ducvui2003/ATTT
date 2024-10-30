@@ -1,8 +1,9 @@
-package nlu.fit.leanhduc.service.subsitutionCiper;
+package nlu.fit.leanhduc.service.cipher.subsitutionCiper;
 
 
 import lombok.Getter;
-import nlu.fit.leanhduc.service.IAsymmetricEncrypt;
+import nlu.fit.leanhduc.service.IKeyGenerator;
+import nlu.fit.leanhduc.service.ITextEncrypt;
 import nlu.fit.leanhduc.util.CipherException;
 
 import java.io.File;
@@ -12,7 +13,7 @@ import java.util.Map;
 import java.util.Set;
 
 @Getter
-public abstract class SubstitutionCipher implements IAsymmetricEncrypt<Map<Character, Character>> {
+public abstract class SubstitutionCipher implements ITextEncrypt, IKeyGenerator<Map<Character, Character>> {
     private Map<Character, Character> encryptMap;
     private Map<Character, Character> decryptMap;
 
@@ -59,15 +60,5 @@ public abstract class SubstitutionCipher implements IAsymmetricEncrypt<Map<Chara
             result.append(decryptMap.getOrDefault(ch, ch));
         }
         return result.toString();
-    }
-
-    @Override
-    public String encrypt(File file) throws CipherException {
-        return null;
-    }
-
-    @Override
-    public String decrypt(File cryptFile) throws CipherException {
-        return null;
     }
 }
