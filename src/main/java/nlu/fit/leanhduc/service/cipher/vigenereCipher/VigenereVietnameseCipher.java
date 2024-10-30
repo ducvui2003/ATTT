@@ -46,7 +46,7 @@ public class VigenereVietnameseCipher extends VigenereCipher {
         char result = ch;
         if (Character.isLetter(result)) {
             boolean isLower = Character.isLowerCase(ch);
-            int index = VietnameseAlphabetUtil.indexOf(Character.toLowerCase(ch));
+            int index = VietnameseAlphabetUtil.indexOf(ch);
             int indexOfEncrypt = (index + shift) % Constraint.VIET_NAME_ALPHA_BET_SIZE;
             result = VietnameseAlphabetUtil.getChar(indexOfEncrypt);
             if (!isLower) result = Character.toUpperCase(result);
