@@ -17,7 +17,7 @@ class ShiftCipherTest {
 
     @Test
     void testVariable() {
-        System.out.println(Constraint.VIET_NAME_ALPHA_BET);
+        System.out.println(Constraint.VIET_NAME_ALPHA_ARRAY);
         System.out.println(-3 % 2);
         System.out.println((int) 'A');
         System.out.println((int) 'Â');
