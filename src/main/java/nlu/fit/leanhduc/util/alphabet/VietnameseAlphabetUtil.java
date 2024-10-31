@@ -17,9 +17,11 @@ public class VietnameseAlphabetUtil implements AlphabetUtil {
 
     @Override
     public char getChar(int oct, boolean isLowerCase) {
+        int index = ((oct % Constraint.VIET_NAME_ALPHA_BET_SIZE) + Constraint.VIET_NAME_ALPHA_BET_SIZE) % Constraint.VIET_NAME_ALPHA_BET_SIZE;
+
         return isLowerCase ?
-                Constraint.VIET_NAME_ALPHA_ARRAY[oct % Constraint.VIET_NAME_ALPHA_BET_SIZE] :
-                Character.toUpperCase(Constraint.VIET_NAME_ALPHA_ARRAY[oct % Constraint.VIET_NAME_ALPHA_BET_SIZE]);
+                Constraint.ALPHABET_ARRAY[index] :
+                Character.toUpperCase(Constraint.ALPHABET_ARRAY[index]);
     }
 
 

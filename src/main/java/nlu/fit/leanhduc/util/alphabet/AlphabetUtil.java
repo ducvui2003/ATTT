@@ -10,5 +10,5 @@ public interface AlphabetUtil {
 
     char getChar(int index);
 
-    char getChar(int oct, boolean isLowerCase);
+    char getChar(int index, boolean isLowerCase);
 }

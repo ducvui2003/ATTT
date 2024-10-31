@@ -27,9 +27,11 @@ public class EnglishAlphabetUtil implements AlphabetUtil {
 
     @Override
     public char getChar(int oct, boolean isLowerCase) {
+        int index = ((oct % Constraint.ALPHABET_SIZE) + Constraint.ALPHABET_SIZE) % Constraint.ALPHABET_SIZE;
+
         return isLowerCase ?
-                Constraint.ALPHABET_ARRAY[oct % Constraint.ALPHABET_SIZE] :
-                Character.toUpperCase(Constraint.ALPHABET_ARRAY[oct % Constraint.ALPHABET_SIZE]);
+                Constraint.ALPHABET_ARRAY[index] :
+                Character.toUpperCase(Constraint.ALPHABET_ARRAY[index]);
     }
 
     @Override

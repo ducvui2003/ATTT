@@ -1,6 +1,5 @@
 package nlu.fit.leanhduc.service.cipher.affineCipher;
 
-import nlu.fit.leanhduc.util.alphabet.EnglishAlphabetUtil;
 import nlu.fit.leanhduc.util.alphabet.VietnameseAlphabetUtil;
 
 public class AffineVietnameseCipher extends AffineCipher {
