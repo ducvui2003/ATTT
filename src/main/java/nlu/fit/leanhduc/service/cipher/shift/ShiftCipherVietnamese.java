@@ -1,4 +1,4 @@
-package nlu.fit.leanhduc.service.cipher.shiftCiper;
+package nlu.fit.leanhduc.service.cipher.shift;
 
 import nlu.fit.leanhduc.util.alphabet.VietnameseAlphabetUtil;
 

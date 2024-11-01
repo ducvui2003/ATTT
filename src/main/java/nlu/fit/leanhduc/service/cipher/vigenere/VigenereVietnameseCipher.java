@@ -1,4 +1,4 @@
-package nlu.fit.leanhduc.service.cipher.vigenereCipher;
+package nlu.fit.leanhduc.service.cipher.vigenere;
 
 import nlu.fit.leanhduc.util.alphabet.VietnameseAlphabetUtil;
 

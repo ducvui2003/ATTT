@@ -36,7 +36,7 @@ public class EnglishAlphabetUtil implements AlphabetUtil {
 
     @Override
     public int indexOf(char c) {
-        return Constraint.ALPHABET.indexOf(c);
+        return Constraint.ALPHABET.indexOf(Character.toLowerCase(c));
     }
 
     @Override
