@@ -1,4 +1,4 @@
-package nlu.fit.leanhduc.service.cipher.affineCipher;
+package nlu.fit.leanhduc.service.cipher.affine;
 
 import nlu.fit.leanhduc.util.alphabet.EnglishAlphabetUtil;
 

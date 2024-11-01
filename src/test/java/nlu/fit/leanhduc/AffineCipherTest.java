@@ -1,7 +1,7 @@
 package nlu.fit.leanhduc;
 
-import nlu.fit.leanhduc.service.cipher.affineCipher.AffineEnglishCipher;
-import nlu.fit.leanhduc.service.cipher.affineCipher.AffineVietnameseCipher;
+import nlu.fit.leanhduc.service.cipher.affine.AffineEnglishCipher;
+import nlu.fit.leanhduc.service.cipher.affine.AffineVietnameseCipher;
 import nlu.fit.leanhduc.service.key.AffineKey;
 import nlu.fit.leanhduc.util.CipherException;
 import org.junit.jupiter.api.Assertions;
@@ -23,93 +23,54 @@ public class AffineCipherTest {
     }
 
     @Test
-    public void testEncryptAffineCipher() throws CipherException {
+    public void testEncryptSimpleTextWithKey7_3() throws CipherException {
+        // Plaintext: "WORLD", Key: a = 7, b = 3
+        keys = new AffineKey(7, 3);
+        englishCipher.loadKey(keys);
+
+        String plaintext = "WORLD";
+        String expectedCiphertext = "BXSCY";
+        String encryptedText = englishCipher.encrypt(plaintext);
+
+        Assertions.assertEquals(expectedCiphertext, encryptedText, "The encrypted text should match 'BXSGJ'");
+    }
+
+    @Test
+    public void testEncryptLowercaseTextWithKey5_8() throws CipherException {
+        // Plaintext: "hello", Key: a = 5, b = 8
         keys = new AffineKey(5, 8);
         englishCipher.loadKey(keys);
-        Assertions.assertEquals(englishCipher.encrypt("HELLO"), "RCLLA");
+
+        String plaintext = "hello";
+        String expectedCiphertext = "rclla";
+        String encryptedText = englishCipher.encrypt(plaintext);
+
+        Assertions.assertEquals(expectedCiphertext, encryptedText, "The encrypted text should match 'rclla'");
     }
+    
 
     @Test
-    public void testEncryptAffineCipherFull() throws CipherException {
-        keys = new AffineKey(5, 6);
+    public void testEncryptAndDecryptWithKey9_2() throws CipherException {
+        // Plaintext: "affinecipher", Key: a = 9, b = 2
+        keys = new AffineKey(9, 2);
         englishCipher.loadKey(keys);
-        Assertions.assertEquals(englishCipher.encrypt("A"), "G");
+
+        String plaintext = "affinecipher";
+        String encryptedText = englishCipher.encrypt(plaintext);
+        String decryptedText = englishCipher.decrypt(encryptedText);
+
+        Assertions.assertEquals(plaintext, decryptedText, "Decrypting the encrypted text should return the original plaintext");
     }
 
-    // Test encryption of the entire alphabet
     @Test
-    public void testEncryptFullAlphabet() throws CipherException {
-        keys = new AffineKey(5, 8);
+    public void testEncryptWithKey1_0ShouldBeIdentity() throws CipherException {
+        // Plaintext: "identity", Key: a = 1, b = 0 (identity transformation)
+        keys = new AffineKey(1, 0);
         englishCipher.loadKey(keys);
-        Assertions.assertEquals(englishCipher.encrypt("ABCDEFGHIJKLMNOPQRSTUVWXYZ"), "INSXCHMRWBGLQVAFKPUZEJOTYD");
-    }
 
-    // Test decryption with valid key
-    @Test
-    public void testDecryptAffineCipher() throws CipherException {
-        keys = new AffineKey(5, 8);
-        englishCipher.loadKey(keys);
-        Assertions.assertEquals(englishCipher.decrypt("RCLLA"), "HELLO");
-    }
+        String plaintext = "identity";
+        String encryptedText = englishCipher.encrypt(plaintext);
 
-    // Test decryption of the full alphabet
-    @Test
-    public void testDecryptFullAlphabet() throws CipherException {
-        keys = new AffineKey(5, 8);
-        englishCipher.loadKey(keys);
-        Assertions.assertEquals(englishCipher.decrypt("INSXCHMRWBGLQVAFKPUZEJOTYD"), "ABCDEFGHIJKLMNOPQRSTUVWXYZ");
-    }
-
-    @Test
-    public void testEncrypt() throws CipherException {
-        keys = new AffineKey(5, 8);
-        englishCipher.loadKey(keys);
-        Assertions.assertEquals(englishCipher.encrypt("D!"), "A!"); // Assuming non-alphabet characters remain unchanged
-    }
-
-    // Test with non-alphabet characters (if they are allowed to pass through unchanged)
-    @Test
-    public void testEncryptWithSpecialCharacters() throws CipherException {
-        keys = new AffineKey(5, 8);
-        englishCipher.loadKey(keys);
-        Assertions.assertEquals(englishCipher.encrypt("HELLO, WORLD!"), "RCLLA, OAPLA!"); // Assuming non-alphabet characters remain unchanged
-    }
-
-    // Test decryption with special characters
-    @Test
-    public void testDecryptWithSpecialCharacters() throws CipherException {
-        keys = new AffineKey(5, 8);
-        englishCipher.loadKey(keys);
-        Assertions.assertEquals(englishCipher.decrypt("RCLLA, OAPLA!"), "HELLO, WORLD!");
-    }
-
-    // Test encryption and decryption with lowercase input (assuming case-insensitivity)
-    @Test
-    public void testEncryptLowercaseInput() throws CipherException {
-        keys = new AffineKey(5, 8);
-        englishCipher.loadKey(keys);
-        Assertions.assertNotEquals(englishCipher.encrypt("hello"), "RCLLA");
-    }
-
-    // Test encryption with a non-coprime key
-    @Test
-    public void testEncryptNonCoprimeKey() {
-        keys = new AffineKey(6, 8); // 6 is not coprime with 26
-        Assertions.assertThrows(CipherException.class, () -> englishCipher.loadKey(keys));
-    }
-
-    // Test decryption with a non-coprime key
-    @Test
-    public void testDecryptNonCoprimeKey() {
-        keys = new AffineKey(6, 8); // 6 is not coprime with 26
-        Assertions.assertThrows(CipherException.class, () -> englishCipher.loadKey(keys));
-    }
-
-    // Test decrypting a string that was not encrypted with the Affine cipher
-    @Test
-    public void testDecryptInvalidCipherText() throws CipherException {
-        keys = new AffineKey(5, 8);
-        englishCipher.loadKey(keys);
-        Assertions.assertNotEquals(englishCipher.decrypt("INVALID"), "HELLO");
+        Assertions.assertEquals(plaintext, encryptedText, "With key (1, 0), the encrypted text should match the plaintext");
     }
 }

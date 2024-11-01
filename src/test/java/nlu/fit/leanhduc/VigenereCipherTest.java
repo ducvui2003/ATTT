@@ -6,9 +6,9 @@
  */
 package nlu.fit.leanhduc;
 
-import nlu.fit.leanhduc.service.cipher.vigenereCipher.VigenereCipher;
-import nlu.fit.leanhduc.service.cipher.vigenereCipher.VigenereEnglishCipher;
-import nlu.fit.leanhduc.service.cipher.vigenereCipher.VigenereVietnameseCipher;
+import nlu.fit.leanhduc.service.cipher.vigenere.VigenereCipher;
+import nlu.fit.leanhduc.service.cipher.vigenere.VigenereEnglishCipher;
+import nlu.fit.leanhduc.service.cipher.vigenere.VigenereVietnameseCipher;
 import nlu.fit.leanhduc.util.CipherException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

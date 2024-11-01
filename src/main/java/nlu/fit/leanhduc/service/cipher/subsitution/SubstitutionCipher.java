@@ -1,4 +1,4 @@
-package nlu.fit.leanhduc.service.cipher.subsitutionCiper;
+package nlu.fit.leanhduc.service.cipher.subsitution;
 
 
 import lombok.Getter;
@@ -6,7 +6,6 @@ import nlu.fit.leanhduc.service.IKeyGenerator;
 import nlu.fit.leanhduc.service.ITextEncrypt;
 import nlu.fit.leanhduc.util.CipherException;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;

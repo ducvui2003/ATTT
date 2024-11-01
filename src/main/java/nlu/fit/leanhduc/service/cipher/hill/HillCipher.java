@@ -1,4 +1,4 @@
-package nlu.fit.leanhduc.service.cipher.hillCipher;
+package nlu.fit.leanhduc.service.cipher.hill;
 
 import nlu.fit.leanhduc.service.IKeyGenerator;
 import nlu.fit.leanhduc.service.ITextEncrypt;

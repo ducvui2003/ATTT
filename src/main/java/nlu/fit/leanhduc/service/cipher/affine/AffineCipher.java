@@ -1,4 +1,4 @@
-package nlu.fit.leanhduc.service.cipher.affineCipher;
+package nlu.fit.leanhduc.service.cipher.affine;
 
 import nlu.fit.leanhduc.service.IKeyGenerator;
 import nlu.fit.leanhduc.service.ITextEncrypt;
@@ -47,7 +47,8 @@ public abstract class AffineCipher implements IKeyGenerator<AffineKey>, ITextEnc
             if (Character.isLetter(c)) {
                 boolean isLower = Character.isLowerCase(c);
                 //Công thức: Encrypt (x) = (a * x + b) mod m
-                int charEncrypt = this.key.getA() * c + this.key.getB();
+                int index = this.alphabetUtil.indexOf(c);
+                int charEncrypt = this.key.getA() * index + this.key.getB();
                 result += alphabetUtil.getChar(charEncrypt, isLower);
             } else
                 result += c;
@@ -64,7 +65,8 @@ public abstract class AffineCipher implements IKeyGenerator<AffineKey>, ITextEnc
             if (Character.isLetter(c)) {
                 boolean isLower = Character.isLowerCase(c);
                 //Công thức: Decrypt (x) = a^(-1) * (x - b)
-                int charDecrypt = modularInverse * (c - this.key.getB());
+                int index = this.alphabetUtil.indexOf(c);
+                int charDecrypt = modularInverse * (index - this.key.getB());
                 result += alphabetUtil.getChar(charDecrypt, isLower);
             } else
                 result += c;
