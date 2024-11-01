@@ -1,6 +1,6 @@
 package nlu.fit.leanhduc;
 
-import nlu.fit.leanhduc.service.cipher.hill.HillCipherEnglish;
+import nlu.fit.leanhduc.service.cipher.symmetric.hill.HillCipherEnglish;
 import nlu.fit.leanhduc.service.key.HillKey;
 import nlu.fit.leanhduc.util.CipherException;
 import org.junit.jupiter.api.Assertions;

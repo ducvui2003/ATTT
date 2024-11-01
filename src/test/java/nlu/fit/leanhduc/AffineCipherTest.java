@@ -1,7 +1,7 @@
 package nlu.fit.leanhduc;
 
-import nlu.fit.leanhduc.service.cipher.affine.AffineEnglishCipher;
-import nlu.fit.leanhduc.service.cipher.affine.AffineVietnameseCipher;
+import nlu.fit.leanhduc.service.cipher.symmetric.affine.AffineEnglishCipher;
+import nlu.fit.leanhduc.service.cipher.symmetric.affine.AffineVietnameseCipher;
 import nlu.fit.leanhduc.service.key.AffineKey;
 import nlu.fit.leanhduc.util.CipherException;
 import org.junit.jupiter.api.Assertions;

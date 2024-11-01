@@ -1,8 +1,10 @@
 package nlu.fit.leanhduc.service.base64;
 
+import nlu.fit.leanhduc.service.ITextEncrypt;
+
 import java.util.Base64;
 
-public class Base64Encoding {
+public class Base64Encoding implements ITextEncrypt {
     public String encrypt(String input) {
         return Base64.getEncoder().encodeToString(input.getBytes());
     }

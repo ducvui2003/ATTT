@@ -1,9 +1,8 @@
 package nlu.fit.leanhduc.view.section;
 
-import nlu.fit.leanhduc.component.fileChooser.FileChooser;
-import nlu.fit.leanhduc.component.fileChooser.FileChooserEvent;
+import nlu.fit.leanhduc.view.component.fileChooser.FileChooser;
+import nlu.fit.leanhduc.view.component.fileChooser.FileChooserEvent;
 import nlu.fit.leanhduc.controller.EncryptPublisher;
-import nlu.fit.leanhduc.controller.TaskOperation;
 import nlu.fit.leanhduc.controller.TaskPublisher;
 
 import javax.swing.*;

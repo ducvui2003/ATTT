@@ -1,35 +1,29 @@
 package nlu.fit.leanhduc.view;
 
-import nlu.fit.leanhduc.component.menu.Menu;
+import nlu.fit.leanhduc.view.component.menu.Menu;
 import nlu.fit.leanhduc.util.Constraint;
 import nlu.fit.leanhduc.view.section.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class MainView extends JFrame {
-    JPanel panel;
     Menu menu;
-    InputSection inputSection;
     JTabbedPane tabbedPane;
     Map<String, JPanel> panelMap;
     Footer footer;
 
+
     public void createUIComponents() {
         createMenu();
-
         this.setLayout(new BorderLayout(5, 5));
-
-        inputSection = new InputSection();
-        this.add(inputSection, BorderLayout.NORTH);
         createTabPanel();
-        this.add(tabbedPane, BorderLayout.CENTER);
-        footer = new Footer();
-        this.add(footer, BorderLayout.SOUTH);
-        footer.startLoading();
+        createFooter();
         setMetadata();
     }
+
 
     private void createMenu() {
         menu = new Menu(this);
@@ -38,13 +32,13 @@ public class MainView extends JFrame {
 
     private void createTabPanel() {
         tabbedPane = new JTabbedPane();
-        panelMap = Map.of(
-                "Thuật toán cơ bản", new BasicAlthorismSection(),
-                "Mã hóa đối xứng", new SymmetricEncryptionSection(),
-                "Mã hóa bất đối xứng", new AsymmetricEncryptionSection(),
-                "Chữ ký điện tử", new ElectronicSignature()
-        );
+        panelMap = new LinkedHashMap<>();
+        panelMap.put("Mã hóa đối xứng", new SymmetricEncryptionSection());
+        panelMap.put("Mã hóa bất đối xứng", new AsymmetricEncryptionSection());
+        panelMap.put("Chữ ký điện tử", new ElectronicSignature());
+
         panelMap.forEach((k, v) -> tabbedPane.addTab(k, v));
+        this.add(tabbedPane, BorderLayout.CENTER);
     }
 
     private void setMetadata() {
@@ -56,4 +50,9 @@ public class MainView extends JFrame {
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
 
+    private void createFooter() {
+        footer = new Footer();
+        this.add(footer, BorderLayout.SOUTH);
+        footer.startLoading();
+    }
 }
