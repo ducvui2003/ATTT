@@ -1,20 +1,21 @@
 package nlu.fit.leanhduc;
 
-import nlu.fit.leanhduc.service.cipher.symmetric.hill.HillCipherEnglish;
+import nlu.fit.leanhduc.service.cipher.symmetric.hill.HillCipher;
 import nlu.fit.leanhduc.service.key.HillKey;
 import nlu.fit.leanhduc.util.CipherException;
+import nlu.fit.leanhduc.util.alphabet.EnglishAlphabetUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class HillCipherTest {
-    private HillCipherEnglish englishCipher;
+    private HillCipher englishCipher;
 
     private HillKey key;
 
     @BeforeEach
     void setup() {
-        englishCipher = new HillCipherEnglish();
+        englishCipher = new HillCipher(new EnglishAlphabetUtil());
     }
 
     @Test

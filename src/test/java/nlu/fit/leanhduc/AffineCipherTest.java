@@ -1,24 +1,25 @@
 package nlu.fit.leanhduc;
 
-import nlu.fit.leanhduc.service.cipher.symmetric.affine.AffineEnglishCipher;
-import nlu.fit.leanhduc.service.cipher.symmetric.affine.AffineVietnameseCipher;
+import nlu.fit.leanhduc.service.cipher.symmetric.affine.AffineCipher;
 import nlu.fit.leanhduc.service.key.AffineKey;
 import nlu.fit.leanhduc.util.CipherException;
+import nlu.fit.leanhduc.util.alphabet.EnglishAlphabetUtil;
+import nlu.fit.leanhduc.util.alphabet.VietnameseAlphabetUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class AffineCipherTest {
-    private AffineEnglishCipher englishCipher;
-    private AffineVietnameseCipher vietnameseCipher;
+    private AffineCipher englishCipher;
+    private AffineCipher vietnameseCipher;
 
     private AffineKey keys;
 
 
     @BeforeEach
     void setup() {
-        englishCipher = new AffineEnglishCipher();
-        vietnameseCipher = new AffineVietnameseCipher();
+        englishCipher = new AffineCipher(new EnglishAlphabetUtil());
+        vietnameseCipher = new AffineCipher(new VietnameseAlphabetUtil());
 
     }
 

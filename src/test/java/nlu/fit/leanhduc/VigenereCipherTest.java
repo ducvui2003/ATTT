@@ -7,9 +7,10 @@
 package nlu.fit.leanhduc;
 
 import nlu.fit.leanhduc.service.cipher.symmetric.vigenere.VigenereCipher;
-import nlu.fit.leanhduc.service.cipher.symmetric.vigenere.VigenereEnglishCipher;
-import nlu.fit.leanhduc.service.cipher.symmetric.vigenere.VigenereVietnameseCipher;
+import nlu.fit.leanhduc.service.key.VigenereKey;
 import nlu.fit.leanhduc.util.CipherException;
+import nlu.fit.leanhduc.util.alphabet.EnglishAlphabetUtil;
+import nlu.fit.leanhduc.util.alphabet.VietnameseAlphabetUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,13 +21,13 @@ class VigenereCipherTest {
     private VigenereCipher englishCipher;
     private VigenereCipher vietnameseCipher;
 
-    private List<Integer> keys;
+    private VigenereKey keys;
 
     @BeforeEach
     void setup() {
-        englishCipher = new VigenereEnglishCipher();
-        vietnameseCipher = new VigenereVietnameseCipher();
-        keys = List.of(1, 5, 10, 2);
+        englishCipher = new VigenereCipher(new EnglishAlphabetUtil());
+        vietnameseCipher = new VigenereCipher(new VietnameseAlphabetUtil());
+        keys = new VigenereKey(List.of(1, 5, 10, 2));
     }
 
     @Test

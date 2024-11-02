@@ -1,7 +1,9 @@
 package nlu.fit.leanhduc.view.component.dialog;
 
 
+import nlu.fit.leanhduc.service.IKeyGenerator;
 import nlu.fit.leanhduc.service.KeyGeneratorFactory;
+import nlu.fit.leanhduc.service.key.IKeyDisplay;
 import nlu.fit.leanhduc.util.Cipher;
 import nlu.fit.leanhduc.util.Language;
 import nlu.fit.leanhduc.view.component.fileChooser.FileChooser;
@@ -55,6 +57,7 @@ public class GenerateKeyDialog extends CustomDialog {
         this.cipher = (Cipher) comboBoxCipher.getSelectedItem();
         comboBoxCipher.addActionListener(e -> {
             Cipher selectedItem = (Cipher) comboBoxCipher.getSelectedItem();
+            cipher = selectedItem;
             System.out.println("You selected: " + selectedItem);
         });
         panelGenerateKey.add(comboBoxCipher);
@@ -62,6 +65,7 @@ public class GenerateKeyDialog extends CustomDialog {
         this.language = (Language) comboBoxLanguage.getSelectedItem();
         comboBoxLanguage.addActionListener(e -> {
             Language selectedItem = (Language) comboBoxLanguage.getSelectedItem();
+            language = selectedItem;
             System.out.println("You selected: " + selectedItem);
         });
         panelGenerateKey.add(comboBoxLanguage);
@@ -96,7 +100,9 @@ public class GenerateKeyDialog extends CustomDialog {
         panelGenerateKey.add(button);
         button.addActionListener(e -> {
             key = Objects.requireNonNull(KeyGeneratorFactory.getKeyGenerator(cipher, language)).generateKey();
-            textArea.setText(key.toString());
+            if (key instanceof IKeyDisplay keyDisplay) {
+                textArea.setText(keyDisplay.display());
+            }
         });
     }
 

@@ -1,7 +1,12 @@
 package nlu.fit.leanhduc.util.alphabet;
 
 
+import java.util.List;
+
 public interface AlphabetUtil {
+
+    List<Character> generateAlphabet(boolean isRandom);
+
     int getLength();
 
     char[] getAlphabet();

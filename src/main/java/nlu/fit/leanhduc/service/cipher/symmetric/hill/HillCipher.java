@@ -8,9 +8,13 @@ import nlu.fit.leanhduc.util.MatrixUtil;
 import nlu.fit.leanhduc.util.ModularUtil;
 import nlu.fit.leanhduc.util.alphabet.AlphabetUtil;
 
-public abstract class HillCipher implements IKeyGenerator<HillKey>, ITextEncrypt {
+public class HillCipher implements IKeyGenerator<HillKey>, ITextEncrypt {
     protected HillKey key;
     protected AlphabetUtil alphabetUtil;
+
+    public HillCipher(AlphabetUtil alphabetUtil) {
+        this.alphabetUtil = alphabetUtil;
+    }
 
     @Override
     public void loadKey(HillKey key) throws CipherException {

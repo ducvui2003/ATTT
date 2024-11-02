@@ -4,24 +4,49 @@ package nlu.fit.leanhduc.service.cipher.symmetric.subsitution;
 import lombok.Getter;
 import nlu.fit.leanhduc.service.IKeyGenerator;
 import nlu.fit.leanhduc.service.ITextEncrypt;
+import nlu.fit.leanhduc.service.key.SubstitutionKey;
 import nlu.fit.leanhduc.util.CipherException;
+import nlu.fit.leanhduc.util.alphabet.AlphabetUtil;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Getter
-public abstract class SubstitutionCipher implements ITextEncrypt, IKeyGenerator<Map<Character, Character>> {
+public class SubstitutionCipher implements ITextEncrypt, IKeyGenerator<SubstitutionKey> {
     private Map<Character, Character> encryptMap;
     private Map<Character, Character> decryptMap;
+    private AlphabetUtil alphabet;
+
+    public SubstitutionCipher(AlphabetUtil alphabet) {
+        this.alphabet = alphabet;
+    }
 
     @Override
-    public void loadKey(Map<Character, Character> key) throws CipherException {
-        if (!validationKey(key)) {
+    public SubstitutionKey generateKey() {
+        List<Character> alphabet = this.alphabet.generateAlphabet(false);
+        List<Character> mappingAlphabet = this.alphabet.generateAlphabet(true);
+
+        for (int i = 0; i < alphabet.size(); i++) {
+            if (alphabet.get(i).equals(mappingAlphabet.get(i))) {
+                int swapIndex = (i + 1) % alphabet.size();
+                char temp = mappingAlphabet.get(i);
+                mappingAlphabet.set(i, mappingAlphabet.get(swapIndex));
+                mappingAlphabet.set(swapIndex, temp);
+            }
+        }
+
+        Map<Character, Character> key = new HashMap<>();
+        for (int i = 0; i < alphabet.size(); i++) {
+            key.put(alphabet.get(i), mappingAlphabet.get(i));
+        }
+        return new SubstitutionKey(key);
+    }
+
+    @Override
+    public void loadKey(SubstitutionKey key) throws CipherException {
+        if (!validationKey(key.getKey())) {
             throw new CipherException("Invalid key");
         }
-        this.encryptMap = key;
+        this.encryptMap = key.getKey();
         this.decryptMap = createDecryptMap();
     }
 

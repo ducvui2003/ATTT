@@ -2,9 +2,10 @@ package nlu.fit.leanhduc;
 
 
 import nlu.fit.leanhduc.service.cipher.symmetric.subsitution.SubstitutionCipher;
-import nlu.fit.leanhduc.service.cipher.symmetric.subsitution.SubstitutionEnglishCipher;
-import nlu.fit.leanhduc.service.cipher.symmetric.subsitution.SubstitutionVietnameseCipher;
+import nlu.fit.leanhduc.service.key.SubstitutionKey;
 import nlu.fit.leanhduc.util.CipherException;
+import nlu.fit.leanhduc.util.alphabet.EnglishAlphabetUtil;
+import nlu.fit.leanhduc.util.alphabet.VietnameseAlphabetUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -12,10 +13,10 @@ import java.util.Map;
 
 public class SubstitutionCipherTest {
 
-    SubstitutionCipher substitutionCipherVietnamese = new SubstitutionVietnameseCipher();
-    SubstitutionCipher substitutionCipherEnglish = new SubstitutionEnglishCipher();
-    Map<Character, Character> keyEnglish = Map.of('a', 'b', 'c', 'd');
-    Map<Character, Character> keyVietnamese = Map.of('â', 'b', 'đ', 'd');
+    SubstitutionCipher substitutionCipherVietnamese = new SubstitutionCipher(new VietnameseAlphabetUtil());
+    SubstitutionCipher substitutionCipherEnglish = new SubstitutionCipher(new EnglishAlphabetUtil());
+    SubstitutionKey keyEnglish = new SubstitutionKey(Map.of('a', 'b', 'c', 'd'));
+    SubstitutionKey keyVietnamese = new SubstitutionKey(Map.of('â', 'b', 'đ', 'd'));
 
     @Test
     void testGenerateKey() {

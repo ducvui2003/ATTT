@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nlu.fit.leanhduc.service.IKeyGenerator;
 import nlu.fit.leanhduc.service.ITextEncrypt;
+import nlu.fit.leanhduc.service.key.VigenereKey;
 import nlu.fit.leanhduc.util.CipherException;
 import nlu.fit.leanhduc.util.alphabet.AlphabetUtil;
 
@@ -13,24 +14,28 @@ import java.util.Random;
 
 @Getter
 @Setter
-public abstract class VigenereCipher implements ITextEncrypt, IKeyGenerator<List<Integer>> {
+public class VigenereCipher implements ITextEncrypt, IKeyGenerator<VigenereKey> {
     protected List<Integer> keys;
     protected int keyLength;
     protected Random rd = new Random();
     protected AlphabetUtil alphabetUtil;
 
-    @Override
-    public void loadKey(List<Integer> key) throws CipherException {
-        this.keys = key;
-        this.keyLength = key.size();
+    public VigenereCipher(AlphabetUtil alphabetUtil) {
+        this.alphabetUtil = alphabetUtil;
     }
 
     @Override
-    public List<Integer> generateKey() {
-        List<Integer> results = new ArrayList<>();
+    public void loadKey(VigenereKey key) throws CipherException {
+        this.keys = key.getKey();
+        this.keyLength = key.getKey().size();
+    }
+
+    @Override
+    public VigenereKey generateKey() {
+        List<Integer> result = new ArrayList<>();
         for (int i = 0; i < keyLength; i++)
-            results.add(rd.nextInt(alphabetUtil.getLength()) * alphabetUtil.getLength());
-        return results;
+            result.add(rd.nextInt(alphabetUtil.getLength()) * alphabetUtil.getLength());
+        return new VigenereKey(result);
     }
 
     @Override

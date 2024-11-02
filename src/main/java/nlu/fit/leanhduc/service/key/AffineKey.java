@@ -9,7 +9,15 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AffineKey {
+public class AffineKey implements IKeyDisplay {
     private int a;
     private int b;
+
+    @Override
+    public String display() {
+        return "AffineKey{" +
+                "a=" + a +
+                ", b=" + b +
+                '}';
+    }
 }

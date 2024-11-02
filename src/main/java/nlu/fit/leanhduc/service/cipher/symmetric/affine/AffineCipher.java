@@ -10,14 +10,16 @@ import nlu.fit.leanhduc.util.alphabet.AlphabetUtil;
 
 import java.util.Random;
 
-public abstract class AffineCipher implements IKeyGenerator<AffineKey>, ITextEncrypt {
+public class AffineCipher implements IKeyGenerator<AffineKey>, ITextEncrypt {
     protected AffineKey key;
     protected Random rd;
     protected int range;
     protected AlphabetUtil alphabetUtil;
 
-    public AffineCipher() {
+    public AffineCipher(AlphabetUtil alphabetUtil) {
         this.rd = new Random();
+        this.alphabetUtil = alphabetUtil;
+        this.range = this.alphabetUtil.getLength();
     }
 
     @Override

@@ -25,11 +25,8 @@ public class VietnameseAlphabetUtil implements AlphabetUtil {
     }
 
 
-    public static List<Character> generateAlphabet() {
-        return generateAlphabet(true);
-    }
-
-    public static List<Character> generateAlphabet(boolean isRandom) {
+    @Override
+    public List<Character> generateAlphabet(boolean isRandom) {
         List<Character> alphabet = new ArrayList<>();
         for (char c : Constraint.VIET_NAME_ALPHA_ARRAY) {
             alphabet.add(c);

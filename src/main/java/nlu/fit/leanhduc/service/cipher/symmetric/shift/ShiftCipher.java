@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import nlu.fit.leanhduc.service.IKeyGenerator;
 import nlu.fit.leanhduc.service.ITextEncrypt;
+import nlu.fit.leanhduc.service.key.ShiftKey;
 import nlu.fit.leanhduc.util.CipherException;
 import nlu.fit.leanhduc.util.alphabet.AlphabetUtil;
 
@@ -14,28 +15,23 @@ import java.util.Random;
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ShiftCipher implements ITextEncrypt, IKeyGenerator<Integer> {
+public class ShiftCipher implements ITextEncrypt, IKeyGenerator<ShiftKey> {
     protected Integer shift;
     protected Random rd = new Random();
     protected AlphabetUtil alphabet;
-
-    public ShiftCipher(Integer shift, AlphabetUtil alphabet) {
-        this.shift = shift;
-        this.alphabet = alphabet;
-    }
 
     public ShiftCipher(AlphabetUtil alphabet) {
         this.alphabet = alphabet;
     }
 
     @Override
-    public Integer generateKey() {
-        return rd.nextInt(alphabet.getLength()) + 1;
+    public ShiftKey generateKey() {
+        return new ShiftKey(rd.nextInt(alphabet.getLength()) + 1);
     }
 
     @Override
-    public void loadKey(Integer key) throws CipherException {
-        this.shift = key;
+    public void loadKey(ShiftKey key) throws CipherException {
+        this.shift = key.getKey();
     }
 
     @Override
