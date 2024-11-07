@@ -5,9 +5,7 @@ import nlu.fit.leanhduc.service.IKeyGenerator;
 import nlu.fit.leanhduc.service.KeyGeneratorFactory;
 import nlu.fit.leanhduc.service.cipher.symmetric.vigenere.VigenereCipher;
 import nlu.fit.leanhduc.service.key.IKeyDisplay;
-import nlu.fit.leanhduc.util.Cipher;
-import nlu.fit.leanhduc.util.FileUtil;
-import nlu.fit.leanhduc.util.Language;
+import nlu.fit.leanhduc.util.*;
 import nlu.fit.leanhduc.view.component.fileChooser.FileChooser;
 import nlu.fit.leanhduc.view.component.fileChooser.FileChooserEvent;
 
@@ -18,6 +16,7 @@ import javax.swing.text.NumberFormatter;
 import java.awt.*;
 import java.io.File;
 import java.text.NumberFormat;
+import java.util.List;
 import java.util.Objects;
 
 public class GenerateKeyDialog extends CustomDialog implements FileChooserEvent {
@@ -27,47 +26,79 @@ public class GenerateKeyDialog extends CustomDialog implements FileChooserEvent 
     Language language;
     Cipher cipher;
     Object key;
+    JPanel panelModePadding;
+    Mode mode;
+    Padding padding;
     private JPanel panelGenerateKey;
+
+    List<Cipher> cipherHasModeAndPadding;
+    List<Cipher> cipherSupportKeyLength;
+    List<Cipher> cipherSupport2Language;
+
+    // JComboBox
+    JComboBox<Language> comboBoxLanguage;
+    JComboBox<Mode> comboBoxMode;
+    JComboBox<Padding> comboBoxPadding;
+    JComboBox<Cipher> comboBoxCipher;
 
     public GenerateKeyDialog(Frame owner) {
         super(owner, "Tạo khóa mới", Dialog.ModalityType.APPLICATION_MODAL);
+
     }
 
     @Override
     public void init() {
+        this.cipherHasModeAndPadding = List.of(Cipher.AES, Cipher.DES, Cipher.BLOWFISH, Cipher.RSA);
+        this.cipherSupportKeyLength = List.of(Cipher.VIGENERE);
+        this.cipherSupport2Language = List.of(Cipher.SHIFT, Cipher.SUBSTITUTION, Cipher.AFFINE, Cipher.HILL, Cipher.VIGENERE);
+        this.comboBoxLanguage = new JComboBox<>(Language.values());
+        this.comboBoxMode = new JComboBox<>(Mode.values());
+        this.comboBoxPadding = new JComboBox<>(Padding.values());
+        this.comboBoxCipher = new JComboBox<>(Cipher.values());
+
         this.setLayout(new FlowLayout(FlowLayout.LEFT));
         createPanelGenerateKey();
         createFileOutput();
         createTextArea();
-        createResetBtn();
         this.setSize(600, 400);
     }
 
     private void createPanelGenerateKey() {
+        JPanel panelWrapper = new JPanel();
+        panelWrapper.setLayout(new BorderLayout(5, 5));
+        this.add(panelWrapper);
         panelGenerateKey = new JPanel();
         panelGenerateKey.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 0));
-        this.add(panelGenerateKey);
+        panelWrapper.add(panelGenerateKey, BorderLayout.CENTER);
+
         Border combinedBorder = BorderFactory.createCompoundBorder(
                 BorderFactory.createEmptyBorder(5, 5, 5, 5),
                 BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.BLACK), "Thông tin khóa")
         );
-        panelGenerateKey.setBorder(combinedBorder);
+
+        panelWrapper.setBorder(combinedBorder);
+
+        panelModePadding = new JPanel();
+        panelModePadding.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 0));
+        panelWrapper.add(panelModePadding, BorderLayout.SOUTH);
         createComboBox();
         createKeyLengthInput();
     }
 
     private void createComboBox() {
-        JComboBox<Cipher> comboBoxCipher = new JComboBox<>(Cipher.values());
-        // Add an action listener to handle selection changes
+//        Cipher
         this.cipher = (Cipher) comboBoxCipher.getSelectedItem();
         comboBoxCipher.addActionListener(e -> {
             Cipher selectedItem = (Cipher) comboBoxCipher.getSelectedItem();
             cipher = selectedItem;
             System.out.println("You selected: " + selectedItem);
-            inputKeyLength.setEnabled(selectedItem == Cipher.VIGENERE);
+            disableKeyLengthInput();
+            disableModePadding();
+            disableLanguage();
         });
         panelGenerateKey.add(comboBoxCipher);
-        JComboBox<Language> comboBoxLanguage = new JComboBox<>(Language.values());
+
+//        Language
         this.language = (Language) comboBoxLanguage.getSelectedItem();
         comboBoxLanguage.addActionListener(e -> {
             Language selectedItem = (Language) comboBoxLanguage.getSelectedItem();
@@ -76,6 +107,28 @@ public class GenerateKeyDialog extends CustomDialog implements FileChooserEvent 
         });
         comboBoxLanguage.setToolTipText("Chọn ngôn ngữ để tạo khóa");
         panelGenerateKey.add(comboBoxLanguage);
+
+//        Mode
+        this.mode = (Mode) comboBoxMode.getSelectedItem();
+        comboBoxMode.addActionListener(e -> {
+            Mode selectedItem = (Mode) comboBoxMode.getSelectedItem();
+            this.mode = selectedItem;
+            System.out.println("You selected: " + selectedItem);
+        });
+        panelModePadding.add(comboBoxMode);
+
+//        Padding
+        this.padding = (Padding) comboBoxPadding.getSelectedItem();
+        comboBoxPadding.addActionListener(e -> {
+            Padding selectedItem = (Padding) comboBoxPadding.getSelectedItem();
+            this.padding = selectedItem;
+            System.out.println("You selected: " + selectedItem);
+        });
+        panelModePadding.add(comboBoxPadding);
+
+        disableKeyLengthInput();
+        disableModePadding();
+        disableLanguage();
     }
 
     private void createKeyLengthInput() {
@@ -101,23 +154,6 @@ public class GenerateKeyDialog extends CustomDialog implements FileChooserEvent 
         panelGenerateKey.add(fileChooser);
     }
 
-    private void createButtonSubmit() {
-        Button button = new Button("Tạo khóa");
-        panelGenerateKey.add(button);
-        button.addActionListener(e -> {
-            key = Objects.requireNonNull(KeyGeneratorFactory.getKeyGenerator(cipher, language));
-            if (key instanceof VigenereCipher vigenereCipher) {
-                vigenereCipher.setKeyLength((Integer) ((JFormattedTextField) inputKeyLength).getValue());
-                textArea.setText(vigenereCipher.generateKey().display());
-                return;
-            }
-
-            if (((IKeyGenerator<?>) key).generateKey() instanceof IKeyDisplay keyDisplay) {
-                textArea.setText(keyDisplay.display());
-            }
-        });
-    }
-
     private void createTextArea() {
         JPanel panel = new JPanel(new BorderLayout());
         Border combinedBorder = BorderFactory.createCompoundBorder(
@@ -133,14 +169,18 @@ public class GenerateKeyDialog extends CustomDialog implements FileChooserEvent 
         this.add(panel, BorderLayout.CENTER);
     }
 
-    public void createResetBtn() {
-        Button resetBtn = new Button("Reset");
-        panelGenerateKey.add(resetBtn);
-        resetBtn.addActionListener(e -> {
-            textArea.setText("");
-            key = null;
-            fileChooser.setFileChooser(null);
-        });
+    private void disableKeyLengthInput() {
+        if (inputKeyLength != null)
+            inputKeyLength.setEnabled(this.cipherSupportKeyLength.contains(cipher));
+    }
+
+    private void disableModePadding() {
+        comboBoxPadding.setEnabled(this.cipherHasModeAndPadding.contains(cipher));
+        comboBoxMode.setEnabled(this.cipherHasModeAndPadding.contains(cipher));
+    }
+
+    private void disableLanguage() {
+        comboBoxLanguage.setEnabled(this.cipherSupport2Language.contains(cipher));
     }
 
     @Override
