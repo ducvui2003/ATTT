@@ -11,19 +11,16 @@ public class FileUtil {
         Files.write(Paths.get(path), content.getBytes());
     }
 
-    public static void saveKeyToFile(SecretKey key, String fileName) {
-        try (FileOutputStream fileOut = new FileOutputStream(fileName);
-             DataOutputStream dataOut = new DataOutputStream(fileOut)) {
+    public static void saveKeyToFile(SecretKey key, String fileName) throws IOException {
+        FileOutputStream fileOut = new FileOutputStream(fileName);
+        DataOutputStream dataOut = new DataOutputStream(fileOut);
 
-            byte[] keyBytes = key.getEncoded(); // Get the raw bytes of the key
-            dataOut.writeInt(keyBytes.length);  // Write the length of the byte array first
-            dataOut.write(keyBytes);            // Write the actual byte array
+        byte[] keyBytes = key.getEncoded(); // Get the raw bytes of the key
+        dataOut.writeInt(keyBytes.length);  // Write the length of the byte array first
+        dataOut.write(keyBytes);            // Write the actual byte array
 
-            System.out.println("SecretKey saved to " + fileName);
+        System.out.println("SecretKey saved to " + fileName);
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public static SecretKey loadKeyFromFile(String fileName, String algorithm) {

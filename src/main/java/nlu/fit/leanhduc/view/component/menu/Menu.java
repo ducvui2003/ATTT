@@ -1,7 +1,7 @@
 package nlu.fit.leanhduc.view.component.menu;
 
 
-import nlu.fit.leanhduc.view.component.dialog.CustomDialog;
+import nlu.fit.leanhduc.controller.MainController;
 import nlu.fit.leanhduc.view.component.dialog.GenerateKeyDialog;
 
 import javax.swing.*;
@@ -14,10 +14,12 @@ public class Menu extends JMenuBar {
     private JMenuItem exitItem, aboutItem, keyItem;
     private ActionListener exitListener, aboutListener;
     private Frame frameContainer;
+    MainController mainController;
     GenerateKeyDialog generateKeyDialog;
 
-    public Menu(Frame frameContainer) {
+    public Menu(Frame frameContainer, MainController mainController) {
         this.frameContainer = frameContainer;
+        this.mainController = mainController;
         init();
     }
 
@@ -44,7 +46,7 @@ public class Menu extends JMenuBar {
         exitItem.addActionListener(exitListener);
         fileMenu.add(exitItem);
 
-        generateKeyDialog = new GenerateKeyDialog(frameContainer);
+        generateKeyDialog = new GenerateKeyDialog(frameContainer, this.mainController);
         this.setActionDialog();
         this.add(fileMenu);
     }

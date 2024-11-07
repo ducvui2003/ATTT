@@ -1,5 +1,6 @@
 package nlu.fit.leanhduc.view;
 
+import nlu.fit.leanhduc.controller.MainController;
 import nlu.fit.leanhduc.view.component.menu.Menu;
 import nlu.fit.leanhduc.util.Constraint;
 import nlu.fit.leanhduc.view.section.*;
@@ -14,7 +15,11 @@ public class MainView extends JFrame {
     JTabbedPane tabbedPane;
     Map<String, JPanel> panelMap;
     Footer footer;
+    MainController controller;
 
+    public MainView(MainController controller) {
+        this.controller = controller;
+    }
 
     public void createUIComponents() {
         createMenu();
@@ -26,7 +31,7 @@ public class MainView extends JFrame {
 
 
     private void createMenu() {
-        menu = new Menu(this);
+        menu = new Menu(this, this.controller);
         this.setJMenuBar(menu);
     }
 

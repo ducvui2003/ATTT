@@ -1,23 +1,21 @@
 package nlu.fit.leanhduc.view.component.dialog;
 
 
+import nlu.fit.leanhduc.controller.MainController;
 import nlu.fit.leanhduc.service.IKeyGenerator;
-import nlu.fit.leanhduc.service.KeyGeneratorFactory;
-import nlu.fit.leanhduc.service.cipher.symmetric.vigenere.VigenereCipher;
 import nlu.fit.leanhduc.service.key.IKeyDisplay;
+import nlu.fit.leanhduc.service.key.VigenereKey;
 import nlu.fit.leanhduc.util.*;
+import nlu.fit.leanhduc.view.component.SwingComponentUtil;
 import nlu.fit.leanhduc.view.component.fileChooser.FileChooser;
 import nlu.fit.leanhduc.view.component.fileChooser.FileChooserEvent;
 
 import javax.crypto.SecretKey;
 import javax.swing.*;
 import javax.swing.border.Border;
-import javax.swing.text.NumberFormatter;
 import java.awt.*;
 import java.io.File;
-import java.text.NumberFormat;
 import java.util.List;
-import java.util.Objects;
 
 public class GenerateKeyDialog extends CustomDialog implements FileChooserEvent {
     JTextField inputKeyLength;
@@ -40,9 +38,11 @@ public class GenerateKeyDialog extends CustomDialog implements FileChooserEvent 
     JComboBox<Mode> comboBoxMode;
     JComboBox<Padding> comboBoxPadding;
     JComboBox<Cipher> comboBoxCipher;
+    MainController controller;
 
-    public GenerateKeyDialog(Frame owner) {
+    public GenerateKeyDialog(Frame owner, MainController controller) {
         super(owner, "Tạo khóa mới", Dialog.ModalityType.APPLICATION_MODAL);
+        this.controller = controller;
     }
 
     @Override
@@ -131,18 +131,10 @@ public class GenerateKeyDialog extends CustomDialog implements FileChooserEvent 
     }
 
     private void createKeyLengthInput() {
-        NumberFormat numberFormat = NumberFormat.getIntegerInstance();
-        NumberFormatter numberFormatter = new NumberFormatter(numberFormat);
-        numberFormatter.setValueClass(Integer.class);
-        numberFormatter.setAllowsInvalid(false);
-        numberFormatter.setMinimum(1);
-        numberFormatter.setMaximum(26);
-        numberFormatter.setCommitsOnValidEdit(true);
-
-        inputKeyLength = new JFormattedTextField(numberFormatter);
-        inputKeyLength.setColumns(3);
+        inputKeyLength = SwingComponentUtil.createFormatTextFieldNumber(
+                3, 1, 26, 1,
+                false, true);
         inputKeyLength.setEnabled(false);
-        ((JFormattedTextField) inputKeyLength).setValue(1);
         panelGenerateKey.add(new JLabel("Độ dài khóa:"));
         panelGenerateKey.add(inputKeyLength);
     }
@@ -184,13 +176,22 @@ public class GenerateKeyDialog extends CustomDialog implements FileChooserEvent 
 
     @Override
     public void onFileSelected(File file) {
-        key = Objects.requireNonNull(KeyGeneratorFactory.getKeyGenerator(cipher, language));
-        if (key instanceof VigenereCipher vigenereCipher) {
-            vigenereCipher.setKeyLength((Integer) ((JFormattedTextField) inputKeyLength).getValue());
-            textArea.setText(vigenereCipher.generateKey().display());
+        if (cipher == Cipher.VIGENERE) {
+            Integer length = (Integer) ((JFormattedTextField) inputKeyLength).getValue();
+            if (length == null) {
+                JOptionPane.showMessageDialog(this, "Độ dài khóa không hợp lệ", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            IKeyGenerator<VigenereKey> keyGenerator = this.controller.generateKey(language, length);
+            textArea.setText(keyGenerator.generateKey().display());
+            try {
+                FileUtil.writeStringToFile(file.getAbsolutePath(), textArea.getText());
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Không thể lưu file", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
             return;
         }
-        IKeyGenerator<?> keyGenerator = (IKeyGenerator<?>) key;
+        IKeyGenerator<?> keyGenerator = controller.generateKey(cipher, language);
         if (keyGenerator.generateKey() instanceof IKeyDisplay keyDisplay) {
             textArea.setText(keyDisplay.display());
             try {
@@ -200,7 +201,11 @@ public class GenerateKeyDialog extends CustomDialog implements FileChooserEvent 
             }
         }
         if (keyGenerator.generateKey() instanceof SecretKey secretKey) {
-            FileUtil.saveKeyToFile(secretKey, file.getAbsolutePath());
+            try {
+                FileUtil.saveKeyToFile(secretKey, file.getAbsolutePath());
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Không thể lưu file", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 
