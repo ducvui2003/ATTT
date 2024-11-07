@@ -9,30 +9,18 @@ import java.security.NoSuchAlgorithmException;
 
 public class AESCipher extends AbsCipherNative {
 
-    @Override
-    public SecretKey generateKey() {
-        try {
-            KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
-            keyGenerator.init(128);
-            key = keyGenerator.generateKey();
-            return key;
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
 
     @Override
     public byte[] encrypt(String data) throws Exception {
         Cipher cipher = Cipher.getInstance("AES");
-        cipher.init(Cipher.ENCRYPT_MODE, key);
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey);
         return cipher.doFinal(data.getBytes());
     }
 
     @Override
     public String decrypt(byte[] data) throws Exception {
         Cipher cipher = Cipher.getInstance("AES");
-        cipher.init(Cipher.DECRYPT_MODE, key);
+        cipher.init(Cipher.DECRYPT_MODE, secretKey);
         byte[] decryptedBytes = cipher.doFinal(data);
         return new String(decryptedBytes);
     }
@@ -41,7 +29,7 @@ public class AESCipher extends AbsCipherNative {
     public boolean encrypt(String src, String dest) throws CipherException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, FileNotFoundException {
         try {
             Cipher cipher = Cipher.getInstance("AES");
-            cipher.init(Cipher.ENCRYPT_MODE, this.key);
+            cipher.init(Cipher.ENCRYPT_MODE, this.secretKey);
             BufferedInputStream bis = new BufferedInputStream((new FileInputStream(src)));
             BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(dest));
             CipherInputStream cis = new CipherInputStream(bis, cipher);
@@ -73,7 +61,7 @@ public class AESCipher extends AbsCipherNative {
     public boolean decrypt(String src, String dest) throws CipherException {
         try {
             Cipher cipher = Cipher.getInstance("AES");
-            cipher.init(Cipher.DECRYPT_MODE, this.key);
+            cipher.init(Cipher.DECRYPT_MODE, this.secretKey);
             BufferedInputStream bis = new BufferedInputStream((new FileInputStream(src)));
             BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(dest));
             CipherOutputStream cos = new CipherOutputStream(bos, cipher);

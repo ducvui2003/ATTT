@@ -43,7 +43,6 @@ public class GenerateKeyDialog extends CustomDialog implements FileChooserEvent 
 
     public GenerateKeyDialog(Frame owner) {
         super(owner, "Tạo khóa mới", Dialog.ModalityType.APPLICATION_MODAL);
-
     }
 
     @Override

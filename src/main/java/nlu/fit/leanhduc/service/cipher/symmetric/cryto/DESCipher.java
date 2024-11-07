@@ -24,14 +24,14 @@ public class DESCipher extends AbsCipherNative {
     @Override
     public byte[] encrypt(String data) throws Exception {
         Cipher cipher = Cipher.getInstance("DES");
-        cipher.init(Cipher.ENCRYPT_MODE, this.key);
+        cipher.init(Cipher.ENCRYPT_MODE, this.secretKey);
         return cipher.doFinal(data.getBytes(StandardCharsets.UTF_8));
     }
 
     @Override
     public String decrypt(byte[] data) throws Exception {
         Cipher cipher = Cipher.getInstance("DES");
-        cipher.init(Cipher.DECRYPT_MODE, this.key);
+        cipher.init(Cipher.DECRYPT_MODE, this.secretKey);
         return new String(cipher.doFinal(data), StandardCharsets.UTF_8);
     }
 
@@ -39,7 +39,7 @@ public class DESCipher extends AbsCipherNative {
     public boolean encrypt(String src, String dest) throws CipherException {
         try {
             Cipher cipher = Cipher.getInstance("DES");
-            cipher.init(Cipher.ENCRYPT_MODE, this.key);
+            cipher.init(Cipher.ENCRYPT_MODE, this.secretKey);
             BufferedInputStream bis = new BufferedInputStream((new FileInputStream(src)));
             BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(dest));
             CipherInputStream cis = new CipherInputStream(bis, cipher);
@@ -71,7 +71,7 @@ public class DESCipher extends AbsCipherNative {
     public boolean decrypt(String src, String dest) throws CipherException {
         try {
             Cipher cipher = Cipher.getInstance("DES");
-            cipher.init(Cipher.DECRYPT_MODE, this.key);
+            cipher.init(Cipher.DECRYPT_MODE, this.secretKey);
             BufferedInputStream bis = new BufferedInputStream((new FileInputStream(src)));
             BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(dest));
             CipherOutputStream cos = new CipherOutputStream(bos, cipher);

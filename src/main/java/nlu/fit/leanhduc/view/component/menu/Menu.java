@@ -2,6 +2,7 @@ package nlu.fit.leanhduc.view.component.menu;
 
 
 import nlu.fit.leanhduc.view.component.dialog.CustomDialog;
+import nlu.fit.leanhduc.view.component.dialog.GenerateKeyDialog;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,9 +11,10 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 
 public class Menu extends JMenuBar {
-    private JMenuItem exitItem, aboutItem;
+    private JMenuItem exitItem, aboutItem, keyItem;
     private ActionListener exitListener, aboutListener;
     private Frame frameContainer;
+    GenerateKeyDialog generateKeyDialog;
 
     public Menu(Frame frameContainer) {
         this.frameContainer = frameContainer;
@@ -23,7 +25,12 @@ public class Menu extends JMenuBar {
         JMenu fileMenu = new JMenu("File");
         fileMenu.setMnemonic(KeyEvent.VK_F);
 
-        aboutItem = new JMenuItem("About");
+        keyItem = new JMenuItem("Tạo khóa");
+        keyItem.setMnemonic(KeyEvent.VK_K);
+        keyItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_K, InputEvent.CTRL_DOWN_MASK));
+        fileMenu.add(keyItem);
+
+        aboutItem = new JMenuItem("Tác giả");
         aboutItem.setMnemonic(KeyEvent.VK_A);
         aboutItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.CTRL_DOWN_MASK));
 
@@ -37,11 +44,15 @@ public class Menu extends JMenuBar {
         exitItem.addActionListener(exitListener);
         fileMenu.add(exitItem);
 
+        generateKeyDialog = new GenerateKeyDialog(frameContainer);
         this.setActionDialog();
         this.add(fileMenu);
     }
 
     public void setActionDialog() {
+        keyItem.addActionListener(e -> {
+            generateKeyDialog.openDialog();
+        });
 //        aboutItem.addActionListener(e -> {
 //            CustomDialog dialog = new CustomDialog(frameContainer, "Input Dialog", true); // Modal dialog
 //            dialog.setSize(300, 200);
