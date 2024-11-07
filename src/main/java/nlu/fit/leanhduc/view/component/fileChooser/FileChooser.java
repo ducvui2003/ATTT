@@ -36,7 +36,6 @@ public class FileChooser extends JPanel {
 
     private void init() {
         this.setLayout(new BorderLayout(5, 5));
-
         createButton();
         createLabel();
         this.add(label, BorderLayout.CENTER);
@@ -56,6 +55,9 @@ public class FileChooser extends JPanel {
     }
 
     private void click() {
+        if (!this.event.onBeforeFileSelected()) {
+            return;
+        }
         fileChooser = new JFileChooser();
         int option = fileChooser.showOpenDialog(this);
 
@@ -64,6 +66,7 @@ public class FileChooser extends JPanel {
                 File selectedFile = fileChooser.getSelectedFile();
                 String name = selectedFile.getName();
                 label.setText(name);
+                this.event.autoAddExtension(selectedFile);
                 this.event.onFileSelected(selectedFile);
                 break;
             case JFileChooser.CANCEL_OPTION:

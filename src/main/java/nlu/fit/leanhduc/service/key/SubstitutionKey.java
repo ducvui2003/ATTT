@@ -14,8 +14,10 @@ public class SubstitutionKey implements IKeyDisplay {
 
     @Override
     public String display() {
-        return "SubstitutionKey{" +
-                "key=" + key +
-                '}';
+        String result = "";
+        for (Map.Entry<Character, Character> entry : key.entrySet()) {
+            result += entry.getKey() + " -> " + entry.getValue() + "\n";
+        }
+        return result;
     }
 }

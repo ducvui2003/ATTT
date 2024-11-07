@@ -23,7 +23,16 @@ public class HillCipher implements IKeyGenerator<HillKey>, ITextEncrypt {
 
     @Override
     public HillKey generateKey() {
-        return null;
+        int size = 3;
+        int[][] key = new int[size][size];
+        do {
+            for (int i = 0; i < size; i++) {
+                for (int j = 0; j < size; j++) {
+                    key[i][j] = (int) (Math.random() * alphabetUtil.getLength());
+                }
+            }
+        } while (MatrixUtil.determinant(key) == 0);
+        return new HillKey(key);
     }
 
     @Override
@@ -100,7 +109,7 @@ public class HillCipher implements IKeyGenerator<HillKey>, ITextEncrypt {
     private int[][] findInverseKey() {
 //        Định thức của khóa K
         int detKey = MatrixUtil.determinant(this.key.getKey());
-//        Ma trận chuyển vị của khóa L
+//        Ma trận chuyển vị của khóa K
         int[][] matrixTransposeKey = MatrixUtil.getMatrixTranspose(MatrixUtil.getMatrixAdjunct(this.key.getKey()));
         int detInverse = ModularUtil.modularInverse(detKey, alphabetUtil.getLength());
         int[][] inverseMatrix = MatrixUtil.multiMatrix(detInverse, matrixTransposeKey);

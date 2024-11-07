@@ -13,8 +13,6 @@ public class ShiftKey implements IKeyDisplay {
 
     @Override
     public String display() {
-        return "ShiftKey{" +
-                "key=" + key +
-                '}';
+        return key.toString();
     }
 }

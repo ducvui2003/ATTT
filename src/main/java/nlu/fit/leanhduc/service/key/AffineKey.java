@@ -15,9 +15,6 @@ public class AffineKey implements IKeyDisplay {
 
     @Override
     public String display() {
-        return "AffineKey{" +
-                "a=" + a +
-                ", b=" + b +
-                '}';
+        return "a: " + a + "\n" + "b: " + b;
     }
 }

@@ -43,4 +43,8 @@ public class InputSection extends JPanel implements FileChooserEvent {
 
     }
 
+    @Override
+    public boolean onBeforeFileSelected() {
+        return false;
+    }
 }

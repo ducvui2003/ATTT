@@ -34,7 +34,7 @@ public class VigenereCipher implements ITextEncrypt, IKeyGenerator<VigenereKey> 
     public VigenereKey generateKey() {
         List<Integer> result = new ArrayList<>();
         for (int i = 0; i < keyLength; i++)
-            result.add(rd.nextInt(alphabetUtil.getLength()) * alphabetUtil.getLength());
+            result.add(rd.nextInt(alphabetUtil.getLength() - 1));
         return new VigenereKey(result);
     }
 

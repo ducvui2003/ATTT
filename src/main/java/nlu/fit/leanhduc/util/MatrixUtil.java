@@ -131,4 +131,17 @@ public class MatrixUtil {
         return (int) (Math.pow(-1, row + col) * determinant(matrixM));
     }
 
+    public static String displayMatrix(int[][] matrix) {
+        StringBuilder result = new StringBuilder();
+        for (int[] ints : matrix) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                result.append(ints[j]);
+                if (j < matrix[0].length - 1) {
+                    result.append("\t");
+                }
+            }
+            result.append("\n");
+        }
+        return result.toString();
+    }
 }

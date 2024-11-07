@@ -3,19 +3,23 @@ package nlu.fit.leanhduc.view.component.dialog;
 
 import nlu.fit.leanhduc.service.IKeyGenerator;
 import nlu.fit.leanhduc.service.KeyGeneratorFactory;
+import nlu.fit.leanhduc.service.cipher.symmetric.vigenere.VigenereCipher;
 import nlu.fit.leanhduc.service.key.IKeyDisplay;
 import nlu.fit.leanhduc.util.Cipher;
+import nlu.fit.leanhduc.util.FileUtil;
 import nlu.fit.leanhduc.util.Language;
 import nlu.fit.leanhduc.view.component.fileChooser.FileChooser;
+import nlu.fit.leanhduc.view.component.fileChooser.FileChooserEvent;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.text.NumberFormatter;
 import java.awt.*;
+import java.io.File;
 import java.text.NumberFormat;
 import java.util.Objects;
 
-public class GenerateKeyDialog extends CustomDialog {
+public class GenerateKeyDialog extends CustomDialog implements FileChooserEvent {
     JTextField inputKeyLength;
     TextArea textArea;
     FileChooser fileChooser;
@@ -34,6 +38,7 @@ public class GenerateKeyDialog extends CustomDialog {
         createPanelGenerateKey();
         createFileOutput();
         createTextArea();
+        createResetBtn();
         this.setSize(600, 400);
     }
 
@@ -59,6 +64,7 @@ public class GenerateKeyDialog extends CustomDialog {
             Cipher selectedItem = (Cipher) comboBoxCipher.getSelectedItem();
             cipher = selectedItem;
             System.out.println("You selected: " + selectedItem);
+            inputKeyLength.setEnabled(selectedItem == Cipher.VIGENERE);
         });
         panelGenerateKey.add(comboBoxCipher);
         JComboBox<Language> comboBoxLanguage = new JComboBox<>(Language.values());
@@ -68,6 +74,7 @@ public class GenerateKeyDialog extends CustomDialog {
             language = selectedItem;
             System.out.println("You selected: " + selectedItem);
         });
+        comboBoxLanguage.setToolTipText("Chọn ngôn ngữ để tạo khóa");
         panelGenerateKey.add(comboBoxLanguage);
     }
 
@@ -82,6 +89,7 @@ public class GenerateKeyDialog extends CustomDialog {
 
         inputKeyLength = new JFormattedTextField(numberFormatter);
         inputKeyLength.setColumns(3);
+        inputKeyLength.setEnabled(false);
         ((JFormattedTextField) inputKeyLength).setValue(1);
         panelGenerateKey.add(new JLabel("Độ dài khóa:"));
         panelGenerateKey.add(inputKeyLength);
@@ -92,6 +100,7 @@ public class GenerateKeyDialog extends CustomDialog {
                 BorderFactory.createEmptyBorder(5, 5, 5, 5),
                 BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.BLACK), "Lưu khóa vào file:")
         ));
+        fileChooser.setEvent(this);
         this.add(fileChooser);
     }
 
@@ -99,8 +108,14 @@ public class GenerateKeyDialog extends CustomDialog {
         Button button = new Button("Tạo khóa");
         panelGenerateKey.add(button);
         button.addActionListener(e -> {
-            key = Objects.requireNonNull(KeyGeneratorFactory.getKeyGenerator(cipher, language)).generateKey();
-            if (key instanceof IKeyDisplay keyDisplay) {
+            key = Objects.requireNonNull(KeyGeneratorFactory.getKeyGenerator(cipher, language));
+            if (key instanceof VigenereCipher vigenereCipher) {
+                vigenereCipher.setKeyLength((Integer) ((JFormattedTextField) inputKeyLength).getValue());
+                textArea.setText(vigenereCipher.generateKey().display());
+                return;
+            }
+
+            if (((IKeyGenerator<?>) key).generateKey() instanceof IKeyDisplay keyDisplay) {
                 textArea.setText(keyDisplay.display());
             }
         });
@@ -119,5 +134,44 @@ public class GenerateKeyDialog extends CustomDialog {
         panel.add(textArea);
         panel.setBorder(combinedBorder);
         this.add(panel, BorderLayout.CENTER);
+    }
+
+    public void createResetBtn() {
+        Button resetBtn = new Button("Reset");
+        panelGenerateKey.add(resetBtn);
+        resetBtn.addActionListener(e -> {
+            textArea.setText("");
+            key = null;
+            fileChooser.setFileChooser(null);
+        });
+    }
+
+    @Override
+    public void onFileSelected(File file) {
+        try {
+            FileUtil.writeStringToFile(file.getAbsolutePath(), textArea.getText());
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Không thể lưu file", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+
+    @Override
+    public void onFileUnselected() {
+        // Do nothing
+    }
+
+    @Override
+    public void onError(String message) {
+        JOptionPane.showMessageDialog(this, message, "Lỗi", JOptionPane.ERROR_MESSAGE);
+    }
+
+    @Override
+    public boolean onBeforeFileSelected() {
+        if (textArea.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Không có khóa để lưu", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        return true;
     }
 }

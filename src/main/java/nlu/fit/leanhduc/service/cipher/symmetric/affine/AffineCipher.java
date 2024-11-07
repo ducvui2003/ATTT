@@ -36,7 +36,8 @@ public class AffineCipher implements IKeyGenerator<AffineKey>, ITextEncrypt {
         do {
             a = rd.nextInt(1, this.range);
         } while (ModularUtil.findGCD(a, this.range) != 1);
-        int b = rd.nextInt(this.range);
+        int b = rd.nextInt(1, this.range);
+        key.setA(a);
         key.setB(b);
         return key;
     }

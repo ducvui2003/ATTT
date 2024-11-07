@@ -2,8 +2,7 @@ package nlu.fit.leanhduc.service.key;
 
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.Arrays;
+import nlu.fit.leanhduc.util.MatrixUtil;
 
 @Setter
 @Getter
@@ -16,8 +15,6 @@ public class HillKey implements IKeyDisplay {
 
     @Override
     public String display() {
-        return "HillKey{" +
-                "key=" + Arrays.toString(key) +
-                '}';
+        return MatrixUtil.displayMatrix(key);
     }
 }
