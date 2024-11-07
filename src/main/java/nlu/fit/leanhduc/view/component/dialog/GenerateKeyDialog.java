@@ -11,6 +11,7 @@ import nlu.fit.leanhduc.util.Language;
 import nlu.fit.leanhduc.view.component.fileChooser.FileChooser;
 import nlu.fit.leanhduc.view.component.fileChooser.FileChooserEvent;
 
+import javax.crypto.SecretKey;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.text.NumberFormatter;
@@ -53,7 +54,6 @@ public class GenerateKeyDialog extends CustomDialog implements FileChooserEvent 
         panelGenerateKey.setBorder(combinedBorder);
         createComboBox();
         createKeyLengthInput();
-        createButtonSubmit();
     }
 
     private void createComboBox() {
@@ -96,12 +96,9 @@ public class GenerateKeyDialog extends CustomDialog implements FileChooserEvent 
     }
 
     public void createFileOutput() {
-        fileChooser = new FileChooser(BorderFactory.createCompoundBorder(
-                BorderFactory.createEmptyBorder(5, 5, 5, 5),
-                BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.BLACK), "Lưu khóa vào file:")
-        ));
+        fileChooser = new FileChooser(true, "Tạo khóa");
         fileChooser.setEvent(this);
-        this.add(fileChooser);
+        panelGenerateKey.add(fileChooser);
     }
 
     private void createButtonSubmit() {
@@ -148,10 +145,23 @@ public class GenerateKeyDialog extends CustomDialog implements FileChooserEvent 
 
     @Override
     public void onFileSelected(File file) {
-        try {
-            FileUtil.writeStringToFile(file.getAbsolutePath(), textArea.getText());
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Không thể lưu file", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        key = Objects.requireNonNull(KeyGeneratorFactory.getKeyGenerator(cipher, language));
+        if (key instanceof VigenereCipher vigenereCipher) {
+            vigenereCipher.setKeyLength((Integer) ((JFormattedTextField) inputKeyLength).getValue());
+            textArea.setText(vigenereCipher.generateKey().display());
+            return;
+        }
+        IKeyGenerator<?> keyGenerator = (IKeyGenerator<?>) key;
+        if (keyGenerator.generateKey() instanceof IKeyDisplay keyDisplay) {
+            textArea.setText(keyDisplay.display());
+            try {
+                FileUtil.writeStringToFile(file.getAbsolutePath(), textArea.getText());
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Không thể lưu file", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        if (keyGenerator.generateKey() instanceof SecretKey secretKey) {
+            FileUtil.saveKeyToFile(secretKey, file.getAbsolutePath());
         }
     }
 
@@ -168,10 +178,6 @@ public class GenerateKeyDialog extends CustomDialog implements FileChooserEvent 
 
     @Override
     public boolean onBeforeFileSelected() {
-        if (textArea.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Không có khóa để lưu", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
         return true;
     }
 }

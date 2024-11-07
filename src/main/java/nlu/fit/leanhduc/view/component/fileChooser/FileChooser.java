@@ -19,10 +19,13 @@ public class FileChooser extends JPanel {
     JLabel label;
     JButton button;
     FileChooserEvent event;
+    boolean onlyBtn;
+    String textBtn = "Chọn file";
     Border combinedBorder;
 
     public FileChooser(Border borderFactory) {
         this.combinedBorder = borderFactory;
+        this.onlyBtn = false;
         init();
     }
 
@@ -31,14 +34,23 @@ public class FileChooser extends JPanel {
                 BorderFactory.createLineBorder(Color.BLACK),
                 BorderFactory.createEmptyBorder(5, 5, 5, 5)
         );
+        this.onlyBtn = false;
+        init();
+    }
+
+    public FileChooser(boolean onlyBtn, String textBtn) {
+        this.onlyBtn = true;
+        this.textBtn = textBtn;
         init();
     }
 
     private void init() {
         this.setLayout(new BorderLayout(5, 5));
         createButton();
-        createLabel();
-        this.add(label, BorderLayout.CENTER);
+        if (!onlyBtn) {
+            createLabel();
+            this.add(label, BorderLayout.CENTER);
+        }
         this.add(button, BorderLayout.EAST);
         this.setBorder(combinedBorder);
     }
@@ -50,7 +62,7 @@ public class FileChooser extends JPanel {
     }
 
     private void createButton() {
-        button = new JButton("Chọn file");
+        button = new JButton(textBtn);
         button.addActionListener(e -> click());
     }
 
@@ -65,7 +77,8 @@ public class FileChooser extends JPanel {
             case JFileChooser.APPROVE_OPTION:
                 File selectedFile = fileChooser.getSelectedFile();
                 String name = selectedFile.getName();
-                label.setText(name);
+                if (label != null)
+                    label.setText(name);
                 this.event.autoAddExtension(selectedFile);
                 this.event.onFileSelected(selectedFile);
                 break;
