@@ -1,6 +1,7 @@
 package nlu.fit.leanhduc.view.component.dialog.key;
 
 import nlu.fit.leanhduc.controller.MainController;
+import nlu.fit.leanhduc.service.ISubstitutionCipher;
 import nlu.fit.leanhduc.view.component.SwingComponentUtil;
 
 import javax.swing.*;
@@ -26,6 +27,11 @@ public class HillCipherTyping extends KeyTypingPanel implements ActionListener {
         matrixViewWrapper.add(matrixView, BorderLayout.CENTER);
         this.createChooseMatrix();
         this.setSize(400, 200);
+    }
+
+    @Override
+    public ISubstitutionCipher getKey() {
+        return null;
     }
 
     private JPanel createMatrixView(int size) {

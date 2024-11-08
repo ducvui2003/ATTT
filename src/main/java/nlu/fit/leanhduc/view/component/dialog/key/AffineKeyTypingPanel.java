@@ -59,6 +59,6 @@ public class AffineKeyTypingPanel extends KeyTypingPanel {
         Integer a = Integer.parseInt(inputA.getText());
         Integer b = Integer.parseInt(inputB.getText());
         AffineKey key = controller.generateAffineKey(a, b);
-        return
+        return null;
     }
 }

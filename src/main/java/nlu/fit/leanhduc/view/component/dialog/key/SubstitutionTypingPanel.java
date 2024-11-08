@@ -1,6 +1,7 @@
 package nlu.fit.leanhduc.view.component.dialog.key;
 
 import nlu.fit.leanhduc.controller.MainController;
+import nlu.fit.leanhduc.service.ISubstitutionCipher;
 import nlu.fit.leanhduc.util.Constraint;
 
 import javax.swing.*;
@@ -44,5 +45,10 @@ public class SubstitutionTypingPanel extends KeyTypingPanel {
 
 
         this.setSize(400, 200);
+    }
+
+    @Override
+    public ISubstitutionCipher getKey() {
+        return null;
     }
 }

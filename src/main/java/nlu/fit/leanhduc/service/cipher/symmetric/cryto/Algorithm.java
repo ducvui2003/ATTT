@@ -1,7 +1,7 @@
 package nlu.fit.leanhduc.service.cipher.symmetric.cryto;
 
 import lombok.Data;
-import nlu.fit.leanhduc.util.Cipher;
+import nlu.fit.leanhduc.util.constraint.Cipher;
 
 import javax.crypto.spec.IvParameterSpec;
 import java.security.SecureRandom;

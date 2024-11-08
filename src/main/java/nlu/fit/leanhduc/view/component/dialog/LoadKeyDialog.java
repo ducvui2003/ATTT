@@ -1,6 +1,6 @@
 package nlu.fit.leanhduc.view.component.dialog;
 
-import nlu.fit.leanhduc.util.Cipher;
+import nlu.fit.leanhduc.util.constraint.Cipher;
 import nlu.fit.leanhduc.view.component.fileChooser.FileChooser;
 import nlu.fit.leanhduc.view.component.fileChooser.FileChooserEvent;
 

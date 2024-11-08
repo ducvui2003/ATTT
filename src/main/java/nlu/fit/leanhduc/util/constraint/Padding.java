@@ -1,4 +1,4 @@
-package nlu.fit.leanhduc.util;
+package nlu.fit.leanhduc.util.constraint;
 
 public enum Padding {
     NoPadding("NoPadding", "No Padding"),
@@ -7,7 +7,7 @@ public enum Padding {
     PKCS7Padding("PKCS7Padding", "PKCS7 Padding"),
     OAEPWithSHA_1AndMGF1Padding("OAEPWithSHA-1AndMGF1Padding", "OAEP with SHA-1 and MGF1 Padding"),
     OAEPWithSHA_256AndMGF1Padding("OAEPWithSHA-256AndMGF1Padding", "OAEP with SHA-256 and MGF1 Padding"),
-    ;
+    ISO10126Padding("ISO10126Padding", "ISO10126 Padding");
     private final String name;
     private final String displayName;
 

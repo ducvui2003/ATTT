@@ -2,7 +2,7 @@ package nlu.fit.leanhduc.view.section;
 
 import nlu.fit.leanhduc.controller.MainController;
 import nlu.fit.leanhduc.service.key.IKeyDisplay;
-import nlu.fit.leanhduc.util.Cipher;
+import nlu.fit.leanhduc.util.constraint.Cipher;
 import nlu.fit.leanhduc.view.component.dialog.key.*;
 import nlu.fit.leanhduc.view.component.fileChooser.FileChooser;
 import nlu.fit.leanhduc.view.component.fileChooser.FileChooserEvent;

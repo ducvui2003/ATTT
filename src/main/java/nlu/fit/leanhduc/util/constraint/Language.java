@@ -1,4 +1,4 @@
-package nlu.fit.leanhduc.util;
+package nlu.fit.leanhduc.util.constraint;
 
 public enum Language {
     VIETNAMESE, ENGLISH;
