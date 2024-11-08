@@ -3,6 +3,7 @@ package nlu.fit.leanhduc.service.cipher.symmetric.vigenere;
 import lombok.Getter;
 import lombok.Setter;
 import nlu.fit.leanhduc.service.IKeyGenerator;
+import nlu.fit.leanhduc.service.ISubstitutionCipher;
 import nlu.fit.leanhduc.service.ITextEncrypt;
 import nlu.fit.leanhduc.service.key.VigenereKey;
 import nlu.fit.leanhduc.util.CipherException;
@@ -14,7 +15,7 @@ import java.util.Random;
 
 @Getter
 @Setter
-public class VigenereCipher implements ITextEncrypt, IKeyGenerator<VigenereKey> {
+public class VigenereCipher implements ISubstitutionCipher<VigenereKey> {
     protected List<Integer> keys;
     protected int keyLength;
     protected Random rd = new Random();

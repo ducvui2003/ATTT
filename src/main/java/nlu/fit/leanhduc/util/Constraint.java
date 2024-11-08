@@ -21,7 +21,7 @@ public class Constraint {
 
     public static final Color BACKGROUND_COLOR = Color.LIGHT_GRAY;
 
-    public static final Image APP_ICON_IMAGE = MetadataConfig.getINSTANCE().getImage();
+    public static final Image APP_ICON_IMAGE = MetadataConfig.getINSTANCE().getLogo();
 
     public static final char FIRST_CHAR = 'a';
     public static final char FIRST_CHAR_UPPER = 'A';
@@ -34,10 +34,5 @@ public class Constraint {
     public static final char[] VIET_NAME_ALPHA_ARRAY = VIET_NAM_N.toCharArray();
     public static final int VIET_NAME_ALPHA_BET_SIZE = VIET_NAME_ALPHA_ARRAY.length;
 
-    public static Language identifyLanguage(String text) {
-        for (int i = 0; i < text.length(); i++)
-            if (VIET_NAM_N.indexOf(i) != -1)
-                return Language.VIETNAMESE;
-        return Language.ENGLISH;
-    }
+
 }

@@ -3,6 +3,7 @@ package nlu.fit.leanhduc.service.cipher.symmetric.subsitution;
 
 import lombok.Getter;
 import nlu.fit.leanhduc.service.IKeyGenerator;
+import nlu.fit.leanhduc.service.ISubstitutionCipher;
 import nlu.fit.leanhduc.service.ITextEncrypt;
 import nlu.fit.leanhduc.service.key.SubstitutionKey;
 import nlu.fit.leanhduc.util.CipherException;
@@ -11,7 +12,7 @@ import nlu.fit.leanhduc.util.alphabet.AlphabetUtil;
 import java.util.*;
 
 @Getter
-public class SubstitutionCipher implements ITextEncrypt, IKeyGenerator<SubstitutionKey> {
+public class SubstitutionCipher implements ISubstitutionCipher<SubstitutionKey> {
     private Map<Character, Character> encryptMap;
     private Map<Character, Character> decryptMap;
     private AlphabetUtil alphabet;

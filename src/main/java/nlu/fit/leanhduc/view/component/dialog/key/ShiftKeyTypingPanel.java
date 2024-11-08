@@ -1,5 +1,7 @@
-package nlu.fit.leanhduc.view.component.dialog;
+package nlu.fit.leanhduc.view.component.dialog.key;
 
+import nlu.fit.leanhduc.controller.MainController;
+import nlu.fit.leanhduc.service.ISubstitutionCipher;
 import nlu.fit.leanhduc.service.key.ShiftKey;
 import nlu.fit.leanhduc.view.component.SwingComponentUtil;
 
@@ -7,10 +9,10 @@ import javax.swing.*;
 import java.awt.*;
 
 
-public class CreateShiftKeyDialog extends CreateKeyDialog {
+public class ShiftKeyTypingPanel extends KeyTypingPanel<ShiftKey> {
 
-    public CreateShiftKeyDialog(Frame owner) {
-        super(owner);
+    public ShiftKeyTypingPanel(MainController controller) {
+        super(controller);
     }
 
     @Override
@@ -21,15 +23,11 @@ public class CreateShiftKeyDialog extends CreateKeyDialog {
                 false, true);
         this.add(new JLabel("Độ dài khóa:"));
         this.add(inputKeyLength);
-        JButton button = new JButton("Tạo khóa");
-        this.add(button);
-
-        button.addActionListener(e -> {
-            this.key = new ShiftKey(Integer.parseInt(inputKeyLength.getText()));
-            this.handleClose();
-        });
-
         this.setSize(400, 200);
     }
 
+    @Override
+    public ISubstitutionCipher<ShiftKey> getKey() {
+        return null;
+    }
 }

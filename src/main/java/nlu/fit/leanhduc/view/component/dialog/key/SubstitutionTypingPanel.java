@@ -1,15 +1,15 @@
-package nlu.fit.leanhduc.view.component.dialog;
+package nlu.fit.leanhduc.view.component.dialog.key;
 
-import nlu.fit.leanhduc.service.key.ShiftKey;
+import nlu.fit.leanhduc.controller.MainController;
 import nlu.fit.leanhduc.util.Constraint;
-import nlu.fit.leanhduc.view.component.SwingComponentUtil;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class CreateSubstitutionDialog extends CreateKeyDialog {
-    public CreateSubstitutionDialog(Frame owner) {
-        super(owner);
+public class SubstitutionTypingPanel extends KeyTypingPanel {
+    public SubstitutionTypingPanel(MainController controller) {
+
+        super(controller);
     }
 
     @Override
@@ -42,16 +42,6 @@ public class CreateSubstitutionDialog extends CreateKeyDialog {
         JTextField inputAlphabetSubstitution = new JTextField(20);
         this.add(inputAlphabetSubstitution, gcb);
 
-        gcb.gridx = 0;
-        gcb.gridy = 2;
-        gcb.gridwidth = 4;
-        JButton button = new JButton("Tạo khóa");
-        this.add(button, gcb);
-
-        button.addActionListener(e -> {
-            this.key = new ShiftKey(Integer.parseInt(inputAlphabet.getText()));
-            this.handleClose();
-        });
 
         this.setSize(400, 200);
     }

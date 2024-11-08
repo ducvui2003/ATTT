@@ -1,7 +1,6 @@
 package nlu.fit.leanhduc.service.cipher.symmetric.affine;
 
-import nlu.fit.leanhduc.service.IKeyGenerator;
-import nlu.fit.leanhduc.service.ITextEncrypt;
+import nlu.fit.leanhduc.service.ISubstitutionCipher;
 import nlu.fit.leanhduc.service.key.AffineKey;
 import nlu.fit.leanhduc.util.CipherException;
 import nlu.fit.leanhduc.util.Constraint;
@@ -10,7 +9,7 @@ import nlu.fit.leanhduc.util.alphabet.AlphabetUtil;
 
 import java.util.Random;
 
-public class AffineCipher implements IKeyGenerator<AffineKey>, ITextEncrypt {
+public class AffineCipher implements ISubstitutionCipher<AffineKey> {
     protected AffineKey key;
     protected Random rd;
     protected int range;

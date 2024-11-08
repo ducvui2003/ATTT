@@ -38,8 +38,9 @@ public class MainView extends JFrame {
     private void createTabPanel() {
         tabbedPane = new JTabbedPane();
         panelMap = new LinkedHashMap<>();
-        panelMap.put("Mã hóa đối xứng", new SymmetricEncryptionSection());
-        panelMap.put("Mã hóa bất đối xứng", new AsymmetricEncryptionSection());
+        panelMap.put("Mã hóa thay thế", new SubstitutionCipherSection(controller));
+        panelMap.put("Mã hóa đối xứng", new SymmetricCipherSection(controller));
+        panelMap.put("Mã hóa bất đối xứng", new AsymmetricCipherSection());
         panelMap.put("Chữ ký điện tử", new ElectronicSignature());
 
         panelMap.forEach((k, v) -> tabbedPane.addTab(k, v));

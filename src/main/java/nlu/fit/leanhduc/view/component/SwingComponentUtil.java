@@ -1,7 +1,6 @@
 package nlu.fit.leanhduc.view.component;
 
 import javax.swing.*;
-import javax.swing.text.DocumentFilter;
 import javax.swing.text.NumberFormatter;
 import java.text.NumberFormat;
 
@@ -10,7 +9,7 @@ public class SwingComponentUtil {
             int columns,
             int minimum,
             int maximum,
-            int defaultValue,
+            Integer defaultValue,
             boolean allowsInvalid,
             boolean commitsOnValidEdit
     ) {

@@ -28,6 +28,11 @@
             <version>5.11.1</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.formdev</groupId>
+            <artifactId>flatlaf</artifactId>
+            <version>3.5.2</version>
+        </dependency>
 
     </dependencies>
     <build>
@@ -48,7 +53,8 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>src.main.java.nlu.fit.leanhduc.App</mainClass> <!-- Replace with your main class -->
+                            <mainClass>src.main.java.nlu.fit.leanhduc.App
+                            </mainClass> <!-- Replace with your main class -->
                         </manifest>
                     </archive>
                 </configuration>

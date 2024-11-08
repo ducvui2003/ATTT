@@ -1,14 +1,13 @@
 package nlu.fit.leanhduc.service.cipher.symmetric.hill;
 
-import nlu.fit.leanhduc.service.IKeyGenerator;
-import nlu.fit.leanhduc.service.ITextEncrypt;
+import nlu.fit.leanhduc.service.ISubstitutionCipher;
 import nlu.fit.leanhduc.service.key.HillKey;
 import nlu.fit.leanhduc.util.CipherException;
 import nlu.fit.leanhduc.util.MatrixUtil;
 import nlu.fit.leanhduc.util.ModularUtil;
 import nlu.fit.leanhduc.util.alphabet.AlphabetUtil;
 
-public class HillCipher implements IKeyGenerator<HillKey>, ITextEncrypt {
+public class HillCipher implements ISubstitutionCipher<HillKey> {
     protected HillKey key;
     protected AlphabetUtil alphabetUtil;
 

@@ -23,7 +23,6 @@ public class GenerateKeyDialog extends CustomDialog implements FileChooserEvent 
     FileChooser fileChooser;
     Language language;
     Cipher cipher;
-    Object key;
     JPanel panelModePadding;
     Mode mode;
     Padding padding;

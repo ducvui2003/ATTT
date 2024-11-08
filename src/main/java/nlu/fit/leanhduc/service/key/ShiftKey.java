@@ -3,7 +3,7 @@ package nlu.fit.leanhduc.service.key;
 public class ShiftKey implements IKeyDisplay {
     Integer key;
 
-    public ShiftKey(Integer key) {
+    public ShiftKey(int key) {
         this.key = key;
     }
 
