@@ -40,11 +40,12 @@ public class MainView extends JFrame {
         panelMap = new LinkedHashMap<>();
         panelMap.put("Mã hóa thay thế", new SubstitutionCipherSection(controller));
         panelMap.put("Mã hóa đối xứng", new SymmetricCipherSection(controller));
-        panelMap.put("Mã hóa bất đối xứng", new AsymmetricCipherSection());
+        panelMap.put("Mã hóa bất đối xứng", new AsymmetricCipherSection(controller));
+        panelMap.put("Hàm Băm", new HashFunctionSection());
         panelMap.put("Chữ ký điện tử", new DigitalSignature());
 
         panelMap.forEach((k, v) -> tabbedPane.addTab(k, v));
-        this.add(tabbedPane, BorderLayout.CENTER);
+        this.add(tabbedPane);
     }
 
     private void setMetadata() {

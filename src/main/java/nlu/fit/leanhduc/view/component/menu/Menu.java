@@ -46,7 +46,7 @@ public class Menu extends JMenuBar {
         exitItem.addActionListener(exitListener);
         fileMenu.add(exitItem);
 
-        generateKeyDialog = new GenerateKeyDialog(frameContainer, this.mainController);
+//        generateKeyDialog = new GenerateKeyDialog(frameContainer, this.mainController);
         this.setActionDialog();
         this.add(fileMenu);
     }

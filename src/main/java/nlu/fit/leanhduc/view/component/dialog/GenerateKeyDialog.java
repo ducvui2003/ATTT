@@ -4,24 +4,26 @@ package nlu.fit.leanhduc.view.component.dialog;
 import nlu.fit.leanhduc.controller.MainController;
 import nlu.fit.leanhduc.service.IKeyGenerator;
 import nlu.fit.leanhduc.service.key.IKeyDisplay;
-import nlu.fit.leanhduc.service.key.VigenereKey;
-import nlu.fit.leanhduc.util.*;
+import nlu.fit.leanhduc.service.key.SubstitutionKey;
+import nlu.fit.leanhduc.service.key.ViginereKey;
+import nlu.fit.leanhduc.util.FileUtil;
 import nlu.fit.leanhduc.util.constraint.Cipher;
 import nlu.fit.leanhduc.util.constraint.Language;
 import nlu.fit.leanhduc.util.constraint.Mode;
 import nlu.fit.leanhduc.util.constraint.Padding;
 import nlu.fit.leanhduc.view.component.SwingComponentUtil;
 import nlu.fit.leanhduc.view.component.fileChooser.FileChooser;
-import nlu.fit.leanhduc.view.component.fileChooser.FileChooserEvent;
+import nlu.fit.leanhduc.view.section.SubstitutionCipherSection;
 
 import javax.crypto.SecretKey;
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
-import java.io.File;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.List;
 
-public class GenerateKeyDialog extends CustomDialog implements FileChooserEvent {
+public class GenerateKeyDialog extends CustomDialog implements ActionListener {
     JTextField inputKeyLength;
     TextArea textArea;
     FileChooser fileChooser;
@@ -31,6 +33,7 @@ public class GenerateKeyDialog extends CustomDialog implements FileChooserEvent 
     Mode mode;
     Padding padding;
     private JPanel panelGenerateKey;
+    private IKeyDisplay keyDisplay;
 
     List<Cipher> cipherHasModeAndPadding;
     List<Cipher> cipherSupportKeyLength;
@@ -42,10 +45,13 @@ public class GenerateKeyDialog extends CustomDialog implements FileChooserEvent 
     JComboBox<Padding> comboBoxPadding;
     JComboBox<Cipher> comboBoxCipher;
     MainController controller;
+    JButton btnCreate;
+    SubstitutionCipherSection parent;
 
-    public GenerateKeyDialog(Frame owner, MainController controller) {
+    public GenerateKeyDialog(Frame owner, MainController controller, SubstitutionCipherSection panel) {
         super(owner, "Tạo khóa mới", Dialog.ModalityType.APPLICATION_MODAL);
         this.controller = controller;
+        this.parent = panel;
     }
 
     @Override
@@ -60,7 +66,7 @@ public class GenerateKeyDialog extends CustomDialog implements FileChooserEvent 
 
         this.setLayout(new FlowLayout(FlowLayout.LEFT));
         createPanelGenerateKey();
-        createFileOutput();
+        createBtnCreate();
         createTextArea();
         this.setSize(600, 400);
     }
@@ -142,10 +148,11 @@ public class GenerateKeyDialog extends CustomDialog implements FileChooserEvent 
         panelGenerateKey.add(inputKeyLength);
     }
 
-    public void createFileOutput() {
-        fileChooser = new FileChooser(true, "Tạo khóa");
-        fileChooser.setEvent(this);
-        panelGenerateKey.add(fileChooser);
+    public void createBtnCreate() {
+        btnCreate = new JButton("Tạo khóa");
+        btnCreate.addActionListener(e -> {
+
+        });
     }
 
     private void createTextArea() {
@@ -177,54 +184,40 @@ public class GenerateKeyDialog extends CustomDialog implements FileChooserEvent 
         comboBoxLanguage.setEnabled(this.cipherSupport2Language.contains(cipher));
     }
 
+
     @Override
-    public void onFileSelected(File file) {
-        if (cipher == Cipher.VIGENERE) {
-            Integer length = (Integer) ((JFormattedTextField) inputKeyLength).getValue();
-            if (length == null) {
-                JOptionPane.showMessageDialog(this, "Độ dài khóa không hợp lệ", "Lỗi", JOptionPane.ERROR_MESSAGE);
+    public void actionPerformed(ActionEvent event) {
+        if (event.getSource() == btnCreate)
+            if (cipher == Cipher.VIGENERE) {
+                Integer length = (Integer) ((JFormattedTextField) inputKeyLength).getValue();
+                if (length == null) {
+                    JOptionPane.showMessageDialog(this, "Độ dài khóa không hợp lệ", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                IKeyGenerator<ViginereKey> keyGenerator = this.controller.generateKey(language, length);
+                textArea.setText(keyGenerator.generateKey().display());
+                try {
+//                    FileUtil.writeStringToFile(file.getAbsolutePath(), textArea.getText());
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(this, "Không thể lưu file", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
                 return;
             }
-            IKeyGenerator<VigenereKey> keyGenerator = this.controller.generateKey(language, length);
-            textArea.setText(keyGenerator.generateKey().display());
-            try {
-                FileUtil.writeStringToFile(file.getAbsolutePath(), textArea.getText());
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(this, "Không thể lưu file", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            }
-            return;
-        }
         IKeyGenerator<?> keyGenerator = controller.generateKey(cipher, language);
         if (keyGenerator.generateKey() instanceof IKeyDisplay keyDisplay) {
             textArea.setText(keyDisplay.display());
             try {
-                FileUtil.writeStringToFile(file.getAbsolutePath(), textArea.getText());
+//                FileUtil.writeStringToFile(file.getAbsolutePath(), textArea.getText());
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(this, "Không thể lưu file", "Lỗi", JOptionPane.ERROR_MESSAGE);
             }
         }
         if (keyGenerator.generateKey() instanceof SecretKey secretKey) {
             try {
-                FileUtil.saveKeyToFile(secretKey, file.getAbsolutePath());
+//                FileUtil.saveKeyToFile(secretKey, file.getAbsolutePath());
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(this, "Không thể lưu file", "Lỗi", JOptionPane.ERROR_MESSAGE);
             }
         }
-    }
-
-
-    @Override
-    public void onFileUnselected() {
-        // Do nothing
-    }
-
-    @Override
-    public void onError(String message) {
-        JOptionPane.showMessageDialog(this, message, "Lỗi", JOptionPane.ERROR_MESSAGE);
-    }
-
-    @Override
-    public boolean onBeforeFileSelected() {
-        return true;
     }
 }

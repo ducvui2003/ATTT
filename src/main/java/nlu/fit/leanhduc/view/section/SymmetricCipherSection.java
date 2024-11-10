@@ -5,8 +5,11 @@ import nlu.fit.leanhduc.service.cipher.CipherSpecification;
 import nlu.fit.leanhduc.util.constraint.Cipher;
 import nlu.fit.leanhduc.util.constraint.Mode;
 import nlu.fit.leanhduc.util.constraint.Padding;
+import nlu.fit.leanhduc.view.component.dialog.GenerateKeyDialog;
+import nlu.fit.leanhduc.view.component.fileChooser.FileChooser;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -26,6 +29,10 @@ public class SymmetricCipherSection extends JPanel implements ActionListener {
     Integer currentKeySize;
     Integer currentIVSize;
     JButton btnGenerateKey;
+    JTextArea plainTextBlock, encryptBlock, decryptBlock;
+    JButton btnEncrypt, btnDecrypt;
+    JPanel fileChooser, downloadChooser;
+
 
     public SymmetricCipherSection(MainController controller) {
         this.controller = controller;
@@ -74,6 +81,66 @@ public class SymmetricCipherSection extends JPanel implements ActionListener {
 
         // Initialize dependent fields
         updateModeAndPadding();
+        JPanel panelCenter = createTextCipherPanel();
+        this.add(panelCenter, BorderLayout.CENTER);
+        JPanel panelSouth = createFileCipherPanel();
+        this.add(panelSouth, BorderLayout.SOUTH);
+    }
+
+
+    private JPanel createTextCipherPanel() {
+        JPanel panelCenter = new JPanel(new FlowLayout(FlowLayout.LEADING, 5, 5));
+        JPanel panel1 = createTopLeftAlignedTextArea("Plain Text", this.plainTextBlock);
+        JPanel panel2 = createTopLeftAlignedTextArea("Encrypt", this.encryptBlock);
+        JPanel panel3 = createTopLeftAlignedTextArea("Decrypt", this.decryptBlock);
+        panelCenter.add(panel1);
+        this.btnEncrypt = new JButton("Mã hóa");
+        panelCenter.add(this.btnEncrypt);
+        panelCenter.add(panel2);
+        this.btnDecrypt = new JButton("Giải mã");
+        panelCenter.add(this.btnDecrypt);
+        panelCenter.add(panel3);
+        return panelCenter;
+    }
+
+    private JPanel createFileCipherPanel() {
+        JPanel panel = new JPanel(new BorderLayout(5, 5));
+        JPanel panel1 = new JPanel();
+        panel.add(panel1, BorderLayout.EAST);
+        panel1.add(new JLabel("Chọn file"));
+        this.fileChooser = new FileChooser();
+        panel1.add(this.fileChooser);
+
+        Border combinedBorder = BorderFactory.createCompoundBorder(
+                BorderFactory.createEmptyBorder(5, 5, 5, 5),
+                BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.BLACK), "Mã hóa file")
+        );
+        panel1.setBorder(combinedBorder);
+
+        JPanel panel2 = new JPanel();
+        panel.add(panel2, BorderLayout.WEST);
+        panel2.add(new JLabel("Chọn file"));
+        this.downloadChooser = new FileChooser();
+        panel2.add(this.downloadChooser);
+
+        combinedBorder = BorderFactory.createCompoundBorder(
+                BorderFactory.createEmptyBorder(5, 5, 5, 5),
+                BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.BLACK), "Giải mã file")
+        );
+        panel2.setBorder(combinedBorder);
+        return panel;
+    }
+
+    private JPanel createTopLeftAlignedTextArea(String title, JTextArea textArea) {
+        JPanel panel = new JPanel(new BorderLayout(5, 5));
+        textArea = new JTextArea(1, 20);
+        panel.add(new JLabel(title), BorderLayout.NORTH);
+        panel.add(textArea, BorderLayout.CENTER);
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+        textArea.setPreferredSize(new Dimension(200, 80));
+        textArea.setMargin(new Insets(5, 5, 5, 5));
+        return panel;
     }
 
 

@@ -1,19 +1,16 @@
-package nlu.fit.leanhduc.view.component.dialog.key;
+package nlu.fit.leanhduc.view.component.panel;
 
-import nlu.fit.leanhduc.config.MetadataConfig;
 import nlu.fit.leanhduc.controller.MainController;
 import nlu.fit.leanhduc.service.ISubstitutionCipher;
 import nlu.fit.leanhduc.service.key.AffineKey;
+import nlu.fit.leanhduc.service.key.ViginereKey;
 import nlu.fit.leanhduc.view.component.SwingComponentUtil;
 import nlu.fit.leanhduc.view.component.button.ToolTipButton;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
-public class AffineKeyTypingPanel extends KeyTypingPanel {
+public class AffineKeyTypingPanel extends KeyTypingPanel<AffineKey> {
     JFormattedTextField inputA, inputB;
 
     public AffineKeyTypingPanel(MainController controller) {
@@ -55,10 +52,16 @@ public class AffineKeyTypingPanel extends KeyTypingPanel {
     }
 
     @Override
-    public ISubstitutionCipher getKey() {
-        Integer a = Integer.parseInt(inputA.getText());
-        Integer b = Integer.parseInt(inputB.getText());
-        AffineKey key = controller.generateAffineKey(a, b);
-        return null;
+    public AffineKey getKey() {
+        int a = Integer.parseInt(inputA.getText());
+        int b = Integer.parseInt(inputB.getText());
+        this.key = controller.generateAffineKey(a, b);
+        return this.key;
+    }
+
+    @Override
+    public void setKey(AffineKey key) {
+        inputA.setText(String.valueOf(key.getA()));
+        inputB.setText(String.valueOf(key.getB()));
     }
 }

@@ -2,10 +2,8 @@ package nlu.fit.leanhduc.service.cipher.symmetric.vigenere;
 
 import lombok.Getter;
 import lombok.Setter;
-import nlu.fit.leanhduc.service.IKeyGenerator;
 import nlu.fit.leanhduc.service.ISubstitutionCipher;
-import nlu.fit.leanhduc.service.ITextEncrypt;
-import nlu.fit.leanhduc.service.key.VigenereKey;
+import nlu.fit.leanhduc.service.key.ViginereKey;
 import nlu.fit.leanhduc.util.CipherException;
 import nlu.fit.leanhduc.util.alphabet.AlphabetUtil;
 
@@ -15,7 +13,7 @@ import java.util.Random;
 
 @Getter
 @Setter
-public class VigenereCipher implements ISubstitutionCipher<VigenereKey> {
+public class VigenereCipher implements ISubstitutionCipher<ViginereKey> {
     protected List<Integer> keys;
     protected int keyLength;
     protected Random rd = new Random();
@@ -26,17 +24,17 @@ public class VigenereCipher implements ISubstitutionCipher<VigenereKey> {
     }
 
     @Override
-    public void loadKey(VigenereKey key) throws CipherException {
+    public void loadKey(ViginereKey key) throws CipherException {
         this.keys = key.getKey();
         this.keyLength = key.getKey().size();
     }
 
     @Override
-    public VigenereKey generateKey() {
+    public ViginereKey generateKey() {
         List<Integer> result = new ArrayList<>();
         for (int i = 0; i < keyLength; i++)
             result.add(rd.nextInt(alphabetUtil.getLength() - 1));
-        return new VigenereKey(result);
+        return new ViginereKey(result);
     }
 
     @Override

@@ -8,7 +8,7 @@ public class SwingComponentUtil {
     public static JFormattedTextField createFormatTextFieldNumber(
             int columns,
             int minimum,
-            int maximum,
+            Integer maximum,
             Integer defaultValue,
             boolean allowsInvalid,
             boolean commitsOnValidEdit

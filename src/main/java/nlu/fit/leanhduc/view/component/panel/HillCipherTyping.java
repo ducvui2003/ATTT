@@ -1,7 +1,8 @@
-package nlu.fit.leanhduc.view.component.dialog.key;
+package nlu.fit.leanhduc.view.component.panel;
 
 import nlu.fit.leanhduc.controller.MainController;
 import nlu.fit.leanhduc.service.ISubstitutionCipher;
+import nlu.fit.leanhduc.service.key.HillKey;
 import nlu.fit.leanhduc.view.component.SwingComponentUtil;
 
 import javax.swing.*;
@@ -9,7 +10,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class HillCipherTyping extends KeyTypingPanel implements ActionListener {
+public class HillCipherTyping extends KeyTypingPanel<HillKey> implements ActionListener {
     JPanel matrixView;
     JPanel matrixViewWrapper;
 
@@ -30,7 +31,7 @@ public class HillCipherTyping extends KeyTypingPanel implements ActionListener {
     }
 
     @Override
-    public ISubstitutionCipher getKey() {
+    public HillKey getKey() {
         return null;
     }
 
@@ -38,7 +39,7 @@ public class HillCipherTyping extends KeyTypingPanel implements ActionListener {
         JPanel panel = new JPanel(new GridLayout(size, size));
         for (int i = 0; i < size; i++)
             for (int j = 0; j < size; j++) {
-                JFormattedTextField textField = SwingComponentUtil.createFormatTextFieldNumber(3, 1, 26, null, false, true);
+                JFormattedTextField textField = SwingComponentUtil.createFormatTextFieldNumber(3, 1, null, null, false, true);
                 panel.add(textField);
             }
         return panel;
@@ -65,5 +66,16 @@ public class HillCipherTyping extends KeyTypingPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         JComboBox<Integer> comboBox = (JComboBox<Integer>) e.getSource();
         changeMatrixSize((int) comboBox.getSelectedItem());
+    }
+
+    @Override
+    public void setKey(HillKey key) {
+        int size = key.getKey().length;
+        changeMatrixSize(size);
+        for (int i = 0; i < size; i++)
+            for (int j = 0; j < size; j++) {
+                JFormattedTextField textField = (JFormattedTextField) matrixView.getComponent(i * size + j);
+                textField.setText(String.valueOf(key.getKey()[i][j]));
+            }
     }
 }

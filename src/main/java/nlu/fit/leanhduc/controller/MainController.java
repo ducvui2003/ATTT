@@ -25,7 +25,7 @@ public class MainController {
         view.createUIComponents();
     }
 
-    public IKeyGenerator<VigenereKey> generateKey(Language language, int length) {
+    public IKeyGenerator<ViginereKey> generateKey(Language language, int length) {
         AlphabetUtil alphabetUtil = language == Language.ENGLISH ? new EnglishAlphabetUtil() : new VietnameseAlphabetUtil();
         VigenereCipher vigenereCipher = new VigenereCipher(alphabetUtil);
         vigenereCipher.setKeyLength(length);
@@ -64,13 +64,13 @@ public class MainController {
         return new SubstitutionKey(key);
     }
 
-    public VigenereKey generateVigenereKey(List<Character> keys, Language language) {
+    public ViginereKey generateVigenereKey(List<Character> keys, Language language) {
         AlphabetUtil alphabetUtil = language == Language.ENGLISH ? new EnglishAlphabetUtil() : new VietnameseAlphabetUtil();
         List<Integer> list = new ArrayList<>();
         for (Character key : keys) {
             list.add(alphabetUtil.indexOf(key));
         }
-        return new VigenereKey(list);
+        return new ViginereKey(list);
     }
 
 

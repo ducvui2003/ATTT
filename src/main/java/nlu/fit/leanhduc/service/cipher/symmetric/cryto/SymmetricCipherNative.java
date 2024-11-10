@@ -8,29 +8,41 @@ import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
-public class DESCipher extends AbsCipherNative {
+public class SymmetricCipherNative extends AbsCipherNative {
+    SecretKey secretKey;
+    Cipher cipher;
+
+    public SymmetricCipherNative(Algorithm algorithm) throws NoSuchPaddingException, NoSuchAlgorithmException {
+        super(algorithm);
+        this.cipher = Cipher.getInstance(algorithm.toString());
+    }
+
+    @Override
+    public void loadKey(SecretKey secretKey) throws CipherException {
+        this.secretKey = secretKey;
+    }
 
     @Override
     public SecretKey generateKey() {
         try {
-            KeyGenerator generator = KeyGenerator.getInstance("DES");
-            generator.init(56);
-            return generator.generateKey();
+            KeyGenerator keyGenerator = KeyGenerator.getInstance(this.algorithm.toString());
+            keyGenerator.init(algorithm.getKeySize());
+            secretKey = keyGenerator.generateKey();
+            return secretKey;
         } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            return null;
         }
     }
 
     @Override
     public byte[] encrypt(String data) throws Exception {
-        Cipher cipher = Cipher.getInstance("DES");
         cipher.init(Cipher.ENCRYPT_MODE, this.secretKey);
         return cipher.doFinal(data.getBytes(StandardCharsets.UTF_8));
     }
 
     @Override
     public String decrypt(byte[] data) throws Exception {
-        Cipher cipher = Cipher.getInstance("DES");
         cipher.init(Cipher.DECRYPT_MODE, this.secretKey);
         return new String(cipher.doFinal(data), StandardCharsets.UTF_8);
     }
@@ -38,7 +50,6 @@ public class DESCipher extends AbsCipherNative {
     @Override
     public boolean encrypt(String src, String dest) throws CipherException {
         try {
-            Cipher cipher = Cipher.getInstance("DES");
             cipher.init(Cipher.ENCRYPT_MODE, this.secretKey);
             BufferedInputStream bis = new BufferedInputStream((new FileInputStream(src)));
             BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(dest));
@@ -61,7 +72,7 @@ public class DESCipher extends AbsCipherNative {
             bos.flush();
             bos.close();
             return true;
-        } catch (NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeyException | IOException |
+        } catch (InvalidKeyException | IOException |
                  IllegalBlockSizeException | BadPaddingException e) {
             throw new CipherException(e.getMessage());
         }
@@ -70,7 +81,6 @@ public class DESCipher extends AbsCipherNative {
     @Override
     public boolean decrypt(String src, String dest) throws CipherException {
         try {
-            Cipher cipher = Cipher.getInstance("DES");
             cipher.init(Cipher.DECRYPT_MODE, this.secretKey);
             BufferedInputStream bis = new BufferedInputStream((new FileInputStream(src)));
             BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(dest));

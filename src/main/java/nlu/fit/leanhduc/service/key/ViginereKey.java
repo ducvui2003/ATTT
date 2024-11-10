@@ -5,10 +5,10 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
-public class VigenereKey implements IKeyDisplay {
+public class ViginereKey implements IKeyDisplay {
     List<Integer> key;
 
-    public VigenereKey(List<Integer> key) {
+    public ViginereKey(List<Integer> key) {
         this.key = key;
     }
 

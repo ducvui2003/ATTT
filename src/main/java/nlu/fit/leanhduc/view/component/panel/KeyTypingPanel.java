@@ -1,4 +1,4 @@
-package nlu.fit.leanhduc.view.component.dialog.key;
+package nlu.fit.leanhduc.view.component.panel;
 
 import nlu.fit.leanhduc.controller.MainController;
 import nlu.fit.leanhduc.service.ISubstitutionCipher;
@@ -8,6 +8,7 @@ import javax.swing.*;
 
 public abstract class KeyTypingPanel<T> extends JPanel {
     MainController controller;
+    protected T key;
 
     public KeyTypingPanel(MainController controller) {
         this.controller = controller;
@@ -16,6 +17,7 @@ public abstract class KeyTypingPanel<T> extends JPanel {
 
     public abstract void init();
 
-    public abstract ISubstitutionCipher<T> getKey();
+    public abstract IKeyDisplay getKey();
 
+    public abstract void setKey(T key);
 }

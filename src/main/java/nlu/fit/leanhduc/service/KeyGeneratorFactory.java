@@ -1,8 +1,6 @@
 package nlu.fit.leanhduc.service;
 
 import nlu.fit.leanhduc.service.cipher.symmetric.affine.AffineCipher;
-import nlu.fit.leanhduc.service.cipher.symmetric.cryto.AESCipher;
-import nlu.fit.leanhduc.service.cipher.symmetric.cryto.DESCipher;
 import nlu.fit.leanhduc.service.cipher.symmetric.hill.HillCipher;
 import nlu.fit.leanhduc.service.cipher.symmetric.shift.ShiftCipher;
 import nlu.fit.leanhduc.service.cipher.symmetric.subsitution.SubstitutionCipher;
@@ -20,8 +18,6 @@ public class KeyGeneratorFactory {
             case SUBSTITUTION -> new SubstitutionCipher(alphabetUtil);
             case AFFINE -> new AffineCipher(alphabetUtil);
             case HILL -> new HillCipher(alphabetUtil);
-            case DES -> new DESCipher();
-            case AES -> new AESCipher();
             default -> null;
         };
     }
