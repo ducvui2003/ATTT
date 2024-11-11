@@ -1,10 +1,15 @@
 package nlu.fit.leanhduc.view.section;
 
 import nlu.fit.leanhduc.controller.MainController;
+import nlu.fit.leanhduc.controller.SymmetricCipherNativeController;
 import nlu.fit.leanhduc.service.cipher.CipherSpecification;
+import nlu.fit.leanhduc.service.cipher.symmetric.cryto.SymmetricCipherNative;
+import nlu.fit.leanhduc.util.CipherException;
 import nlu.fit.leanhduc.util.constraint.Cipher;
 import nlu.fit.leanhduc.util.constraint.Mode;
 import nlu.fit.leanhduc.util.constraint.Padding;
+import nlu.fit.leanhduc.util.convert.Base64ConversionStrategy;
+import nlu.fit.leanhduc.util.convert.ByteConverter;
 import nlu.fit.leanhduc.view.component.GridBagConstraintsBuilder;
 import nlu.fit.leanhduc.view.component.SwingComponentUtil;
 import nlu.fit.leanhduc.view.component.panel.PanelFileHandler;
@@ -12,10 +17,12 @@ import nlu.fit.leanhduc.view.component.panel.PanelHandler;
 import nlu.fit.leanhduc.view.component.panel.PanelTextHandler;
 import nlu.fit.leanhduc.view.component.panel.PanelTextHandlerEvent;
 
+import javax.crypto.NoSuchPaddingException;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.security.NoSuchAlgorithmException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,9 +55,12 @@ public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEv
     JPanel container;
     JTabbedPane tabbedPane;
     PanelHandler panelTextHandler, panelFileHandler;
+    SymmetricCipherNative symmetricCipherNative;
+    ByteConverter byteConverter;
 
     public SymmetricCipherSection(MainController controller) {
         this.controller = controller;
+        this.byteConverter = new ByteConverter(new Base64ConversionStrategy());
         createUIComponents();
     }
 
@@ -320,20 +330,42 @@ public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEv
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == btnGenerateKey) {
-            System.out.println("Generating key...");
-            System.out.println(this.currentCipher.getName() + "/" + this.currentMode.getName() + "/" + this.currentPadding.getName());
-            System.out.println("Key Size: " + this.currentKeySize);
-            System.out.println("IV Size: " + this.currentIVSize);
+            try {
+                symmetricCipherNative = SymmetricCipherNativeController.getInstance().getAlgorithm(
+                        this.currentCipher.getName(),
+                        this.currentMode.getName(),
+                        this.currentPadding.getName(),
+                        this.currentKeySize,
+                        this.currentIVSize
+                );
+                symmetricCipherNative.loadKey(symmetricCipherNative.generateKey());
+            } catch (NoSuchPaddingException ex) {
+                throw new RuntimeException(ex);
+            } catch (NoSuchAlgorithmException ex) {
+                throw new RuntimeException(ex);
+            } catch (CipherException ex) {
+                throw new RuntimeException(ex);
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
         }
     }
 
     @Override
     public String onEncrypt(String plainText) {
-        return "";
+        try {
+            return this.byteConverter.convert(symmetricCipherNative.encrypt(plainText));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public String onDecrypt(String cipherText) {
-        return "";
+        try {
+            return symmetricCipherNative.decrypt(this.byteConverter.convert(cipherText));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

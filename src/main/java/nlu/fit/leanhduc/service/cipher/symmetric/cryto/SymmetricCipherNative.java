@@ -3,18 +3,30 @@ package nlu.fit.leanhduc.service.cipher.symmetric.cryto;
 import nlu.fit.leanhduc.util.CipherException;
 
 import javax.crypto.*;
+import javax.crypto.spec.IvParameterSpec;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 
 public class SymmetricCipherNative extends AbsCipherNative {
     SecretKey secretKey;
     Cipher cipher;
+    IvParameterSpec iv;
 
-    public SymmetricCipherNative(Algorithm algorithm) throws NoSuchPaddingException, NoSuchAlgorithmException {
+    public SymmetricCipherNative(Algorithm algorithm) throws Exception {
         super(algorithm);
         this.cipher = Cipher.getInstance(algorithm.toString());
+        if (algorithm.getIvSize() != 0) {
+            iv = generateIV();
+        }
+    }
+
+    public IvParameterSpec generateIV() throws Exception {
+        byte[] iv = new byte[algorithm.getIvSize() / 8];
+        new SecureRandom().nextBytes(iv);
+        return new IvParameterSpec(iv);
     }
 
     @Override
@@ -25,7 +37,7 @@ public class SymmetricCipherNative extends AbsCipherNative {
     @Override
     public SecretKey generateKey() {
         try {
-            KeyGenerator keyGenerator = KeyGenerator.getInstance(this.algorithm.toString());
+            KeyGenerator keyGenerator = KeyGenerator.getInstance(this.algorithm.cipher);
             keyGenerator.init(algorithm.getKeySize());
             secretKey = keyGenerator.generateKey();
             return secretKey;
@@ -37,13 +49,19 @@ public class SymmetricCipherNative extends AbsCipherNative {
 
     @Override
     public byte[] encrypt(String data) throws Exception {
-        cipher.init(Cipher.ENCRYPT_MODE, this.secretKey);
+        if (algorithm.getIvSize() == 0)
+            cipher.init(Cipher.ENCRYPT_MODE, this.secretKey);
+        else
+            cipher.init(Cipher.ENCRYPT_MODE, this.secretKey, this.iv);
         return cipher.doFinal(data.getBytes(StandardCharsets.UTF_8));
     }
 
     @Override
     public String decrypt(byte[] data) throws Exception {
-        cipher.init(Cipher.DECRYPT_MODE, this.secretKey);
+        if (algorithm.getIvSize() == 0)
+            cipher.init(Cipher.DECRYPT_MODE, this.secretKey);
+        else
+            cipher.init(Cipher.DECRYPT_MODE, this.secretKey, this.iv);
         return new String(cipher.doFinal(data), StandardCharsets.UTF_8);
     }
 
