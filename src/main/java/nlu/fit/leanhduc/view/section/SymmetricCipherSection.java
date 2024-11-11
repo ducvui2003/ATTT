@@ -5,17 +5,22 @@ import nlu.fit.leanhduc.service.cipher.CipherSpecification;
 import nlu.fit.leanhduc.util.constraint.Cipher;
 import nlu.fit.leanhduc.util.constraint.Mode;
 import nlu.fit.leanhduc.util.constraint.Padding;
-import nlu.fit.leanhduc.view.component.dialog.GenerateKeyDialog;
-import nlu.fit.leanhduc.view.component.fileChooser.FileChooser;
+import nlu.fit.leanhduc.view.component.GridBagConstraintsBuilder;
+import nlu.fit.leanhduc.view.component.SwingComponentUtil;
+import nlu.fit.leanhduc.view.component.panel.PanelFileHandler;
+import nlu.fit.leanhduc.view.component.panel.PanelHandler;
+import nlu.fit.leanhduc.view.component.panel.PanelTextHandler;
+import nlu.fit.leanhduc.view.component.panel.PanelTextHandlerEvent;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
-public class SymmetricCipherSection extends JPanel implements ActionListener {
+public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEvent, ActionListener {
     MainController controller;
     List<CipherSpecification> cipherSpecifications = List.of(CipherSpecification.AES, CipherSpecification.DES, CipherSpecification.TRIPLEDES);
     JComboBox<Cipher> comboBoxCipher;
@@ -29,10 +34,20 @@ public class SymmetricCipherSection extends JPanel implements ActionListener {
     Integer currentKeySize;
     Integer currentIVSize;
     JButton btnGenerateKey;
-    JTextArea plainTextBlock, encryptBlock, decryptBlock;
     JButton btnEncrypt, btnDecrypt;
     JPanel fileChooser, downloadChooser;
 
+    JTextField plainTextBlock, encryptBlock, decryptBlock;
+    JPanel panelText, panelFile;
+    final String commandEncrypt = "encrypt";
+    final String commandDecrypt = "decrypt";
+    final String commandComboBoxCipher = "comboBoxCipher";
+    final String commandComboBoxLanguage = "comboBoxLanguage";
+    final String commandCreateKey = "createKey";
+    GridBagConstraints gbc;
+    JPanel container;
+    JTabbedPane tabbedPane;
+    PanelHandler panelTextHandler, panelFileHandler;
 
     public SymmetricCipherSection(MainController controller) {
         this.controller = controller;
@@ -40,9 +55,135 @@ public class SymmetricCipherSection extends JPanel implements ActionListener {
     }
 
     private void createUIComponents() {
-        this.setLayout(new FlowLayout(FlowLayout.LEADING, 5, 5));
+        this.setLayout(new BorderLayout());
+        this.container = new JPanel(new GridBagLayout());
+        this.gbc = new GridBagConstraints();
+        this.add(this.container, BorderLayout.NORTH);
+        createGeneratePanel();
+        createTabbedPane();
+    }
 
+    private void createGeneratePanel() {
         // Initialize Cipher ComboBox and Listener
+        createComboBox();
+        this.btnGenerateKey = new JButton("Generate Key");
+        this.btnGenerateKey.addActionListener(this);
+        // Add Components to Panel
+        SwingComponentUtil.addComponentGridBag(
+                this.container,
+                GridBagConstraintsBuilder.builder()
+                        .grid(0, 0)
+                        .weight(1.0, 0.0)
+                        .fill(GridBagConstraints.HORIZONTAL)
+                        .insets(0, 10, 0, 0)
+                        .build(),
+                new JLabel("Cipher:")
+        );
+
+        SwingComponentUtil.addComponentGridBag(
+                this.container,
+                GridBagConstraintsBuilder.builder()
+                        .grid(1, 0)
+                        .weight(1.0, 0.0)
+                        .fill(GridBagConstraints.HORIZONTAL)
+                        .build(),
+                this.comboBoxCipher
+        );
+
+        SwingComponentUtil.addComponentGridBag(
+                this.container,
+                GridBagConstraintsBuilder.builder()
+                        .grid(2, 0)
+                        .weight(1.0, 0.0)
+                        .fill(GridBagConstraints.HORIZONTAL)
+                        .build(),
+                new JLabel("Mode:")
+        );
+
+        SwingComponentUtil.addComponentGridBag(
+                this.container,
+                GridBagConstraintsBuilder.builder()
+                        .grid(3, 0)
+                        .weight(1.0, 0.0)
+                        .fill(GridBagConstraints.HORIZONTAL)
+                        .build(),
+                this.comboBoxMode
+        );
+
+        SwingComponentUtil.addComponentGridBag(
+                this.container,
+                GridBagConstraintsBuilder.builder()
+                        .grid(4, 0)
+                        .weight(1.0, 0.0)
+                        .fill(GridBagConstraints.HORIZONTAL)
+                        .build(),
+                new JLabel("Padding:")
+        );
+
+        SwingComponentUtil.addComponentGridBag(
+                this.container,
+                GridBagConstraintsBuilder.builder()
+                        .grid(5, 0)
+                        .weight(1.0, 0.0)
+                        .fill(GridBagConstraints.HORIZONTAL)
+                        .build(),
+                this.comboBoxPadding
+        );
+
+        SwingComponentUtil.addComponentGridBag(
+                this.container,
+                GridBagConstraintsBuilder.builder()
+                        .grid(7, 0)
+                        .weight(1.0, 0.0)
+                        .fill(GridBagConstraints.HORIZONTAL)
+                        .build(),
+                new JLabel("Key Size:")
+        );
+
+        SwingComponentUtil.addComponentGridBag(
+                this.container,
+                GridBagConstraintsBuilder.builder()
+                        .grid(8, 0)
+                        .weight(1.0, 0.0)
+                        .fill(GridBagConstraints.HORIZONTAL)
+                        .build(),
+                this.comboBoxKeySize
+        );
+
+        SwingComponentUtil.addComponentGridBag(
+                this.container,
+                GridBagConstraintsBuilder.builder()
+                        .grid(9, 0)
+                        .weight(1.0, 0.0)
+                        .fill(GridBagConstraints.HORIZONTAL)
+                        .build(),
+                new JLabel("IV Size:")
+        );
+
+        SwingComponentUtil.addComponentGridBag(
+                this.container,
+                GridBagConstraintsBuilder.builder()
+                        .grid(10, 0)
+                        .weight(1.0, 0.0)
+                        .fill(GridBagConstraints.HORIZONTAL)
+                        .build(),
+                this.comboBoxIVSize
+        );
+
+        SwingComponentUtil.addComponentGridBag(
+                this.container,
+                GridBagConstraintsBuilder.builder()
+                        .grid(11, 0)
+                        .weight(1.0, 0.0)
+                        .fill(GridBagConstraints.HORIZONTAL)
+                        .build(),
+                this.btnGenerateKey
+        );
+
+        updateModeAndPadding();
+    }
+
+    private void createComboBox() {
         this.comboBoxCipher = new JComboBox<>(cipherSpecifications.stream()
                 .map(CipherSpecification::getAlgorithm)
                 .toArray(Cipher[]::new));
@@ -62,87 +203,7 @@ public class SymmetricCipherSection extends JPanel implements ActionListener {
 
         // Initialize IV Size ComboBox (No listener needed)
         this.comboBoxIVSize = new JComboBox<>();
-
-        // Add Components to Panel
-        this.add(new JLabel("Cipher:"));
-        this.add(this.comboBoxCipher);
-        this.add(new JLabel("Mode:"));
-        this.add(this.comboBoxMode);
-        this.add(new JLabel("Padding:"));
-        this.add(this.comboBoxPadding);
-        this.add(new JLabel("Key Size:"));
-        this.add(this.comboBoxKeySize);
-        this.add(new JLabel("IV Size:"));
-        this.add(this.comboBoxIVSize);
-
-        this.btnGenerateKey = new JButton("Generate Key");
-        this.btnGenerateKey.addActionListener(this);
-        this.add(this.btnGenerateKey);
-
-        // Initialize dependent fields
-        updateModeAndPadding();
-        JPanel panelCenter = createTextCipherPanel();
-        this.add(panelCenter, BorderLayout.CENTER);
-        JPanel panelSouth = createFileCipherPanel();
-        this.add(panelSouth, BorderLayout.SOUTH);
     }
-
-
-    private JPanel createTextCipherPanel() {
-        JPanel panelCenter = new JPanel(new FlowLayout(FlowLayout.LEADING, 5, 5));
-        JPanel panel1 = createTopLeftAlignedTextArea("Plain Text", this.plainTextBlock);
-        JPanel panel2 = createTopLeftAlignedTextArea("Encrypt", this.encryptBlock);
-        JPanel panel3 = createTopLeftAlignedTextArea("Decrypt", this.decryptBlock);
-        panelCenter.add(panel1);
-        this.btnEncrypt = new JButton("Mã hóa");
-        panelCenter.add(this.btnEncrypt);
-        panelCenter.add(panel2);
-        this.btnDecrypt = new JButton("Giải mã");
-        panelCenter.add(this.btnDecrypt);
-        panelCenter.add(panel3);
-        return panelCenter;
-    }
-
-    private JPanel createFileCipherPanel() {
-        JPanel panel = new JPanel(new BorderLayout(5, 5));
-        JPanel panel1 = new JPanel();
-        panel.add(panel1, BorderLayout.EAST);
-        panel1.add(new JLabel("Chọn file"));
-        this.fileChooser = new FileChooser();
-        panel1.add(this.fileChooser);
-
-        Border combinedBorder = BorderFactory.createCompoundBorder(
-                BorderFactory.createEmptyBorder(5, 5, 5, 5),
-                BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.BLACK), "Mã hóa file")
-        );
-        panel1.setBorder(combinedBorder);
-
-        JPanel panel2 = new JPanel();
-        panel.add(panel2, BorderLayout.WEST);
-        panel2.add(new JLabel("Chọn file"));
-        this.downloadChooser = new FileChooser();
-        panel2.add(this.downloadChooser);
-
-        combinedBorder = BorderFactory.createCompoundBorder(
-                BorderFactory.createEmptyBorder(5, 5, 5, 5),
-                BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.BLACK), "Giải mã file")
-        );
-        panel2.setBorder(combinedBorder);
-        return panel;
-    }
-
-    private JPanel createTopLeftAlignedTextArea(String title, JTextArea textArea) {
-        JPanel panel = new JPanel(new BorderLayout(5, 5));
-        textArea = new JTextArea(1, 20);
-        panel.add(new JLabel(title), BorderLayout.NORTH);
-        panel.add(textArea, BorderLayout.CENTER);
-        textArea.setLineWrap(true);
-        textArea.setWrapStyleWord(true);
-        textArea.setPreferredSize(new Dimension(200, 80));
-        textArea.setMargin(new Insets(5, 5, 5, 5));
-        return panel;
-    }
-
 
     // Update Mode and Padding when Cipher changes
     private void updateModeAndPadding() {
@@ -235,6 +296,27 @@ public class SymmetricCipherSection extends JPanel implements ActionListener {
         }
     }
 
+    private void createTabbedPane() {
+        this.tabbedPane = new JTabbedPane();
+        this.panelTextHandler = new PanelTextHandler(this);
+        this.panelFileHandler = new PanelFileHandler();
+        Map<String, JPanel> panelMap = new LinkedHashMap<>();
+        panelMap.put("Mã hóa Chuỗi", panelTextHandler);
+        panelMap.put("Mã hóa File", panelFileHandler);
+        panelMap.forEach((k, v) -> tabbedPane.addTab(k, v));
+
+        SwingComponentUtil.addComponentGridBag(
+                this.container,
+                GridBagConstraintsBuilder.builder()
+                        .grid(0, 5)        // Starting at the first column in the desired row
+                        .gridSpan(15, 1)
+                        .weight(1, 0)
+                        .fill(GridBagConstraints.HORIZONTAL)
+                        .insets(10, 0, 10, 0) // Optional padding around the separator
+                        .build(),
+                this.tabbedPane);
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == btnGenerateKey) {
@@ -243,5 +325,15 @@ public class SymmetricCipherSection extends JPanel implements ActionListener {
             System.out.println("Key Size: " + this.currentKeySize);
             System.out.println("IV Size: " + this.currentIVSize);
         }
+    }
+
+    @Override
+    public String onEncrypt(String plainText) {
+        return "";
+    }
+
+    @Override
+    public String onDecrypt(String cipherText) {
+        return "";
     }
 }

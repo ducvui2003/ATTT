@@ -1,6 +1,7 @@
-package nlu.fit.leanhduc.view.component.panel;
+package nlu.fit.leanhduc.view.component.panel.key;
 
 import nlu.fit.leanhduc.controller.MainController;
+import nlu.fit.leanhduc.controller.SubstitutionCipherController;
 import nlu.fit.leanhduc.service.key.HillKey;
 import nlu.fit.leanhduc.view.component.SwingComponentUtil;
 
@@ -69,11 +70,11 @@ public class HillCipherTyping extends KeyTypingPanel<HillKey> implements ActionL
 
     @Override
     public HillKey getKey() {
-        int[][] key = new int[matrixTextField.length][matrixTextField.length];
+        String[][] matrix = new String[matrixTextField.length][matrixTextField.length];
         for (int i = 0; i < matrixTextField.length; i++)
             for (int j = 0; j < matrixTextField.length; j++)
-                key[i][j] = Integer.parseInt(matrixTextField[i][j].getText());
-        return new HillKey(key);
+                matrix[i][j] = matrixTextField[i][j].getText();
+        return SubstitutionCipherController.getINSTANCE().generateHillKey(matrix);
     }
 
     @Override

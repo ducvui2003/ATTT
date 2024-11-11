@@ -187,7 +187,7 @@ public class GenerateKeyDialog extends CustomDialog implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent event) {
-        if (event.getSource() == btnCreate)
+        if (event.getSource() == btnCreate) {
             if (cipher == Cipher.VIGENERE) {
                 Integer length = (Integer) ((JFormattedTextField) inputKeyLength).getValue();
                 if (length == null) {
@@ -196,27 +196,17 @@ public class GenerateKeyDialog extends CustomDialog implements ActionListener {
                 }
                 IKeyGenerator<ViginereKey> keyGenerator = this.controller.generateKey(language, length);
                 textArea.setText(keyGenerator.generateKey().display());
+                return;
+            }
+            IKeyGenerator<?> keyGenerator = controller.generateKey(cipher, language);
+            if (keyGenerator.generateKey() instanceof IKeyDisplay keyDisplay) {
+                textArea.setText(keyDisplay.display());
+            }
+            if (keyGenerator.generateKey() instanceof SecretKey secretKey) {
                 try {
-//                    FileUtil.writeStringToFile(file.getAbsolutePath(), textArea.getText());
                 } catch (Exception e) {
                     JOptionPane.showMessageDialog(this, "Không thể lưu file", "Lỗi", JOptionPane.ERROR_MESSAGE);
                 }
-                return;
-            }
-        IKeyGenerator<?> keyGenerator = controller.generateKey(cipher, language);
-        if (keyGenerator.generateKey() instanceof IKeyDisplay keyDisplay) {
-            textArea.setText(keyDisplay.display());
-            try {
-//                FileUtil.writeStringToFile(file.getAbsolutePath(), textArea.getText());
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(this, "Không thể lưu file", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            }
-        }
-        if (keyGenerator.generateKey() instanceof SecretKey secretKey) {
-            try {
-//                FileUtil.saveKeyToFile(secretKey, file.getAbsolutePath());
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(this, "Không thể lưu file", "Lỗi", JOptionPane.ERROR_MESSAGE);
             }
         }
     }

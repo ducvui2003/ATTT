@@ -32,7 +32,7 @@ public class VigenereCipher implements ISubstitutionCipher<ViginereKey> {
     @Override
     public ViginereKey generateKey() {
         List<Integer> result = new ArrayList<>();
-        for (int i = 0; i < keyLength; i++)
+        for (int i = 0; i < 4; i++)
             result.add(rd.nextInt(alphabetUtil.getLength() - 1));
         return new ViginereKey(result);
     }

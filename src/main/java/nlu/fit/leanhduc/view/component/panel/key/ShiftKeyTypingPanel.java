@@ -1,7 +1,6 @@
-package nlu.fit.leanhduc.view.component.panel;
+package nlu.fit.leanhduc.view.component.panel.key;
 
 import nlu.fit.leanhduc.controller.MainController;
-import nlu.fit.leanhduc.service.ISubstitutionCipher;
 import nlu.fit.leanhduc.service.key.ShiftKey;
 import nlu.fit.leanhduc.view.component.SwingComponentUtil;
 

@@ -1,9 +1,8 @@
-package nlu.fit.leanhduc.view.component.panel;
+package nlu.fit.leanhduc.view.component.panel.key;
 
 import nlu.fit.leanhduc.controller.MainController;
-import nlu.fit.leanhduc.service.ISubstitutionCipher;
+import nlu.fit.leanhduc.controller.SubstitutionCipherController;
 import nlu.fit.leanhduc.service.key.AffineKey;
-import nlu.fit.leanhduc.service.key.ViginereKey;
 import nlu.fit.leanhduc.view.component.SwingComponentUtil;
 import nlu.fit.leanhduc.view.component.button.ToolTipButton;
 
@@ -53,7 +52,7 @@ public class AffineKeyTypingPanel extends KeyTypingPanel<AffineKey> {
     public AffineKey getKey() {
         int a = Integer.parseInt(inputA.getText());
         int b = Integer.parseInt(inputB.getText());
-        this.key = controller.generateAffineKey(a, b);
+        this.key = SubstitutionCipherController.getINSTANCE().generateAffineKey(a, b);
         return this.key;
     }
 
