@@ -1,7 +1,6 @@
 package nlu.fit.leanhduc.view.component.panel;
 
 import nlu.fit.leanhduc.controller.MainController;
-import nlu.fit.leanhduc.service.ISubstitutionCipher;
 import nlu.fit.leanhduc.service.key.HillKey;
 import nlu.fit.leanhduc.view.component.SwingComponentUtil;
 
@@ -13,6 +12,8 @@ import java.awt.event.ActionListener;
 public class HillCipherTyping extends KeyTypingPanel<HillKey> implements ActionListener {
     JPanel matrixView;
     JPanel matrixViewWrapper;
+    JFormattedTextField[][] matrixTextField;
+    JComboBox<Integer> comboBox;
 
     public HillCipherTyping(MainController controller) {
         super(controller);
@@ -30,16 +31,14 @@ public class HillCipherTyping extends KeyTypingPanel<HillKey> implements ActionL
         this.setSize(400, 200);
     }
 
-    @Override
-    public HillKey getKey() {
-        return null;
-    }
 
     private JPanel createMatrixView(int size) {
         JPanel panel = new JPanel(new GridLayout(size, size));
+        matrixTextField = new JFormattedTextField[size][size];
         for (int i = 0; i < size; i++)
             for (int j = 0; j < size; j++) {
                 JFormattedTextField textField = SwingComponentUtil.createFormatTextFieldNumber(3, 1, null, null, false, true);
+                matrixTextField[i][j] = textField;
                 panel.add(textField);
             }
         return panel;
@@ -48,9 +47,9 @@ public class HillCipherTyping extends KeyTypingPanel<HillKey> implements ActionL
     private void createChooseMatrix() {
         JPanel panel = new JPanel(new BorderLayout(5, 5));
         panel.add(new JLabel("Chọn ma trận"), BorderLayout.NORTH);
-        JComboBox<Integer> comboBox = new JComboBox<>(new Integer[]{2, 3});
-        comboBox.addActionListener(this);
-        panel.add(comboBox, BorderLayout.CENTER);
+        this.comboBox = new JComboBox<>(new Integer[]{2, 3});
+        this.comboBox.addActionListener(this);
+        panel.add(this.comboBox, BorderLayout.CENTER);
         this.add(panel);
     }
 
@@ -69,9 +68,19 @@ public class HillCipherTyping extends KeyTypingPanel<HillKey> implements ActionL
     }
 
     @Override
+    public HillKey getKey() {
+        int[][] key = new int[matrixTextField.length][matrixTextField.length];
+        for (int i = 0; i < matrixTextField.length; i++)
+            for (int j = 0; j < matrixTextField.length; j++)
+                key[i][j] = Integer.parseInt(matrixTextField[i][j].getText());
+        return new HillKey(key);
+    }
+
+    @Override
     public void setKey(HillKey key) {
         int size = key.getKey().length;
         changeMatrixSize(size);
+        comboBox.setSelectedIndex(size - 2);
         for (int i = 0; i < size; i++)
             for (int j = 0; j < size; j++) {
                 JFormattedTextField textField = (JFormattedTextField) matrixView.getComponent(i * size + j);

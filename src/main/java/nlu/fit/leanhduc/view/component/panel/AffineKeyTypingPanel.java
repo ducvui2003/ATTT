@@ -45,10 +45,8 @@ public class AffineKeyTypingPanel extends KeyTypingPanel<AffineKey> {
                 "</html>";
 
         JButton btnToolTip = new ToolTipButton(null, tooltipText);
-        this.add(btnToolTip, BorderLayout.EAST);
+        panel.add(btnToolTip, BorderLayout.EAST);
 
-
-        this.setSize(400, 200);
     }
 
     @Override

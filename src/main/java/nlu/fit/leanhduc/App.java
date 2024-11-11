@@ -1,6 +1,5 @@
 package nlu.fit.leanhduc;
 
-import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import nlu.fit.leanhduc.controller.MainController;
 
@@ -12,6 +11,7 @@ public class App {
         try {
             UIManager.setLookAndFeel(new FlatMacLightLaf());
             UIManager.put("Button.arc", 10);
+            
             UIManager.put("Button.margin", new Insets(10, 20, 10, 20));
 
             UIManager.put("Component.arc", 10);

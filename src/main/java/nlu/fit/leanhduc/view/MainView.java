@@ -23,9 +23,7 @@ public class MainView extends JFrame {
 
     public void createUIComponents() {
         createMenu();
-        this.setLayout(new BorderLayout(5, 5));
         createTabPanel();
-        createFooter();
         setMetadata();
     }
 
@@ -57,9 +55,9 @@ public class MainView extends JFrame {
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
 
-    private void createFooter() {
-        footer = new Footer();
-        this.add(footer, BorderLayout.SOUTH);
-        footer.startLoading();
-    }
+//    private void createFooter() {
+//        footer = new Footer();
+//        this.add(footer, BorderLayout.SOUTH);
+//        footer.startLoading();
+//    }
 }
