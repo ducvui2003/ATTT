@@ -22,16 +22,14 @@ public class CipherSpecification {
                     Mode.CBC, List.of(Padding.PKCS5Padding, Padding.PKCS7Padding),
                     Mode.CFB, List.of(Padding.PKCS5Padding, Padding.PKCS7Padding),
                     Mode.OFB, List.of(Padding.PKCS5Padding, Padding.PKCS7Padding),
-                    Mode.CTR, List.of(Padding.NoPadding, Padding.PKCS5Padding, Padding.PKCS7Padding),
-                    Mode.GCM, List.of(Padding.NoPadding)
+                    Mode.CTR, List.of(Padding.NoPadding, Padding.PKCS5Padding, Padding.PKCS7Padding)
             ),
             Set.of(128, 192, 256),  // Supported key sizes for AES
             Map.of(
                     Mode.CBC, 128,  // AES CBC mode requires 128-bit IV
                     Mode.CFB, 128,  // AES CFB mode requires 128-bit IV
                     Mode.OFB, 128,  // AES OFB mode requires 128-bit IV
-                    Mode.CTR, 128,  // AES CTR mode requires 128-bit IV
-                    Mode.GCM, 96   // AES GCM mode typically uses 96-bit IV
+                    Mode.CTR, 128  // AES CTR mode requires 128-bit IV
             )
     );
 

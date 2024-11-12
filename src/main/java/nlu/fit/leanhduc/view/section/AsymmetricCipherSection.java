@@ -4,17 +4,14 @@ import nlu.fit.leanhduc.controller.MainController;
 import nlu.fit.leanhduc.controller.SymmetricCipherNativeController;
 import nlu.fit.leanhduc.service.cipher.CipherSpecification;
 import nlu.fit.leanhduc.service.cipher.symmetric.cryto.SymmetricCipherNative;
-import nlu.fit.leanhduc.util.CipherException;
 import nlu.fit.leanhduc.util.constraint.Cipher;
 import nlu.fit.leanhduc.util.constraint.Mode;
 import nlu.fit.leanhduc.util.constraint.Padding;
 
-import javax.crypto.NoSuchPaddingException;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 public class AsymmetricCipherSection extends JPanel implements ActionListener {
@@ -31,6 +28,7 @@ public class AsymmetricCipherSection extends JPanel implements ActionListener {
     Integer currentKeySize;
     Integer currentIVSize;
     JButton btnGenerateKey;
+    JLabel keyStatus;
 
     public AsymmetricCipherSection(MainController controller) {
         this.controller = controller;
@@ -181,12 +179,6 @@ public class AsymmetricCipherSection extends JPanel implements ActionListener {
                         this.currentIVSize
                 );
                 symmetricCipherNative.loadKey(symmetricCipherNative.generateKey());
-            } catch (NoSuchPaddingException ex) {
-                throw new RuntimeException(ex);
-            } catch (NoSuchAlgorithmException ex) {
-                throw new RuntimeException(ex);
-            } catch (CipherException ex) {
-                throw new RuntimeException(ex);
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }

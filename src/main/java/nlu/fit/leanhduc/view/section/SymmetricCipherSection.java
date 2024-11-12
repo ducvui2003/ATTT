@@ -1,5 +1,6 @@
 package nlu.fit.leanhduc.view.section;
 
+import nlu.fit.leanhduc.config.MetadataConfig;
 import nlu.fit.leanhduc.controller.MainController;
 import nlu.fit.leanhduc.controller.SymmetricCipherNativeController;
 import nlu.fit.leanhduc.service.cipher.CipherSpecification;
@@ -41,22 +42,15 @@ public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEv
     Integer currentKeySize;
     Integer currentIVSize;
     JButton btnGenerateKey;
-    JButton btnEncrypt, btnDecrypt;
-    JPanel fileChooser, downloadChooser;
 
-    JTextField plainTextBlock, encryptBlock, decryptBlock;
-    JPanel panelText, panelFile;
-    final String commandEncrypt = "encrypt";
-    final String commandDecrypt = "decrypt";
-    final String commandComboBoxCipher = "comboBoxCipher";
-    final String commandComboBoxLanguage = "comboBoxLanguage";
-    final String commandCreateKey = "createKey";
     GridBagConstraints gbc;
     JPanel container;
     JTabbedPane tabbedPane;
     PanelHandler panelTextHandler, panelFileHandler;
     SymmetricCipherNative symmetricCipherNative;
     ByteConverter byteConverter;
+    JLabel keyStatus;
+    JPanel detailKey;
 
     public SymmetricCipherSection(MainController controller) {
         this.controller = controller;
@@ -76,7 +70,7 @@ public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEv
     private void createGeneratePanel() {
         // Initialize Cipher ComboBox and Listener
         createComboBox();
-        this.btnGenerateKey = new JButton("Generate Key");
+        this.btnGenerateKey = new JButton("Tạo khóa");
         this.btnGenerateKey.addActionListener(this);
         // Add Components to Panel
         SwingComponentUtil.addComponentGridBag(
@@ -189,8 +183,57 @@ public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEv
                         .build(),
                 this.btnGenerateKey
         );
+        this.keyStatus = new JLabel();
+        keyStatus.setHorizontalTextPosition(SwingConstants.LEFT);
+
+        SwingComponentUtil.addComponentGridBag(
+                this.container,
+                GridBagConstraintsBuilder.builder()
+                        .grid(0, 2)
+                        .weight(1.0, 0.0)
+                        .insets(0, 10, 0, 0)
+                        .fill(GridBagConstraints.HORIZONTAL)
+                        .build(),
+                new JLabel("Tình trạng khóa:")
+        );
+
+        SwingComponentUtil.addComponentGridBag(
+                this.container,
+                GridBagConstraintsBuilder.builder()
+                        .grid(1, 2)
+                        .weight(1.0, 0.0)
+                        .gridSpan(5, 1)
+                        .fill(GridBagConstraints.HORIZONTAL)
+                        .build(),
+                this.keyStatus
+        );
+
+        SwingComponentUtil.addComponentGridBag(
+                this.container,
+                GridBagConstraintsBuilder.builder()
+                        .grid(0, 3)
+                        .insets(0, 10, 0, 0)
+                        .weight(1.0, 0.0)
+                        .fill(GridBagConstraints.HORIZONTAL)
+                        .build(),
+                new JLabel("Chi tiết khóa:")
+        );
+
+        this.detailKey = new JPanel(new GridBagLayout());
+
+        SwingComponentUtil.addComponentGridBag(
+                this.container,
+                GridBagConstraintsBuilder.builder()
+                        .grid(1, 3)
+                        .weight(1.0, 0.0)
+                        .gridSpan(15, 1)
+                        .fill(GridBagConstraints.HORIZONTAL)
+                        .build(),
+                detailKey
+        );
 
         updateModeAndPadding();
+        setKeyStatus(false);
     }
 
     private void createComboBox() {
@@ -339,13 +382,9 @@ public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEv
                         this.currentIVSize
                 );
                 symmetricCipherNative.loadKey(symmetricCipherNative.generateKey());
-            } catch (NoSuchPaddingException ex) {
-                throw new RuntimeException(ex);
-            } catch (NoSuchAlgorithmException ex) {
-                throw new RuntimeException(ex);
-            } catch (CipherException ex) {
-                throw new RuntimeException(ex);
+                setKeyStatus(true);
             } catch (Exception ex) {
+                setKeyStatus(false);
                 throw new RuntimeException(ex);
             }
         }
@@ -367,5 +406,75 @@ public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEv
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void setKeyStatus(boolean isSuccess) {
+        this.keyStatus.setIcon(isSuccess ? MetadataConfig.getINSTANCE().getSuccessIcon() : MetadataConfig.getINSTANCE().getWarningIcon());
+        this.keyStatus.setText(isSuccess ? "Đã xét khóa" : "Chưa xét khóa");
+        if (!isSuccess) {
+            this.keyStatus.setToolTipText("Vui lòng xét khóa trước khi mã hóa hoặc giải mã");
+            this.detailKey.setVisible(false);
+        } else {
+            this.detailKey.setVisible(true);
+            createDetailKey();
+        }
+    }
+
+    private void createDetailKey() {
+        this.detailKey.removeAll();
+        SwingComponentUtil.addComponentGridBag(
+                this.detailKey,
+                GridBagConstraintsBuilder.builder()
+                        .grid(0, 0)
+                        .weight(1.0, 0.0)
+                        .gridSpan(1, 1)
+                        .fill(GridBagConstraints.HORIZONTAL)
+                        .build(),
+                new JLabel("Thuật toán: " + this.currentCipher.getDisplayName())
+        );
+
+        SwingComponentUtil.addComponentGridBag(
+                this.detailKey,
+                GridBagConstraintsBuilder.builder()
+                        .grid(0, 1)
+                        .weight(1.0, 0.0)
+                        .gridSpan(1, 1)
+                        .fill(GridBagConstraints.HORIZONTAL)
+                        .build(),
+                new JLabel("Mode: " + this.currentMode.getDisplayName())
+        );
+
+        SwingComponentUtil.addComponentGridBag(
+                this.detailKey,
+                GridBagConstraintsBuilder.builder()
+                        .grid(0, 2)
+                        .weight(1.0, 0.0)
+                        .gridSpan(1, 1)
+                        .fill(GridBagConstraints.HORIZONTAL)
+                        .build(),
+                new JLabel("Padding: " + this.currentPadding.getDisplayName())
+        );
+
+        SwingComponentUtil.addComponentGridBag(
+                this.detailKey,
+                GridBagConstraintsBuilder.builder()
+                        .grid(0, 3)
+                        .weight(1.0, 0.0)
+                        .gridSpan(1, 1)
+                        .fill(GridBagConstraints.HORIZONTAL)
+                        .build(),
+                new JLabel("Key Size: " + this.currentKeySize + " bits")
+        );
+
+        SwingComponentUtil.addComponentGridBag(
+                this.detailKey,
+                GridBagConstraintsBuilder.builder()
+                        .grid(0, 4)
+                        .weight(1.0, 0.0)
+                        .gridSpan(1, 1)
+                        .fill(GridBagConstraints.HORIZONTAL)
+                        .build(),
+                new JLabel("IV Size: " + this.currentIVSize + " bits")
+        );
     }
 }

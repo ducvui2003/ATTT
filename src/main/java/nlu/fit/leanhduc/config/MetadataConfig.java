@@ -13,10 +13,16 @@ public class MetadataConfig {
     public static MetadataConfig INSTANCE;
     Image logo;
     ImageIcon tooltipIcon;
+    ImageIcon successIcon;
+    ImageIcon warningIcon;
 
     private MetadataConfig() {
         logo = Toolkit.getDefaultToolkit().getImage(MetadataConfig.class.getResource("/icons/app.png"));
         tooltipIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(MetadataConfig.class.getResource("/icons/tool-tip.png")));
+        successIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(MetadataConfig.class.getResource
+                ("/icons/success.png")));
+        warningIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(MetadataConfig.class.getResource
+                ("/icons/warning.png")));
     }
 
     public static MetadataConfig getINSTANCE() {

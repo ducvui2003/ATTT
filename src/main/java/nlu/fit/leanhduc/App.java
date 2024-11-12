@@ -5,11 +5,6 @@ import nlu.fit.leanhduc.controller.MainController;
 
 import javax.swing.*;
 import java.awt.*;
-import java.security.Provider;
-import java.security.Security;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class App {
     public static void main(String[] args) {
@@ -40,7 +35,6 @@ public class App {
         SwingUtilities.invokeLater(() -> {
             new MainController();
         });
-
 
     }
 }
