@@ -1,11 +1,11 @@
 package nlu.fit.leanhduc.controller;
 
 import nlu.fit.leanhduc.service.ISubstitutionCipher;
-import nlu.fit.leanhduc.service.cipher.symmetric.affine.AffineCipher;
-import nlu.fit.leanhduc.service.cipher.symmetric.hill.HillCipher;
-import nlu.fit.leanhduc.service.cipher.symmetric.shift.ShiftCipher;
-import nlu.fit.leanhduc.service.cipher.symmetric.subsitution.SubstitutionCipher;
-import nlu.fit.leanhduc.service.cipher.symmetric.vigenere.VigenereCipher;
+import nlu.fit.leanhduc.service.cipher.symmetric.AffineCipher;
+import nlu.fit.leanhduc.service.cipher.symmetric.HillCipher;
+import nlu.fit.leanhduc.service.cipher.symmetric.ShiftCipher;
+import nlu.fit.leanhduc.service.cipher.symmetric.SubstitutionCipher;
+import nlu.fit.leanhduc.service.cipher.symmetric.VigenereCipher;
 import nlu.fit.leanhduc.service.key.*;
 import nlu.fit.leanhduc.util.CipherException;
 import nlu.fit.leanhduc.util.alphabet.AlphabetUtil;

@@ -1,14 +1,18 @@
 package nlu.fit.leanhduc.service.key;
 
-public class ShiftKey implements IKeyDisplay {
+import lombok.Getter;
+
+import java.io.Serial;
+import java.io.Serializable;
+
+@Getter
+public class ShiftKey implements IKeyDisplay, Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
     Integer key;
 
     public ShiftKey(int key) {
         this.key = key;
-    }
-
-    public Integer getKey() {
-        return key;
     }
 
     @Override

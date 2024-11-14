@@ -1,13 +1,19 @@
-package nlu.fit.leanhduc.service.cipher.symmetric.hill;
+package nlu.fit.leanhduc.service.cipher.symmetric;
 
 import nlu.fit.leanhduc.service.ISubstitutionCipher;
+import nlu.fit.leanhduc.service.key.AffineKey;
 import nlu.fit.leanhduc.service.key.HillKey;
 import nlu.fit.leanhduc.util.CipherException;
 import nlu.fit.leanhduc.util.MatrixUtil;
 import nlu.fit.leanhduc.util.ModularUtil;
 import nlu.fit.leanhduc.util.alphabet.AlphabetUtil;
 
-public class HillCipher implements ISubstitutionCipher<HillKey> {
+import javax.crypto.NoSuchPaddingException;
+import java.io.*;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+
+public class HillCipher extends ASubstitutionCipher<HillKey> {
     protected HillKey key;
     protected AlphabetUtil alphabetUtil;
 
@@ -114,4 +120,16 @@ public class HillCipher implements ISubstitutionCipher<HillKey> {
         int[][] inverseMatrix = MatrixUtil.multiMatrix(detInverse, matrixTransposeKey);
         return inverseMatrix;
     }
+
+
+    @Override
+    public boolean encrypt(String src, String dest) throws CipherException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, FileNotFoundException {
+        return false;
+    }
+
+    @Override
+    public boolean decrypt(String src, String dest) throws CipherException {
+        return false;
+    }
+
 }

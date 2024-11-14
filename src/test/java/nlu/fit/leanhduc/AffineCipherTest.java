@@ -1,6 +1,6 @@
 package nlu.fit.leanhduc;
 
-import nlu.fit.leanhduc.service.cipher.symmetric.affine.AffineCipher;
+import nlu.fit.leanhduc.service.cipher.symmetric.AffineCipher;
 import nlu.fit.leanhduc.service.key.AffineKey;
 import nlu.fit.leanhduc.util.CipherException;
 import nlu.fit.leanhduc.util.alphabet.EnglishAlphabetUtil;
@@ -8,6 +8,8 @@ import nlu.fit.leanhduc.util.alphabet.VietnameseAlphabetUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
 
 public class AffineCipherTest {
     private AffineCipher englishCipher;
@@ -48,7 +50,7 @@ public class AffineCipherTest {
 
         Assertions.assertEquals(expectedCiphertext, encryptedText, "The encrypted text should match 'rclla'");
     }
-    
+
 
     @Test
     public void testEncryptAndDecryptWithKey9_2() throws CipherException {
@@ -73,5 +75,20 @@ public class AffineCipherTest {
         String encryptedText = englishCipher.encrypt(plaintext);
 
         Assertions.assertEquals(plaintext, encryptedText, "With key (1, 0), the encrypted text should match the plaintext");
+    }
+
+    @Test
+    public void testLoadAndSaveFile() {
+        keys = new AffineKey(7, 3);
+        try {
+            this.englishCipher.loadKey(keys);
+            englishCipher.saveKey("D:\\university\\ATTT\\security-tool\\src\\test\\resources\\affine\\key.txt");
+            englishCipher.loadKey("D:\\university\\ATTT\\security-tool\\src\\test\\resources\\affine\\key.txt");
+            System.out.println(this.keys.display());
+            System.out.println(englishCipher.getKey().display());
+            System.out.println(this.keys == englishCipher.getKey());
+        } catch (CipherException | IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

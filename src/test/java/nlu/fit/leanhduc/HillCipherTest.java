@@ -1,6 +1,6 @@
 package nlu.fit.leanhduc;
 
-import nlu.fit.leanhduc.service.cipher.symmetric.hill.HillCipher;
+import nlu.fit.leanhduc.service.cipher.symmetric.HillCipher;
 import nlu.fit.leanhduc.service.key.HillKey;
 import nlu.fit.leanhduc.util.CipherException;
 import nlu.fit.leanhduc.util.alphabet.EnglishAlphabetUtil;

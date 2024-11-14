@@ -4,11 +4,13 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+import nlu.fit.leanhduc.config.MetadataConfig;
 import nlu.fit.leanhduc.util.Constraint;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.io.File;
 
 @Getter
@@ -22,6 +24,7 @@ public class FileChooser extends JPanel {
     boolean onlyBtn;
     String textBtn = "Chọn file";
     Border combinedBorder;
+    String path;
 
     public FileChooser(Border borderFactory) {
         this.combinedBorder = borderFactory;
@@ -30,11 +33,12 @@ public class FileChooser extends JPanel {
     }
 
     public FileChooser() {
-        combinedBorder = BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(Color.BLACK),
-                BorderFactory.createEmptyBorder(5, 5, 5, 5)
-        );
         this.onlyBtn = false;
+        init();
+    }
+
+    public FileChooser(String textBtn) {
+        this.textBtn = textBtn;
         init();
     }
 
@@ -51,7 +55,11 @@ public class FileChooser extends JPanel {
             createLabel();
             this.add(label, BorderLayout.CENTER);
         }
-        this.add(button, BorderLayout.EAST);
+        if (onlyBtn)
+            this.add(button, BorderLayout.CENTER);
+        else
+            this.add(button, BorderLayout.EAST);
+
         this.setBorder(combinedBorder);
     }
 
@@ -59,6 +67,7 @@ public class FileChooser extends JPanel {
         label = new JLabel();
         label.setPreferredSize(new Dimension(100, 30));
         label.setFont(Constraint.FONT_MEDIUM);
+        label.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
     }
 
     private void createButton() {
@@ -80,6 +89,7 @@ public class FileChooser extends JPanel {
                 if (label != null)
                     label.setText(name);
                 this.event.autoAddExtension(selectedFile);
+                setPath(selectedFile.getAbsolutePath());
                 this.event.onFileSelected(selectedFile);
                 break;
             case JFileChooser.CANCEL_OPTION:
@@ -93,5 +103,10 @@ public class FileChooser extends JPanel {
 
     public void cancel() {
         label.setText("");
+    }
+
+    public void setIcon(ImageIcon icon) {
+        button.setIcon(icon);
+        button.setIconTextGap(10);
     }
 }

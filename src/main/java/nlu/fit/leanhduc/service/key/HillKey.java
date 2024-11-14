@@ -4,9 +4,15 @@ import lombok.Getter;
 import lombok.Setter;
 import nlu.fit.leanhduc.util.MatrixUtil;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 @Setter
 @Getter
-public class HillKey implements IKeyDisplay {
+public class HillKey implements IKeyDisplay, Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     int[][] key;
 
     public HillKey(int[][] key) {

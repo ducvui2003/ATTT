@@ -1,4 +1,4 @@
-package nlu.fit.leanhduc.view.component.panel;
+package nlu.fit.leanhduc.view.component.panel.text;
 
 import nlu.fit.leanhduc.view.component.GridBagConstraintsBuilder;
 import nlu.fit.leanhduc.view.component.SwingComponentUtil;

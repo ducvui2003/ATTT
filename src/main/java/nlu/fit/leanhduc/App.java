@@ -32,9 +32,7 @@ public class App {
             System.err.println("Failed to initialize LaF");
         }
 
-        SwingUtilities.invokeLater(() -> {
-            new MainController();
-        });
+        SwingUtilities.invokeLater(MainController::new);
 
     }
 }

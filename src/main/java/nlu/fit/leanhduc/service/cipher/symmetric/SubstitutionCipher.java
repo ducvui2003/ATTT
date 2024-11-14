@@ -1,14 +1,17 @@
-package nlu.fit.leanhduc.service.cipher.symmetric.subsitution;
+package nlu.fit.leanhduc.service.cipher.symmetric;
 
 
 import lombok.Getter;
-import nlu.fit.leanhduc.service.IKeyGenerator;
 import nlu.fit.leanhduc.service.ISubstitutionCipher;
-import nlu.fit.leanhduc.service.ITextEncrypt;
 import nlu.fit.leanhduc.service.key.SubstitutionKey;
 import nlu.fit.leanhduc.util.CipherException;
 import nlu.fit.leanhduc.util.alphabet.AlphabetUtil;
 
+import javax.crypto.NoSuchPaddingException;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 @Getter
@@ -85,5 +88,25 @@ public class SubstitutionCipher implements ISubstitutionCipher<SubstitutionKey> 
             result.append(decryptMap.getOrDefault(ch, ch));
         }
         return result.toString();
+    }
+
+    @Override
+    public boolean encrypt(String src, String dest) throws CipherException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, FileNotFoundException {
+        return false;
+    }
+
+    @Override
+    public boolean decrypt(String src, String dest) throws CipherException {
+        return false;
+    }
+
+    @Override
+    public boolean loadKey(String src) throws IOException {
+        return false;
+    }
+
+    @Override
+    public boolean saveKey(String dest) throws IOException {
+        return false;
     }
 }

@@ -1,15 +1,15 @@
 package nlu.fit.leanhduc.service.key;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
+import java.io.Serializable;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AffineKey implements IKeyDisplay {
+@EqualsAndHashCode
+public class AffineKey implements IKeyDisplay, Serializable {
     private int a;
     private int b;
 

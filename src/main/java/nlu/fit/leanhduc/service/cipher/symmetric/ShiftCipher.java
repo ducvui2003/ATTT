@@ -1,22 +1,25 @@
-package nlu.fit.leanhduc.service.cipher.symmetric.shift;
+package nlu.fit.leanhduc.service.cipher.symmetric;
 
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
-import nlu.fit.leanhduc.service.IKeyGenerator;
 import nlu.fit.leanhduc.service.ISubstitutionCipher;
-import nlu.fit.leanhduc.service.ITextEncrypt;
 import nlu.fit.leanhduc.service.key.ShiftKey;
 import nlu.fit.leanhduc.util.CipherException;
 import nlu.fit.leanhduc.util.alphabet.AlphabetUtil;
 
+import javax.crypto.NoSuchPaddingException;
+import java.io.*;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Random;
 
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ShiftCipher implements ISubstitutionCipher<ShiftKey> {
+    protected ShiftKey key;
     protected Integer shift;
     protected Random rd = new Random();
     protected AlphabetUtil alphabet;
@@ -32,6 +35,7 @@ public class ShiftCipher implements ISubstitutionCipher<ShiftKey> {
 
     @Override
     public void loadKey(ShiftKey key) throws CipherException {
+        this.key = key;
         this.shift = key.getKey();
     }
 
@@ -77,5 +81,31 @@ public class ShiftCipher implements ISubstitutionCipher<ShiftKey> {
             result += ce;
         }
         return result;
+    }
+
+    @Override
+    public boolean encrypt(String src, String dest) throws CipherException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, FileNotFoundException {
+        return false;
+    }
+
+    @Override
+    public boolean decrypt(String src, String dest) throws CipherException {
+        return false;
+    }
+
+    @Override
+    public boolean loadKey(String src) throws IOException {
+        return false;
+    }
+
+    @Override
+    public boolean saveKey(String dest) throws IOException {
+        File file = new File(dest);
+        try (ObjectOutputStream ois = new ObjectOutputStream(new FileOutputStream(file))) {
+            ois.writeObject(key);
+            return true;
+        } catch (EOFException e) {
+            return false;
+        }
     }
 }

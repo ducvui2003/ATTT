@@ -1,7 +1,7 @@
 package nlu.fit.leanhduc;
 
 
-import nlu.fit.leanhduc.service.cipher.symmetric.subsitution.SubstitutionCipher;
+import nlu.fit.leanhduc.service.cipher.symmetric.SubstitutionCipher;
 import nlu.fit.leanhduc.service.key.SubstitutionKey;
 import nlu.fit.leanhduc.util.CipherException;
 import nlu.fit.leanhduc.util.alphabet.EnglishAlphabetUtil;

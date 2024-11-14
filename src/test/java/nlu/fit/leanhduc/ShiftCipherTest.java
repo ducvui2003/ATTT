@@ -1,6 +1,6 @@
 package nlu.fit.leanhduc;
 
-import nlu.fit.leanhduc.service.cipher.symmetric.shift.ShiftCipher;
+import nlu.fit.leanhduc.service.cipher.symmetric.ShiftCipher;
 import nlu.fit.leanhduc.service.key.ShiftKey;
 import nlu.fit.leanhduc.util.CipherException;
 import nlu.fit.leanhduc.util.Constraint;

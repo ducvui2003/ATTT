@@ -15,6 +15,10 @@ public class MetadataConfig {
     ImageIcon tooltipIcon;
     ImageIcon successIcon;
     ImageIcon warningIcon;
+    ImageIcon uploadIcon;
+    ImageIcon saveIcon;
+    ImageIcon encryptIcon;
+    ImageIcon decryptIcon;
 
     private MetadataConfig() {
         logo = Toolkit.getDefaultToolkit().getImage(MetadataConfig.class.getResource("/icons/app.png"));
@@ -23,6 +27,14 @@ public class MetadataConfig {
                 ("/icons/success.png")));
         warningIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(MetadataConfig.class.getResource
                 ("/icons/warning.png")));
+        uploadIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(MetadataConfig.class.getResource
+                ("/icons/upload.png")));
+        saveIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(MetadataConfig.class.getResource
+                ("/icons/save.png")));
+        encryptIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(MetadataConfig.class.getResource
+                ("/icons/lock.png")));
+        decryptIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(MetadataConfig.class.getResource
+                ("/icons/unlock.png")));
     }
 
     public static MetadataConfig getINSTANCE() {

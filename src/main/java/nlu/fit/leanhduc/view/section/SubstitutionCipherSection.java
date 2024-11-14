@@ -11,8 +11,11 @@ import nlu.fit.leanhduc.view.component.GridBagConstraintsBuilder;
 import nlu.fit.leanhduc.view.component.SwingComponentUtil;
 import nlu.fit.leanhduc.view.component.fileChooser.FileChooser;
 import nlu.fit.leanhduc.view.component.fileChooser.FileChooserEvent;
-import nlu.fit.leanhduc.view.component.panel.*;
+import nlu.fit.leanhduc.view.component.panel.file.PanelFileHandler;
 import nlu.fit.leanhduc.view.component.panel.key.*;
+import nlu.fit.leanhduc.view.component.panel.text.PanelHandler;
+import nlu.fit.leanhduc.view.component.panel.text.PanelTextHandler;
+import nlu.fit.leanhduc.view.component.panel.text.PanelTextHandlerEvent;
 
 import javax.swing.*;
 import java.awt.*;
@@ -104,7 +107,7 @@ public class SubstitutionCipherSection extends JPanel implements FileChooserEven
                         .build()
                 , new JLabel("Tải khóa từ file"));
 
-        this.fileChooser = new FileChooser();
+        this.fileChooser = new FileChooser(true,"Tải key");
         this.fileChooser.setEvent(this);
 
         SwingComponentUtil.addComponentGridBag(

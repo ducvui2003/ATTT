@@ -1,4 +1,4 @@
-package nlu.fit.leanhduc.service.cipher.symmetric.vigenere;
+package nlu.fit.leanhduc.service.cipher.symmetric;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -7,6 +7,11 @@ import nlu.fit.leanhduc.service.key.ViginereKey;
 import nlu.fit.leanhduc.util.CipherException;
 import nlu.fit.leanhduc.util.alphabet.AlphabetUtil;
 
+import javax.crypto.NoSuchPaddingException;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -89,5 +94,25 @@ public class VigenereCipher implements ISubstitutionCipher<ViginereKey> {
             if (!isLower) result = Character.toUpperCase(result);
         }
         return result;
+    }
+
+    @Override
+    public boolean encrypt(String src, String dest) throws CipherException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, FileNotFoundException {
+        return false;
+    }
+
+    @Override
+    public boolean decrypt(String src, String dest) throws CipherException {
+        return false;
+    }
+
+    @Override
+    public boolean loadKey(String src) throws IOException {
+        return false;
+    }
+
+    @Override
+    public boolean saveKey(String dest) throws IOException {
+        return false;
     }
 }
