@@ -1,6 +1,6 @@
 package nlu.fit.leanhduc;
 
-import nlu.fit.leanhduc.service.cipher.symmetric.ShiftCipher;
+import nlu.fit.leanhduc.service.cipher.classic.ShiftCipher;
 import nlu.fit.leanhduc.service.key.ShiftKey;
 import nlu.fit.leanhduc.util.CipherException;
 import nlu.fit.leanhduc.util.Constraint;
@@ -8,6 +8,8 @@ import nlu.fit.leanhduc.util.alphabet.EnglishAlphabetUtil;
 import nlu.fit.leanhduc.util.alphabet.VietnameseAlphabetUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -95,5 +97,18 @@ class ShiftCipherTest {
         String expected = "Ặỵỳ";
         String actual = shiftCipherVietnamese.decrypt(plaintext);
         assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testLoadAndSaveFile() {
+        try {
+            this.shiftCipher.loadKey(key);
+            shiftCipher.saveKey("D:\\university\\ATTT\\security-tool\\src\\test\\resources\\shift\\key.txt");
+            shiftCipher.loadKey("D:\\university\\ATTT\\security-tool\\src\\test\\resources\\shift\\key.txt");
+            System.out.println(this.key.display());
+            System.out.println(shiftCipher.getKey().display());
+        } catch (CipherException | IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

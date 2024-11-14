@@ -4,6 +4,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class FileUtil {
@@ -15,12 +16,11 @@ public class FileUtil {
         FileOutputStream fileOut = new FileOutputStream(fileName);
         DataOutputStream dataOut = new DataOutputStream(fileOut);
 
-        byte[] keyBytes = key.getEncoded(); // Get the raw bytes of the key
-        dataOut.writeInt(keyBytes.length);  // Write the length of the byte array first
-        dataOut.write(keyBytes);            // Write the actual byte array
+        byte[] keyBytes = key.getEncoded();
+        dataOut.writeInt(keyBytes.length);
+        dataOut.write(keyBytes);
 
         System.out.println("SecretKey saved to " + fileName);
-
     }
 
     public static SecretKey loadKeyFromFile(String fileName, String algorithm) {
@@ -36,6 +36,20 @@ public class FileUtil {
         } catch (IOException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    private void createPathIfNotExists(String filePath) throws IOException {
+        Path file = Path.of(filePath);
+        Path parentDir = file.getParent();
+
+        // Check if the parent directory exists; if not, create it
+        if (parentDir != null && !Files.exists(parentDir)) {
+            Files.createDirectories(parentDir);
+        }
+
+        if (!Files.exists(file)) {
+            Files.createFile(file);
         }
     }
 }

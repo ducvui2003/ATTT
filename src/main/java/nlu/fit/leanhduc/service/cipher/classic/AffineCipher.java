@@ -1,7 +1,6 @@
-package nlu.fit.leanhduc.service.cipher.symmetric;
+package nlu.fit.leanhduc.service.cipher.classic;
 
 import lombok.Getter;
-import nlu.fit.leanhduc.service.ISubstitutionCipher;
 import nlu.fit.leanhduc.service.key.AffineKey;
 import nlu.fit.leanhduc.util.CipherException;
 import nlu.fit.leanhduc.util.Constraint;
@@ -15,20 +14,19 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Random;
 
 @Getter
-public class AffineCipher implements ISubstitutionCipher<AffineKey> {
-    protected AffineKey key;
+public class AffineCipher extends AbsClassicCipher<AffineKey> {
     protected Random rd;
     protected int range;
-    protected AlphabetUtil alphabetUtil;
 
     public AffineCipher(AlphabetUtil alphabetUtil) {
+        super(alphabetUtil);
         this.rd = new Random();
-        this.alphabetUtil = alphabetUtil;
         this.range = this.alphabetUtil.getLength();
     }
 
     @Override
     public void loadKey(AffineKey key) throws CipherException {
+        super.loadKey(key);
         if (ModularUtil.findGCD(key.getA(), Constraint.ALPHABET_SIZE) != 1)
             throw new CipherException("Key is not a greatest common divisor");
         this.key = key;
@@ -92,27 +90,4 @@ public class AffineCipher implements ISubstitutionCipher<AffineKey> {
         return false;
     }
 
-    @Override
-    public boolean loadKey(String src) throws IOException {
-        File file = new File(src);
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
-            AffineKey key = (AffineKey) ois.readObject();
-            this.loadKey(key);
-            return true;
-        } catch (EOFException | ClassNotFoundException | CipherException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    @Override
-    public boolean saveKey(String dest) throws IOException {
-        File file = new File(dest);
-        try (ObjectOutputStream ois = new ObjectOutputStream(new FileOutputStream(file))) {
-            ois.writeObject(key);
-            return true;
-        } catch (EOFException e) {
-            return false;
-        }
-    }
 }

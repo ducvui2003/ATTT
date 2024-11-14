@@ -1,33 +1,30 @@
-package nlu.fit.leanhduc.service.cipher.symmetric;
+package nlu.fit.leanhduc.service.cipher.classic;
 
 
 import lombok.Getter;
-import nlu.fit.leanhduc.service.ISubstitutionCipher;
 import nlu.fit.leanhduc.service.key.SubstitutionKey;
 import nlu.fit.leanhduc.util.CipherException;
 import nlu.fit.leanhduc.util.alphabet.AlphabetUtil;
 
 import javax.crypto.NoSuchPaddingException;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 @Getter
-public class SubstitutionCipher implements ISubstitutionCipher<SubstitutionKey> {
+public class ClassicCipher extends AbsClassicCipher<SubstitutionKey> {
     private Map<Character, Character> encryptMap;
     private Map<Character, Character> decryptMap;
-    private AlphabetUtil alphabet;
 
-    public SubstitutionCipher(AlphabetUtil alphabet) {
-        this.alphabet = alphabet;
+    public ClassicCipher(AlphabetUtil alphabetUtil) {
+        super(alphabetUtil);
     }
 
     @Override
     public SubstitutionKey generateKey() {
-        List<Character> alphabet = this.alphabet.generateAlphabet(false);
-        List<Character> mappingAlphabet = this.alphabet.generateAlphabet(true);
+        List<Character> alphabet = this.alphabetUtil.generateAlphabet(false);
+        List<Character> mappingAlphabet = this.alphabetUtil.generateAlphabet(true);
 
         for (int i = 0; i < alphabet.size(); i++) {
             if (alphabet.get(i).equals(mappingAlphabet.get(i))) {
@@ -47,9 +44,7 @@ public class SubstitutionCipher implements ISubstitutionCipher<SubstitutionKey> 
 
     @Override
     public void loadKey(SubstitutionKey key) throws CipherException {
-        if (!validationKey(key.getKey())) {
-            throw new CipherException("Invalid key");
-        }
+        super.loadKey(key);
         this.encryptMap = key.getKey();
         this.decryptMap = createDecryptMap();
     }
@@ -100,13 +95,4 @@ public class SubstitutionCipher implements ISubstitutionCipher<SubstitutionKey> 
         return false;
     }
 
-    @Override
-    public boolean loadKey(String src) throws IOException {
-        return false;
-    }
-
-    @Override
-    public boolean saveKey(String dest) throws IOException {
-        return false;
-    }
 }

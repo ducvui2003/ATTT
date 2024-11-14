@@ -3,14 +3,14 @@ package nlu.fit.leanhduc.view.component.panel.file;
 import nlu.fit.leanhduc.config.MetadataConfig;
 import nlu.fit.leanhduc.view.component.GridBagConstraintsBuilder;
 import nlu.fit.leanhduc.view.component.SwingComponentUtil;
-import nlu.fit.leanhduc.view.component.fileChooser.FileChooserLabel;
+import nlu.fit.leanhduc.view.component.fileChooser.FileChooserButton;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
 
 public class PanelFileHandlerEncrypt extends JPanel {
-    FileChooserLabel labelFileEncryptInput, labelFileEncryptOutput;
+    FileChooserButton labelFileEncryptInput, labelFileEncryptOutput;
     JButton btnEncrypt;
 
     public PanelFileHandlerEncrypt() {
@@ -19,8 +19,8 @@ public class PanelFileHandlerEncrypt extends JPanel {
 
     private void init() {
         this.setLayout(new BorderLayout());
-        this.labelFileEncryptInput = new FileChooserLabel("Chọn file", MetadataConfig.getINSTANCE().getUploadIcon());
-        this.labelFileEncryptOutput = new FileChooserLabel("Chọn file", MetadataConfig.getINSTANCE().getUploadIcon());
+        this.labelFileEncryptInput = new FileChooserButton("Chọn file", MetadataConfig.getINSTANCE().getUploadIcon());
+        this.labelFileEncryptOutput = new FileChooserButton("Chọn file", MetadataConfig.getINSTANCE().getUploadIcon());
 
         this.btnEncrypt = new JButton("Mã hóa");
         this.btnEncrypt.setIcon(MetadataConfig.getINSTANCE().getEncryptIcon());

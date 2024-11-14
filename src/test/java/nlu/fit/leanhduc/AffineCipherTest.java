@@ -1,6 +1,6 @@
 package nlu.fit.leanhduc;
 
-import nlu.fit.leanhduc.service.cipher.symmetric.AffineCipher;
+import nlu.fit.leanhduc.service.cipher.classic.AffineCipher;
 import nlu.fit.leanhduc.service.key.AffineKey;
 import nlu.fit.leanhduc.util.CipherException;
 import nlu.fit.leanhduc.util.alphabet.EnglishAlphabetUtil;
@@ -86,7 +86,6 @@ public class AffineCipherTest {
             englishCipher.loadKey("D:\\university\\ATTT\\security-tool\\src\\test\\resources\\affine\\key.txt");
             System.out.println(this.keys.display());
             System.out.println(englishCipher.getKey().display());
-            System.out.println(this.keys == englishCipher.getKey());
         } catch (CipherException | IOException e) {
             throw new RuntimeException(e);
         }

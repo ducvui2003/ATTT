@@ -2,11 +2,10 @@ package nlu.fit.leanhduc.view.component.dialog;
 
 
 import nlu.fit.leanhduc.controller.MainController;
-import nlu.fit.leanhduc.service.IKeyGenerator;
+import nlu.fit.leanhduc.service.ICipher;
+import nlu.fit.leanhduc.service.ITextKey;
 import nlu.fit.leanhduc.service.key.IKeyDisplay;
-import nlu.fit.leanhduc.service.key.SubstitutionKey;
 import nlu.fit.leanhduc.service.key.ViginereKey;
-import nlu.fit.leanhduc.util.FileUtil;
 import nlu.fit.leanhduc.util.constraint.Cipher;
 import nlu.fit.leanhduc.util.constraint.Language;
 import nlu.fit.leanhduc.util.constraint.Mode;
@@ -194,11 +193,11 @@ public class GenerateKeyDialog extends CustomDialog implements ActionListener {
                     JOptionPane.showMessageDialog(this, "Độ dài khóa không hợp lệ", "Lỗi", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-                IKeyGenerator<ViginereKey> keyGenerator = this.controller.generateKey(language, length);
+                ICipher<ViginereKey> keyGenerator = this.controller.generateKey(language, length);
                 textArea.setText(keyGenerator.generateKey().display());
                 return;
             }
-            IKeyGenerator<?> keyGenerator = controller.generateKey(cipher, language);
+            ICipher<?> keyGenerator = controller.generateKey(cipher, language);
             if (keyGenerator.generateKey() instanceof IKeyDisplay keyDisplay) {
                 textArea.setText(keyDisplay.display());
             }

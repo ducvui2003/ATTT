@@ -1,7 +1,5 @@
-package nlu.fit.leanhduc.service.cipher.symmetric;
+package nlu.fit.leanhduc.service.cipher.classic;
 
-import nlu.fit.leanhduc.service.ISubstitutionCipher;
-import nlu.fit.leanhduc.service.key.AffineKey;
 import nlu.fit.leanhduc.service.key.HillKey;
 import nlu.fit.leanhduc.util.CipherException;
 import nlu.fit.leanhduc.util.MatrixUtil;
@@ -9,21 +7,14 @@ import nlu.fit.leanhduc.util.ModularUtil;
 import nlu.fit.leanhduc.util.alphabet.AlphabetUtil;
 
 import javax.crypto.NoSuchPaddingException;
-import java.io.*;
+import java.io.FileNotFoundException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
-public class HillCipher extends ASubstitutionCipher<HillKey> {
-    protected HillKey key;
-    protected AlphabetUtil alphabetUtil;
+public class HillCipher extends AbsClassicCipher<HillKey> {
 
-    public HillCipher(AlphabetUtil alphabetUtil) {
-        this.alphabetUtil = alphabetUtil;
-    }
-
-    @Override
-    public void loadKey(HillKey key) throws CipherException {
-        this.key = key;
+    public HillCipher(AlphabetUtil alphabet) {
+        super(alphabet);
     }
 
     @Override

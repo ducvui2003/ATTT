@@ -1,10 +1,7 @@
 package nlu.fit.leanhduc.controller;
 
-import nlu.fit.leanhduc.service.cipher.symmetric.cryto.Algorithm;
-import nlu.fit.leanhduc.service.cipher.symmetric.cryto.SymmetricCipherNative;
-
-import javax.crypto.NoSuchPaddingException;
-import java.security.NoSuchAlgorithmException;
+import nlu.fit.leanhduc.service.cipher.symmetric.Algorithm;
+import nlu.fit.leanhduc.service.cipher.symmetric.SymmetricCipherNative;
 
 public class SymmetricCipherNativeController {
     private static SymmetricCipherNativeController INSTANCE;

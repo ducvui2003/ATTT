@@ -1,6 +1,10 @@
-package nlu.fit.leanhduc.service.cipher.symmetric.cryto;
+package nlu.fit.leanhduc.service.cipher.symmetric;
 
+import nlu.fit.leanhduc.service.key.KeySymmetric;
 import nlu.fit.leanhduc.util.CipherException;
+import nlu.fit.leanhduc.util.FileUtil;
+import nlu.fit.leanhduc.util.convert.Base64ConversionStrategy;
+import nlu.fit.leanhduc.util.convert.ByteConversionStrategy;
 
 import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
@@ -10,10 +14,15 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
-public class SymmetricCipherNative extends AbsCipherNative {
+public class SymmetricCipherNative extends AbsCipherNative<KeySymmetric> {
     SecretKey secretKey;
     Cipher cipher;
     IvParameterSpec iv;
+
+
+    public SymmetricCipherNative() {
+
+    }
 
     public SymmetricCipherNative(Algorithm algorithm) throws Exception {
         super(algorithm);
@@ -21,26 +30,33 @@ public class SymmetricCipherNative extends AbsCipherNative {
         if (algorithm.getIvSize() != 0) {
             iv = generateIV();
         }
+
     }
 
-    public IvParameterSpec generateIV() throws Exception {
+    public IvParameterSpec generateIV() {
         byte[] iv = new byte[algorithm.getIvSize() / 8];
-        new SecureRandom().nextBytes(iv);
+        SecureRandom random = new SecureRandom();
+        random.nextBytes(iv);
         return new IvParameterSpec(iv);
     }
 
     @Override
-    public void loadKey(SecretKey secretKey) throws CipherException {
-        this.secretKey = secretKey;
+    public void loadKey(KeySymmetric key) throws CipherException {
+        this.secretKey = key.getSecretKey();
+        this.iv = key.getIv();
     }
 
     @Override
-    public SecretKey generateKey() {
+    public KeySymmetric generateKey() {
+        KeySymmetric key = new KeySymmetric();
         try {
             KeyGenerator keyGenerator = KeyGenerator.getInstance(this.algorithm.cipher);
             keyGenerator.init(algorithm.getKeySize());
             secretKey = keyGenerator.generateKey();
-            return secretKey;
+            IvParameterSpec iv = generateIV();
+            key.setSecretKey(secretKey);
+            key.setIv(iv);
+            return key;
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
             return null;
@@ -48,21 +64,26 @@ public class SymmetricCipherNative extends AbsCipherNative {
     }
 
     @Override
-    public byte[] encrypt(String data) throws Exception {
+    public String encrypt(String data) throws Exception {
         if (algorithm.getIvSize() == 0)
             cipher.init(Cipher.ENCRYPT_MODE, this.secretKey);
         else
             cipher.init(Cipher.ENCRYPT_MODE, this.secretKey, this.iv);
-        return cipher.doFinal(data.getBytes(StandardCharsets.UTF_8));
+        return this.conversionStrategy.convert(cipher.doFinal(data.getBytes(StandardCharsets.UTF_8)));
     }
 
     @Override
-    public String decrypt(byte[] data) throws Exception {
-        if (algorithm.getIvSize() == 0)
-            cipher.init(Cipher.DECRYPT_MODE, this.secretKey);
-        else
-            cipher.init(Cipher.DECRYPT_MODE, this.secretKey, this.iv);
-        return new String(cipher.doFinal(data), StandardCharsets.UTF_8);
+    public String decrypt(String encryptText) throws CipherException {
+        try {
+            byte[] data = this.conversionStrategy.convert(encryptText);
+            if (algorithm.getIvSize() == 0)
+                cipher.init(Cipher.DECRYPT_MODE, this.secretKey);
+            else
+                cipher.init(Cipher.DECRYPT_MODE, this.secretKey, this.iv);
+            return new String(cipher.doFinal(data), StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            throw new CipherException(e.getMessage());
+        }
     }
 
     @Override
@@ -119,6 +140,28 @@ public class SymmetricCipherNative extends AbsCipherNative {
             return true;
         } catch (Exception e) {
             throw new CipherException(e.getMessage());
+        }
+    }
+
+    @Override
+    public boolean loadKey(String src) throws IOException {
+        try {
+            FileUtil.loadKeyFromFile(src, algorithm.cipher);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public boolean saveKey(String dest) throws IOException {
+        try {
+            FileUtil.saveKeyToFile(secretKey, dest);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
     }
 }

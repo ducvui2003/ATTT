@@ -1,15 +1,16 @@
 package nlu.fit.leanhduc.view.section;
 
+import nlu.fit.leanhduc.config.MetadataConfig;
 import nlu.fit.leanhduc.controller.MainController;
 import nlu.fit.leanhduc.controller.SubstitutionCipherController;
-import nlu.fit.leanhduc.service.IKeyGenerator;
+import nlu.fit.leanhduc.service.ICipher;
 import nlu.fit.leanhduc.service.key.*;
 import nlu.fit.leanhduc.util.CipherException;
 import nlu.fit.leanhduc.util.constraint.Cipher;
 import nlu.fit.leanhduc.util.constraint.Language;
 import nlu.fit.leanhduc.view.component.GridBagConstraintsBuilder;
 import nlu.fit.leanhduc.view.component.SwingComponentUtil;
-import nlu.fit.leanhduc.view.component.fileChooser.FileChooser;
+import nlu.fit.leanhduc.view.component.fileChooser.FileChooserButton;
 import nlu.fit.leanhduc.view.component.fileChooser.FileChooserEvent;
 import nlu.fit.leanhduc.view.component.panel.file.PanelFileHandler;
 import nlu.fit.leanhduc.view.component.panel.key.*;
@@ -27,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 
 public class SubstitutionCipherSection extends JPanel implements FileChooserEvent, ActionListener, PanelTextHandlerEvent {
-    FileChooser fileChooser;
     JComboBox<Cipher> comboBoxCipher;
     JComboBox<Language> comboBoxLanguage;
     JTextField plainTextBlock, encryptBlock, decryptBlock;
@@ -42,6 +42,7 @@ public class SubstitutionCipherSection extends JPanel implements FileChooserEven
     final String commandComboBoxCipher = "comboBoxCipher";
     final String commandComboBoxLanguage = "comboBoxLanguage";
     final String commandCreateKey = "createKey";
+    final String commandLoadKey = "LoadKey";
     final KeyTypingPanel<ShiftKey> shiftKeyTypingPanel = new ShiftKeyTypingPanel(controller);
     final KeyTypingPanel<SubstitutionKey> substitutionKeyTypingPanel = new SubstitutionTypingPanel(controller);
     final KeyTypingPanel<AffineKey> affineKeyTypingPanel = new AffineKeyTypingPanel(controller);
@@ -51,6 +52,7 @@ public class SubstitutionCipherSection extends JPanel implements FileChooserEven
     PanelHandler panelTextHandler, panelFileHandler;
     GridBagConstraints gbc;
     JPanel container;
+    FileChooserButton btnLoadKey;
 
     public SubstitutionCipherSection(MainController controller) {
         this.controller = controller;
@@ -64,6 +66,8 @@ public class SubstitutionCipherSection extends JPanel implements FileChooserEven
         this.add(container, BorderLayout.NORTH);
         this.comboBoxCipher = new JComboBox<>(List.of(Cipher.SHIFT, Cipher.SUBSTITUTION, Cipher.AFFINE, Cipher.VIGENERE, Cipher.HILL).toArray(new Cipher[0]));
         this.comboBoxLanguage = new JComboBox<>(Language.values());
+        this.btnLoadKey = new FileChooserButton("Chọn file", MetadataConfig.INSTANCE.getUploadIcon());
+        this.btnLoadKey.setEvent(this);
         createKeyPanel();
         createTabbedPane();
     }
@@ -107,8 +111,6 @@ public class SubstitutionCipherSection extends JPanel implements FileChooserEven
                         .build()
                 , new JLabel("Tải khóa từ file"));
 
-        this.fileChooser = new FileChooser(true,"Tải key");
-        this.fileChooser.setEvent(this);
 
         SwingComponentUtil.addComponentGridBag(
                 this.container,
@@ -117,7 +119,7 @@ public class SubstitutionCipherSection extends JPanel implements FileChooserEven
                         .weight(1.0, 0.0)
                         .fill(GridBagConstraints.HORIZONTAL)
                         .build()
-                , fileChooser);
+                , btnLoadKey);
 
         this.btnCreateKey = new JButton("Tạo khóa");
         this.btnCreateKey.setActionCommand(commandCreateKey);
@@ -210,7 +212,10 @@ public class SubstitutionCipherSection extends JPanel implements FileChooserEven
 
     @Override
     public void onFileSelected(File file) {
-
+        try {
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     @Override
@@ -232,6 +237,8 @@ public class SubstitutionCipherSection extends JPanel implements FileChooserEven
                     encryptBlock.setText(encrypt);
                 } catch (CipherException ex) {
                     JOptionPane.showMessageDialog(this, ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
                 }
                 break;
             case commandDecrypt:
@@ -250,14 +257,16 @@ public class SubstitutionCipherSection extends JPanel implements FileChooserEven
             case commandComboBoxLanguage:
                 languageCurrent = (Language) comboBoxLanguage.getSelectedItem();
             case commandCreateKey:
-                IKeyGenerator<?> keyGenerator = controller.generateKey(cipherCurrent, languageCurrent);
+                ICipher<?> keyGenerator = controller.generateKey(cipherCurrent, languageCurrent);
                 replaceKeyTypingPanel(cipherCurrent, keyGenerator);
+            case commandLoadKey:
+                break;
             default:
                 break;
         }
     }
 
-    private void replaceKeyTypingPanel(Cipher cipher, IKeyGenerator keyGenerator) {
+    private void replaceKeyTypingPanel(Cipher cipher, ICipher keyGenerator) {
         panelTypeKey.removeAll();
         panelTypeKey.repaint();
         switch (cipher) {
@@ -286,19 +295,19 @@ public class SubstitutionCipherSection extends JPanel implements FileChooserEven
     @Override
     public String onEncrypt(String plainText) {
         try {
-            String encrypt = SubstitutionCipherController.getINSTANCE().encrypt(plainText, currentKeyTypingPanel.getKey(), cipherCurrent, languageCurrent);
-            return encrypt;
+            return SubstitutionCipherController.getINSTANCE().encrypt(plainText, currentKeyTypingPanel.getKey(), cipherCurrent, languageCurrent);
         } catch (CipherException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
             return "";
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
     @Override
     public String onDecrypt(String cipherText) {
         try {
-            String decrypt = SubstitutionCipherController.getINSTANCE().decrypt(cipherText, currentKeyTypingPanel.getKey(), cipherCurrent, languageCurrent);
-            return decrypt;
+            return SubstitutionCipherController.getINSTANCE().decrypt(cipherText, currentKeyTypingPanel.getKey(), cipherCurrent, languageCurrent);
         } catch (CipherException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
             return "";

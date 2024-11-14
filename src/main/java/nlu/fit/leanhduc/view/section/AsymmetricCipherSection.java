@@ -3,7 +3,7 @@ package nlu.fit.leanhduc.view.section;
 import nlu.fit.leanhduc.controller.MainController;
 import nlu.fit.leanhduc.controller.SymmetricCipherNativeController;
 import nlu.fit.leanhduc.service.cipher.CipherSpecification;
-import nlu.fit.leanhduc.service.cipher.symmetric.cryto.SymmetricCipherNative;
+import nlu.fit.leanhduc.service.cipher.symmetric.SymmetricCipherNative;
 import nlu.fit.leanhduc.util.constraint.Cipher;
 import nlu.fit.leanhduc.util.constraint.Mode;
 import nlu.fit.leanhduc.util.constraint.Padding;

@@ -1,11 +1,12 @@
 package nlu.fit.leanhduc.controller;
 
-import nlu.fit.leanhduc.service.ISubstitutionCipher;
-import nlu.fit.leanhduc.service.cipher.symmetric.AffineCipher;
-import nlu.fit.leanhduc.service.cipher.symmetric.HillCipher;
-import nlu.fit.leanhduc.service.cipher.symmetric.ShiftCipher;
-import nlu.fit.leanhduc.service.cipher.symmetric.SubstitutionCipher;
-import nlu.fit.leanhduc.service.cipher.symmetric.VigenereCipher;
+import nlu.fit.leanhduc.service.ICipher;
+import nlu.fit.leanhduc.service.ITextSubstitutionCipher;
+import nlu.fit.leanhduc.service.cipher.classic.AffineCipher;
+import nlu.fit.leanhduc.service.cipher.classic.HillCipher;
+import nlu.fit.leanhduc.service.cipher.classic.ShiftCipher;
+import nlu.fit.leanhduc.service.cipher.classic.ClassicCipher;
+import nlu.fit.leanhduc.service.cipher.classic.VigenereCipher;
 import nlu.fit.leanhduc.service.key.*;
 import nlu.fit.leanhduc.util.CipherException;
 import nlu.fit.leanhduc.util.alphabet.AlphabetUtil;
@@ -14,6 +15,7 @@ import nlu.fit.leanhduc.util.alphabet.VietnameseAlphabetUtil;
 import nlu.fit.leanhduc.util.constraint.Cipher;
 import nlu.fit.leanhduc.util.constraint.Language;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,8 +34,8 @@ public class SubstitutionCipherController {
         return INSTANCE;
     }
 
-    public String encrypt(String plainText, IKeyDisplay key, Cipher cipher, Language language) throws CipherException {
-        ISubstitutionCipher textEncrypt = null;
+    public String encrypt(String plainText, IKeyDisplay key, Cipher cipher, Language language) throws Exception {
+        ICipher textEncrypt = null;
         AlphabetUtil alphabetUtil;
         if (language == Language.ENGLISH)
             alphabetUtil = new EnglishAlphabetUtil();
@@ -45,7 +47,7 @@ public class SubstitutionCipherController {
                 textEncrypt = new ShiftCipher(alphabetUtil);
                 break;
             case SUBSTITUTION:
-                textEncrypt = new SubstitutionCipher(alphabetUtil);
+                textEncrypt = new ClassicCipher(alphabetUtil);
                 break;
             case AFFINE:
                 textEncrypt = new AffineCipher(alphabetUtil);
@@ -62,7 +64,7 @@ public class SubstitutionCipherController {
     }
 
     public String decrypt(String encrypt, IKeyDisplay key, Cipher cipher, Language language) throws CipherException {
-        ISubstitutionCipher textEncrypt = null;
+        ICipher textEncrypt = null;
         AlphabetUtil alphabetUtil;
         if (language == Language.ENGLISH)
             alphabetUtil = new EnglishAlphabetUtil();
@@ -74,7 +76,7 @@ public class SubstitutionCipherController {
                 textEncrypt = new ShiftCipher(alphabetUtil);
                 break;
             case SUBSTITUTION:
-                textEncrypt = new SubstitutionCipher(alphabetUtil);
+                textEncrypt = new ClassicCipher(alphabetUtil);
                 break;
             case AFFINE:
                 textEncrypt = new AffineCipher(alphabetUtil);
@@ -123,4 +125,21 @@ public class SubstitutionCipherController {
                 key[i][j] = Integer.parseInt(matrix[i][j]);
         return new HillKey(key);
     }
+
+    public <T> T loadKey(String src, Cipher cipher) throws IOException {
+        switch (cipher) {
+            case SHIFT:
+                return (T) new ShiftKey(0);
+            case SUBSTITUTION:
+                return (T) new SubstitutionKey(new HashMap<>());
+            case AFFINE:
+                return (T) new AffineKey(0, 0);
+            case VIGENERE:
+                return (T) new ViginereKey(new ArrayList<>());
+            case HILL:
+                return (T) new HillKey(new int[0][0]);
+        }
+        return null;
+    }
+
 }

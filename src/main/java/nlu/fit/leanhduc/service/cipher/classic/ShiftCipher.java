@@ -1,10 +1,9 @@
-package nlu.fit.leanhduc.service.cipher.symmetric;
+package nlu.fit.leanhduc.service.cipher.classic;
 
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
-import nlu.fit.leanhduc.service.ISubstitutionCipher;
 import nlu.fit.leanhduc.service.key.ShiftKey;
 import nlu.fit.leanhduc.util.CipherException;
 import nlu.fit.leanhduc.util.alphabet.AlphabetUtil;
@@ -18,24 +17,22 @@ import java.util.Random;
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ShiftCipher implements ISubstitutionCipher<ShiftKey> {
-    protected ShiftKey key;
+public class ShiftCipher extends AbsClassicCipher<ShiftKey> {
     protected Integer shift;
     protected Random rd = new Random();
-    protected AlphabetUtil alphabet;
 
     public ShiftCipher(AlphabetUtil alphabet) {
-        this.alphabet = alphabet;
+        super(alphabet);
     }
 
     @Override
     public ShiftKey generateKey() {
-        return new ShiftKey(rd.nextInt(alphabet.getLength()) + 1);
+        return new ShiftKey(rd.nextInt(alphabetUtil.getLength()) + 1);
     }
 
     @Override
     public void loadKey(ShiftKey key) throws CipherException {
-        this.key = key;
+        super.loadKey(key);
         this.shift = key.getKey();
     }
 
@@ -49,9 +46,9 @@ public class ShiftCipher implements ISubstitutionCipher<ShiftKey> {
             char ce = c;
             if (Character.isLetter(c)) {
                 boolean isLower = Character.isLowerCase(c);
-                int index = alphabet.indexOf(Character.toLowerCase(c));
+                int index = alphabetUtil.indexOf(Character.toLowerCase(c));
                 int indexOfEncrypt = index + this.shift;
-                ce = alphabet.getChar(indexOfEncrypt);
+                ce = alphabetUtil.getChar(indexOfEncrypt);
                 if (!isLower) ce = Character.toUpperCase(ce);
             }
             result += ce;
@@ -69,13 +66,13 @@ public class ShiftCipher implements ISubstitutionCipher<ShiftKey> {
             char ce = c;
             if (Character.isLetter(c)) {
                 boolean isLower = Character.isLowerCase(c);
-                int index = alphabet.indexOf(Character.toLowerCase(c));
+                int index = alphabetUtil.indexOf(Character.toLowerCase(c));
                 int indexOfDecrypt;
                 if (index - this.shift < 0)
-                    indexOfDecrypt = (index - this.shift + alphabet.getLength()) % alphabet.getLength();
+                    indexOfDecrypt = (index - this.shift + alphabetUtil.getLength()) % alphabetUtil.getLength();
                 else
-                    indexOfDecrypt = (index - this.shift) % alphabet.getLength();
-                ce = alphabet.getChar(indexOfDecrypt);
+                    indexOfDecrypt = (index - this.shift) % alphabetUtil.getLength();
+                ce = alphabetUtil.getChar(indexOfDecrypt);
                 if (!isLower) ce = Character.toUpperCase(ce);
             }
             result += ce;
@@ -91,21 +88,5 @@ public class ShiftCipher implements ISubstitutionCipher<ShiftKey> {
     @Override
     public boolean decrypt(String src, String dest) throws CipherException {
         return false;
-    }
-
-    @Override
-    public boolean loadKey(String src) throws IOException {
-        return false;
-    }
-
-    @Override
-    public boolean saveKey(String dest) throws IOException {
-        File file = new File(dest);
-        try (ObjectOutputStream ois = new ObjectOutputStream(new FileOutputStream(file))) {
-            ois.writeObject(key);
-            return true;
-        } catch (EOFException e) {
-            return false;
-        }
     }
 }

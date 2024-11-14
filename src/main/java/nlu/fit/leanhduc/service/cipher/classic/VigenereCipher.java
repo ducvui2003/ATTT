@@ -1,15 +1,13 @@
-package nlu.fit.leanhduc.service.cipher.symmetric;
+package nlu.fit.leanhduc.service.cipher.classic;
 
 import lombok.Getter;
 import lombok.Setter;
-import nlu.fit.leanhduc.service.ISubstitutionCipher;
 import nlu.fit.leanhduc.service.key.ViginereKey;
 import nlu.fit.leanhduc.util.CipherException;
 import nlu.fit.leanhduc.util.alphabet.AlphabetUtil;
 
 import javax.crypto.NoSuchPaddingException;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -18,19 +16,18 @@ import java.util.Random;
 
 @Getter
 @Setter
-public class VigenereCipher implements ISubstitutionCipher<ViginereKey> {
+public class VigenereCipher extends AbsClassicCipher<ViginereKey> {
     protected List<Integer> keys;
     protected int keyLength;
     protected Random rd = new Random();
-    protected AlphabetUtil alphabetUtil;
 
     public VigenereCipher(AlphabetUtil alphabetUtil) {
-        this.alphabetUtil = alphabetUtil;
+        super(alphabetUtil);
     }
 
     @Override
     public void loadKey(ViginereKey key) throws CipherException {
-        this.keys = key.getKey();
+        super.loadKey(key);
         this.keyLength = key.getKey().size();
     }
 
@@ -103,16 +100,6 @@ public class VigenereCipher implements ISubstitutionCipher<ViginereKey> {
 
     @Override
     public boolean decrypt(String src, String dest) throws CipherException {
-        return false;
-    }
-
-    @Override
-    public boolean loadKey(String src) throws IOException {
-        return false;
-    }
-
-    @Override
-    public boolean saveKey(String dest) throws IOException {
         return false;
     }
 }

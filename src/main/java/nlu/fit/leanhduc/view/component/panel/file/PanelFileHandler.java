@@ -1,9 +1,5 @@
 package nlu.fit.leanhduc.view.component.panel.file;
 
-import nlu.fit.leanhduc.config.MetadataConfig;
-import nlu.fit.leanhduc.view.component.GridBagConstraintsBuilder;
-import nlu.fit.leanhduc.view.component.SwingComponentUtil;
-import nlu.fit.leanhduc.view.component.fileChooser.FileChooserLabel;
 import nlu.fit.leanhduc.view.component.panel.text.PanelHandler;
 
 import javax.swing.*;

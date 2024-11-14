@@ -20,6 +20,9 @@ public class App {
 
             UIManager.put("TextComponent.arc", 0);
 
+            UIManager.put("TextArea.arc", 10);
+
+            UIManager.put("TextArea.padding", new Insets(8, 8, 8, 8));
 
             UIManager.put("TextComponent.arc", 10);
 

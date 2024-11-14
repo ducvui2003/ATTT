@@ -6,7 +6,7 @@
  */
 package nlu.fit.leanhduc;
 
-import nlu.fit.leanhduc.service.cipher.symmetric.VigenereCipher;
+import nlu.fit.leanhduc.service.cipher.classic.VigenereCipher;
 import nlu.fit.leanhduc.service.key.ViginereKey;
 import nlu.fit.leanhduc.util.CipherException;
 import nlu.fit.leanhduc.util.alphabet.EnglishAlphabetUtil;

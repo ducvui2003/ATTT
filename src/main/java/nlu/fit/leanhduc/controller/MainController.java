@@ -1,8 +1,9 @@
 package nlu.fit.leanhduc.controller;
 
-import nlu.fit.leanhduc.service.IKeyGenerator;
+import nlu.fit.leanhduc.service.ICipher;
+import nlu.fit.leanhduc.service.ITextKey;
 import nlu.fit.leanhduc.service.KeyGeneratorFactory;
-import nlu.fit.leanhduc.service.cipher.symmetric.VigenereCipher;
+import nlu.fit.leanhduc.service.cipher.classic.*;
 import nlu.fit.leanhduc.service.key.*;
 import nlu.fit.leanhduc.util.constraint.Cipher;
 import nlu.fit.leanhduc.util.constraint.Language;
@@ -20,15 +21,23 @@ public class MainController {
         view.createUIComponents();
     }
 
-    public IKeyGenerator<ViginereKey> generateKey(Language language, int length) {
+    public ICipher<ViginereKey> generateKey(Language language, int length) {
         AlphabetUtil alphabetUtil = language == Language.ENGLISH ? new EnglishAlphabetUtil() : new VietnameseAlphabetUtil();
         VigenereCipher vigenereCipher = new VigenereCipher(alphabetUtil);
         vigenereCipher.setKeyLength(length);
         return vigenereCipher;
     }
 
-    public IKeyGenerator<?> generateKey(Cipher cipher, Language language) {
-        IKeyGenerator<?> key = Objects.requireNonNull(KeyGeneratorFactory.getKeyGenerator(cipher, language));
-        return (IKeyGenerator<?>) key;
+    public ICipher<?> generateKey(Cipher cipher, Language language) {
+        AlphabetUtil alphabetUtil = language == Language.ENGLISH ? new EnglishAlphabetUtil() : new VietnameseAlphabetUtil();
+        ICipher<?> key = switch (cipher) {
+            case SHIFT -> new ShiftCipher(alphabetUtil);
+            case SUBSTITUTION -> new ClassicCipher(alphabetUtil);
+            case AFFINE -> new AffineCipher(alphabetUtil);
+            case VIGENERE -> new VigenereCipher(alphabetUtil);
+            case HILL -> new HillCipher(alphabetUtil);
+            default -> null;
+        };
+        return key;
     }
 }
