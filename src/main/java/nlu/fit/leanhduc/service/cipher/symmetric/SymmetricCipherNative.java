@@ -34,7 +34,7 @@ public class SymmetricCipherNative extends AbsCipherNative<KeySymmetric> {
     }
 
     public IvParameterSpec generateIV() {
-        byte[] iv = new byte[algorithm.getIvSize() / 8];
+        byte[] iv = new byte[algorithm.getIvSize()];
         SecureRandom random = new SecureRandom();
         random.nextBytes(iv);
         return new IvParameterSpec(iv);

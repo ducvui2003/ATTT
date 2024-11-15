@@ -12,8 +12,7 @@ public enum Cipher {
     RSA("RSA", "RSA"),
     DESEDE("DESede", "DESede"),
     RC2("RC2", "RC2"),
-    RC4("RC4", "RC4"),
-    ;
+    RC4("RC4", "RC4");
     private final String name;
     private final String displayName;
 

@@ -7,6 +7,7 @@ import nlu.fit.leanhduc.service.cipher.symmetric.SymmetricCipherNative;
 import nlu.fit.leanhduc.util.constraint.Cipher;
 import nlu.fit.leanhduc.util.constraint.Mode;
 import nlu.fit.leanhduc.util.constraint.Padding;
+import nlu.fit.leanhduc.util.constraint.Size;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,17 +17,14 @@ import java.util.List;
 
 public class AsymmetricCipherSection extends JPanel implements ActionListener {
     MainController controller;
-    List<CipherSpecification> cipherSpecifications = List.of(CipherSpecification.RSA);
+    List<CipherSpecification> cipherSpecifications = List.of(CipherSpecification.findCipherSpecification(Cipher.RSA), CipherSpecification.findCipherSpecification(Cipher.DES));
     JComboBox<Cipher> comboBoxCipher;
     JComboBox<Mode> comboBoxMode;
     JComboBox<Padding> comboBoxPadding;
-    JComboBox<Integer> comboBoxKeySize;
-    JComboBox<String> comboBoxIVSize;
-    Cipher currentCipher;
-    Mode currentMode;
+    JComboBox<Size> comboBoxKeySize;
+    JComboBox<Size> comboBoxIVSize;
     Padding currentPadding;
-    Integer currentKeySize;
-    Integer currentIVSize;
+    Size currentKeySize;
     JButton btnGenerateKey;
     JLabel keyStatus;
 
@@ -82,9 +80,8 @@ public class AsymmetricCipherSection extends JPanel implements ActionListener {
 
     // Update Mode and Padding when Cipher changes
     private void updateModeAndPadding() {
-        Cipher selectedCipher = (Cipher) this.comboBoxCipher.getSelectedItem();
+        Cipher selectedCipher = this.getSelectedCipher();
         CipherSpecification selectedSpec = getCipherSpecification(selectedCipher);
-        this.currentCipher = selectedCipher;
 
         // Temporarily remove mode listener to avoid triggering it during updates
         ActionListener modeListener = this.comboBoxMode.getActionListeners()[0];
@@ -93,7 +90,6 @@ public class AsymmetricCipherSection extends JPanel implements ActionListener {
         // Update Mode ComboBox
         this.comboBoxMode.removeAllItems();
         selectedSpec.getValidModePaddingCombinations().keySet().forEach(mode -> this.comboBoxMode.addItem(mode));
-        this.currentMode = (Mode) this.comboBoxMode.getSelectedItem();
 
         // Re-add the mode listener
         this.comboBoxMode.addActionListener(modeListener);
@@ -108,7 +104,6 @@ public class AsymmetricCipherSection extends JPanel implements ActionListener {
     private void updatePaddingAndIvSize() {
         Cipher selectedCipher = (Cipher) this.comboBoxCipher.getSelectedItem();
         CipherSpecification selectedSpec = getCipherSpecification(selectedCipher);
-        this.currentMode = (Mode) this.comboBoxMode.getSelectedItem();
 
         // Temporarily remove padding listener to avoid triggering it during updates
         ActionListener paddingListener = this.comboBoxPadding.getActionListeners()[0];
@@ -116,8 +111,8 @@ public class AsymmetricCipherSection extends JPanel implements ActionListener {
 
         // Update Padding ComboBox
         this.comboBoxPadding.removeAllItems();
-        if (this.currentMode != null) {
-            selectedSpec.getValidModePaddingCombinations().get(this.currentMode)
+        if (this.getSelectedMode() != null) {
+            selectedSpec.getValidModePaddingCombinations().get(this.getSelectedMode())
                     .forEach(padding -> this.comboBoxPadding.addItem(padding));
         }
         this.currentPadding = (Padding) this.comboBoxPadding.getSelectedItem();
@@ -131,29 +126,25 @@ public class AsymmetricCipherSection extends JPanel implements ActionListener {
 
     // Update Key Size based on selected Cipher
     private void updateKeySize() {
-        CipherSpecification selectedSpec = getCipherSpecification(this.currentCipher);
+        CipherSpecification selectedSpec = getCipherSpecification(this.getSelectedCipher());
         this.comboBoxKeySize.removeAllItems();
         selectedSpec.getSupportedKeySizes().forEach(size -> this.comboBoxKeySize.addItem(size));
-        this.currentKeySize = (Integer) this.comboBoxKeySize.getSelectedItem();
+        this.currentKeySize = (Size) this.comboBoxKeySize.getSelectedItem();
     }
 
     // Update IV Size based on selected Mode
     private void updateIvSize() {
-        CipherSpecification selectedSpec = getCipherSpecification(this.currentCipher);
+        CipherSpecification selectedSpec = getCipherSpecification(this.getSelectedCipher());
         Mode selectedMode = (Mode) this.comboBoxMode.getSelectedItem();
 
         this.comboBoxIVSize.removeAllItems();
-        Integer ivSize = selectedSpec.getIvSizes().get(selectedMode);
-        this.currentIVSize = ivSize;
-        if (ivSize != null) {
-            this.comboBoxIVSize.addItem(ivSize + " bits");
-        } else {
-            this.comboBoxIVSize.addItem("None");
+        if (this.getSelectedIVSize() != null) {
+            this.comboBoxIVSize.addItem(this.getSelectedIVSize());
         }
     }
 
     private void handleKeySizeChange() {
-        Integer selectedKeySize = (Integer) this.comboBoxKeySize.getSelectedItem();
+        Size selectedKeySize = this.getSelectedKeySize();
         System.out.println("Selected Key Size: " + selectedKeySize);
     }
 
@@ -161,27 +152,49 @@ public class AsymmetricCipherSection extends JPanel implements ActionListener {
     private CipherSpecification getCipherSpecification(Cipher cipher) {
         switch (cipher) {
             case RSA:
-                return CipherSpecification.RSA;
+                return CipherSpecification.findCipherSpecification(Cipher.RSA);
+            case DES:
+                return CipherSpecification.findCipherSpecification(Cipher.DES);
             default:
                 throw new IllegalArgumentException("Unknown cipher: " + cipher);
         }
     }
 
+    private Cipher getSelectedCipher() {
+        return (Cipher) this.comboBoxCipher.getSelectedItem();
+    }
+
+    private Mode getSelectedMode() {
+        return (Mode) this.comboBoxMode.getSelectedItem();
+    }
+
+    private Padding getSelectedPadding() {
+        return (Padding) this.comboBoxPadding.getSelectedItem();
+    }
+
+    private Size getSelectedKeySize() {
+        return (Size) this.comboBoxKeySize.getSelectedItem();
+    }
+
+    private Size getSelectedIVSize() {
+        return (Size) this.comboBoxIVSize.getSelectedItem();
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == btnGenerateKey) {
-            try {
-                SymmetricCipherNative symmetricCipherNative = SymmetricCipherNativeController.getInstance().getAlgorithm(
-                        this.currentCipher.getName(),
-                        this.currentMode.getName(),
-                        this.currentPadding.getName(),
-                        this.currentKeySize,
-                        this.currentIVSize
-                );
-                symmetricCipherNative.loadKey(symmetricCipherNative.generateKey());
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
-            }
-        }
+//        if (e.getSource() == btnGenerateKey) {
+//            try {
+//                SymmetricCipherNative symmetricCipherNative = SymmetricCipherNativeController.getInstance().getAlgorithm(
+//                        this.currentCipher.getName(),
+//                        this.currentMode.getName(),
+//                        this.currentPadding.getName(),
+//                        this.currentKeySize,
+//                        this.currentIVSize
+//                );
+//                symmetricCipherNative.loadKey(symmetricCipherNative.generateKey());
+//            } catch (Exception ex) {
+//                throw new RuntimeException(ex);
+//            }
+//        }
     }
 }

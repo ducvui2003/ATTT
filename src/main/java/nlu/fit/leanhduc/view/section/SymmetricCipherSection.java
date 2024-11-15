@@ -9,6 +9,7 @@ import nlu.fit.leanhduc.service.key.KeySymmetric;
 import nlu.fit.leanhduc.util.constraint.Cipher;
 import nlu.fit.leanhduc.util.constraint.Mode;
 import nlu.fit.leanhduc.util.constraint.Padding;
+import nlu.fit.leanhduc.util.constraint.Size;
 import nlu.fit.leanhduc.util.convert.Base64ConversionStrategy;
 import nlu.fit.leanhduc.util.convert.ByteConverter;
 import nlu.fit.leanhduc.view.component.GridBagConstraintsBuilder;
@@ -29,17 +30,18 @@ import java.util.Map;
 
 public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEvent, ActionListener {
     MainController controller;
-    List<CipherSpecification> cipherSpecifications = List.of(CipherSpecification.AES, CipherSpecification.DES, CipherSpecification.TRIPLEDES);
+    List<CipherSpecification> cipherSpecifications =
+            List.of(
+                    CipherSpecification.findCipherSpecification(Cipher.AES),
+                    CipherSpecification.findCipherSpecification(Cipher.DES),
+                    CipherSpecification.findCipherSpecification(Cipher.DESEDE)
+            );
+
     JComboBox<Cipher> comboBoxCipher;
     JComboBox<Mode> comboBoxMode;
     JComboBox<Padding> comboBoxPadding;
-    JComboBox<Integer> comboBoxKeySize;
-    JComboBox<String> comboBoxIVSize;
-    Cipher currentCipher;
-    Mode currentMode;
-    Padding currentPadding;
-    Integer currentKeySize;
-    Integer currentIVSize;
+    JComboBox<Size> comboBoxKeySize;
+    JComboBox<Size> comboBoxIVSize;
     JButton btnGenerateKey;
     FileChooserButton btnLoadKey;
 
@@ -291,9 +293,8 @@ public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEv
 
     // Update Mode and Padding when Cipher changes
     private void updateModeAndPadding() {
-        Cipher selectedCipher = (Cipher) this.comboBoxCipher.getSelectedItem();
-        CipherSpecification selectedSpec = getCipherSpecification(selectedCipher);
-        this.currentCipher = selectedCipher;
+        Cipher selectedCipher = this.getSelectedCipher();
+        CipherSpecification selectedSpec = CipherSpecification.findCipherSpecification(selectedCipher);
 
         // Temporarily remove mode listener to avoid triggering it during updates
         ActionListener modeListener = this.comboBoxMode.getActionListeners()[0];
@@ -302,7 +303,6 @@ public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEv
         // Update Mode ComboBox
         this.comboBoxMode.removeAllItems();
         selectedSpec.getValidModePaddingCombinations().keySet().forEach(mode -> this.comboBoxMode.addItem(mode));
-        this.currentMode = (Mode) this.comboBoxMode.getSelectedItem();
 
         // Re-add the mode listener
         this.comboBoxMode.addActionListener(modeListener);
@@ -315,9 +315,8 @@ public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEv
 
     // Update Padding and IV Size when Mode changes
     private void updatePaddingAndIvSize() {
-        Cipher selectedCipher = (Cipher) this.comboBoxCipher.getSelectedItem();
-        CipherSpecification selectedSpec = getCipherSpecification(selectedCipher);
-        this.currentMode = (Mode) this.comboBoxMode.getSelectedItem();
+        Cipher selectedCipher = getSelectedCipher();
+        CipherSpecification selectedSpec = CipherSpecification.findCipherSpecification(selectedCipher);
 
         // Temporarily remove padding listener to avoid triggering it during updates
         ActionListener paddingListener = this.comboBoxPadding.getActionListeners()[0];
@@ -325,11 +324,10 @@ public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEv
 
         // Update Padding ComboBox
         this.comboBoxPadding.removeAllItems();
-        if (this.currentMode != null) {
-            selectedSpec.getValidModePaddingCombinations().get(this.currentMode)
+        if (this.getSelectedMode() != null) {
+            selectedSpec.getValidModePaddingCombinations().get(this.getSelectedMode())
                     .forEach(padding -> this.comboBoxPadding.addItem(padding));
         }
-        this.currentPadding = (Padding) this.comboBoxPadding.getSelectedItem();
 
         // Re-add the padding listener
         this.comboBoxPadding.addActionListener(paddingListener);
@@ -340,39 +338,27 @@ public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEv
 
     // Update Key Size based on selected Cipher
     private void updateKeySize() {
-        CipherSpecification selectedSpec = getCipherSpecification(this.currentCipher);
+        CipherSpecification selectedSpec = CipherSpecification.findCipherSpecification(this.getSelectedCipher());
         this.comboBoxKeySize.removeAllItems();
         selectedSpec.getSupportedKeySizes().forEach(size -> this.comboBoxKeySize.addItem(size));
-        this.currentKeySize = (Integer) this.comboBoxKeySize.getSelectedItem();
     }
 
     // Update IV Size based on selected Mode
     private void updateIvSize() {
-        CipherSpecification selectedSpec = getCipherSpecification(this.currentCipher);
+        CipherSpecification selectedSpec = CipherSpecification.findCipherSpecification(this.getSelectedCipher());
         Mode selectedMode = (Mode) this.comboBoxMode.getSelectedItem();
 
         this.comboBoxIVSize.removeAllItems();
-        Integer ivSize = selectedSpec.getIvSizes().get(selectedMode);
-        this.currentIVSize = ivSize;
-        if (ivSize != null) {
-            this.comboBoxIVSize.addItem(ivSize + " bits");
+        if (this.getSelectedIVSize() != null) {
+            this.comboBoxIVSize.addItem(this.getSelectedIVSize());
         } else {
-            this.comboBoxIVSize.addItem("None");
+            this.comboBoxIVSize.addItem(Size.Size_0);
         }
     }
 
     private void handleKeySizeChange() {
-        Integer selectedKeySize = (Integer) this.comboBoxKeySize.getSelectedItem();
+        Size selectedKeySize = this.getSelectedKeySize();
         System.out.println("Selected Key Size: " + selectedKeySize);
-    }
-
-    private CipherSpecification getCipherSpecification(Cipher cipher) {
-        return switch (cipher) {
-            case AES -> CipherSpecification.AES;
-            case DES -> CipherSpecification.DES;
-            case DESEDE -> CipherSpecification.TRIPLEDES;
-            default -> throw new IllegalArgumentException("Unknown cipher: " + cipher);
-        };
     }
 
     private void createTabbedPane() {
@@ -396,16 +382,36 @@ public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEv
                 this.tabbedPane);
     }
 
+    private Cipher getSelectedCipher() {
+        return (Cipher) this.comboBoxCipher.getSelectedItem();
+    }
+
+    private Mode getSelectedMode() {
+        return (Mode) this.comboBoxMode.getSelectedItem();
+    }
+
+    private Padding getSelectedPadding() {
+        return (Padding) this.comboBoxPadding.getSelectedItem();
+    }
+
+    private Size getSelectedKeySize() {
+        return (Size) this.comboBoxKeySize.getSelectedItem();
+    }
+
+    private Size getSelectedIVSize() {
+        return (Size) this.comboBoxIVSize.getSelectedItem();
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == btnGenerateKey) {
             try {
                 symmetricCipherNative = SymmetricCipherNativeController.getInstance().getAlgorithm(
-                        this.currentCipher.getName(),
-                        this.currentMode.getName(),
-                        this.currentPadding.getName(),
-                        this.currentKeySize,
-                        this.currentIVSize
+                        this.getSelectedCipher(),
+                        this.getSelectedMode(),
+                        this.getSelectedPadding(),
+                        this.getSelectedKeySize(),
+                        this.getSelectedIVSize()
                 );
                 KeySymmetric key = symmetricCipherNative.generateKey();
                 symmetricCipherNative.loadKey(key);
@@ -459,7 +465,7 @@ public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEv
                         .gridSpan(1, 1)
                         .fill(GridBagConstraints.HORIZONTAL)
                         .build(),
-                new JLabel("Thuật toán: " + this.currentCipher.getDisplayName())
+                new JLabel("Thuật toán: " + this.getSelectedCipher().getDisplayName())
         );
 
         SwingComponentUtil.addComponentGridBag(
@@ -470,7 +476,7 @@ public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEv
                         .gridSpan(1, 1)
                         .fill(GridBagConstraints.HORIZONTAL)
                         .build(),
-                new JLabel("Mode: " + this.currentMode.getDisplayName())
+                new JLabel("Mode: " + this.getSelectedMode().getDisplayName())
         );
 
         SwingComponentUtil.addComponentGridBag(
@@ -481,7 +487,7 @@ public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEv
                         .gridSpan(1, 1)
                         .fill(GridBagConstraints.HORIZONTAL)
                         .build(),
-                new JLabel("Padding: " + this.currentPadding.getDisplayName())
+                new JLabel("Padding: " + this.getSelectedPadding().getDisplayName())
         );
 
         SwingComponentUtil.addComponentGridBag(
@@ -492,7 +498,7 @@ public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEv
                         .gridSpan(1, 1)
                         .fill(GridBagConstraints.HORIZONTAL)
                         .build(),
-                new JLabel("Key Size: " + this.currentKeySize + " bits")
+                new JLabel("Key Size: " + this.getSelectedKeySize() + " bits")
         );
 
         SwingComponentUtil.addComponentGridBag(
@@ -503,7 +509,7 @@ public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEv
                         .gridSpan(1, 1)
                         .fill(GridBagConstraints.HORIZONTAL)
                         .build(),
-                new JLabel("IV Size: " + this.currentIVSize + " bits")
+                new JLabel("IV Size: " + this.getSelectedIVSize() + " bits")
         );
     }
 }

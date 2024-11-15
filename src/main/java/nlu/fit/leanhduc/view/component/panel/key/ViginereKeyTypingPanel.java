@@ -10,7 +10,6 @@ import nlu.fit.leanhduc.util.constraint.Language;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.List;
 
 public class ViginereKeyTypingPanel extends KeyTypingPanel<ViginereKey> {
     JTextField inputKey;
