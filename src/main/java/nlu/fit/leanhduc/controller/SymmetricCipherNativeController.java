@@ -10,6 +10,8 @@ import nlu.fit.leanhduc.util.constraint.Size;
 import nlu.fit.leanhduc.util.convert.Base64ConversionStrategy;
 import nlu.fit.leanhduc.util.convert.ByteConversionStrategy;
 
+import java.util.Map;
+
 public class SymmetricCipherNativeController {
     private static SymmetricCipherNativeController INSTANCE;
 
@@ -24,7 +26,7 @@ public class SymmetricCipherNativeController {
     }
 
     public SymmetricCipherNative getAlgorithm(Cipher cipher, Mode mode, Padding padding, Size keySize, Size ivSize) throws Exception {
-        Algorithm algorithm = new Algorithm(cipher.getName(), mode.getName(), padding.getName(), keySize.getByteFormat(), ivSize.getByteFormat());
+        Algorithm algorithm = new Algorithm(cipher.getName(), mode.getName(), padding.getName(), keySize.getBit(), ivSize.getByteFormat());
         return new SymmetricCipherNative(algorithm);
     }
 
@@ -32,9 +34,10 @@ public class SymmetricCipherNativeController {
         return cipher.encrypt(plainText);
     }
 
-    public String generateKey(SymmetricCipherNative cipher) {
+    public Map<String, String> generateKey(SymmetricCipherNative cipher) {
         KeySymmetric key = cipher.generateKey();
         ByteConversionStrategy byteConversionStrategy = new Base64ConversionStrategy();
-        return byteConversionStrategy.convert(key.getSecretKey().getEncoded()) + "_" + byteConversionStrategy.convert(iv.getIV())
+        return Map.of("secret-key", byteConversionStrategy.convert(key.getSecretKey().getEncoded()),
+                "iv", byteConversionStrategy.convert(key.getIv().getIV()));
     }
 }
