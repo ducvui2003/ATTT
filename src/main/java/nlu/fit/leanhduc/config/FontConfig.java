@@ -56,9 +56,9 @@ public class FontConfig {
 
         } catch (FontFormatException | IOException e) {
             e.printStackTrace();
-            fontRegular = new Font("Arial", Font.PLAIN, 14);
-            fontBold = new Font("Arial", Font.BOLD, 14);
-            fontLight = new Font("Arial", Font.PLAIN, 12);
+            fontRegular = new Font("Roboto", Font.PLAIN, 14);
+            fontBold = new Font("Roboto", Font.BOLD, 14);
+            fontLight = new Font("Roboto", Font.PLAIN, 12);
         }
     }
 

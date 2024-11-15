@@ -3,4 +3,5 @@ module secuirty.tool {
     requires java.desktop;
     requires static lombok;
     requires java.naming;
+    requires bcrypt;
 }

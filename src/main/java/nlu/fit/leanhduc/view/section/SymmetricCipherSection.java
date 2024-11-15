@@ -366,7 +366,6 @@ public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEv
         System.out.println("Selected Key Size: " + selectedKeySize);
     }
 
-
     private CipherSpecification getCipherSpecification(Cipher cipher) {
         return switch (cipher) {
             case AES -> CipherSpecification.AES;

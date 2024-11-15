@@ -2,6 +2,7 @@ package nlu.fit.leanhduc;
 
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import nlu.fit.leanhduc.controller.MainController;
+import nlu.fit.leanhduc.util.Constraint;
 
 import javax.swing.*;
 import java.awt.*;
@@ -31,6 +32,9 @@ public class App {
             UIManager.put("ComboBox.padding", new Insets(8, 8, 8, 8));
 
             UIManager.put("TabbedPane.selectedBackground", Color.white);
+
+            UIManager.put("Label.font", Constraint.FONT_MEDIUM);
+            UIManager.put("TextField.font", Constraint.FONT_REGULAR);
         } catch (Exception ex) {
             System.err.println("Failed to initialize LaF");
         }

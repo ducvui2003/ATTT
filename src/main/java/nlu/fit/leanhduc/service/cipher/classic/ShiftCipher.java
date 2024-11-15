@@ -48,8 +48,8 @@ public class ShiftCipher extends AbsClassicCipher<ShiftKey> {
                 boolean isLower = Character.isLowerCase(c);
                 int index = alphabetUtil.indexOf(Character.toLowerCase(c));
                 int indexOfEncrypt = index + this.shift;
-                ce = alphabetUtil.getChar(indexOfEncrypt);
-                if (!isLower) ce = Character.toUpperCase(ce);
+                ce = alphabetUtil.getChar(indexOfEncrypt, isLower);
+//                if (!isLower) ce = Character.toUpperCase(ce);
             }
             result += ce;
         }

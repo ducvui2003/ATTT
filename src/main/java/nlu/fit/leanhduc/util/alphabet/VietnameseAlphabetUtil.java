@@ -20,8 +20,8 @@ public class VietnameseAlphabetUtil implements AlphabetUtil {
         int index = ((oct % Constraint.VIET_NAME_ALPHA_BET_SIZE) + Constraint.VIET_NAME_ALPHA_BET_SIZE) % Constraint.VIET_NAME_ALPHA_BET_SIZE;
 
         return isLowerCase ?
-                Constraint.ALPHABET_ARRAY[index] :
-                Character.toUpperCase(Constraint.ALPHABET_ARRAY[index]);
+                Constraint.VIET_NAME_ALPHA_ARRAY[index] :
+                Character.toUpperCase(Constraint.VIET_NAME_ALPHA_ARRAY[index]);
     }
 
 
