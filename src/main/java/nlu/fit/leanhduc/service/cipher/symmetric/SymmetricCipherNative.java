@@ -8,6 +8,7 @@ import nlu.fit.leanhduc.util.convert.ByteConversionStrategy;
 
 import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
@@ -24,13 +25,23 @@ public class SymmetricCipherNative extends AbsCipherNative<KeySymmetric> {
 
     }
 
+    public SymmetricCipherNative(String base64SecretKey, String base64Iv, String cipher, String algorithm) throws Exception {
+        super();
+        this.secretKey = new SecretKeySpec(
+                conversionStrategy.convert(base64SecretKey), cipher);
+        if (base64Iv != null) {
+            this.iv = new IvParameterSpec(conversionStrategy.convert(base64Iv));
+        }
+        this.cipher = Cipher.getInstance(algorithm);
+    }
+
+
     public SymmetricCipherNative(Algorithm algorithm) throws Exception {
         super(algorithm);
         this.cipher = Cipher.getInstance(algorithm.toString());
         if (algorithm.getIvSize() != 0) {
             iv = generateIV();
         }
-
     }
 
     public IvParameterSpec generateIV() {
@@ -65,7 +76,7 @@ public class SymmetricCipherNative extends AbsCipherNative<KeySymmetric> {
 
     @Override
     public String encrypt(String data) throws Exception {
-        if (algorithm.getIvSize() == 0)
+        if (this.iv == null)
             cipher.init(Cipher.ENCRYPT_MODE, this.secretKey);
         else
             cipher.init(Cipher.ENCRYPT_MODE, this.secretKey, this.iv);
@@ -76,7 +87,7 @@ public class SymmetricCipherNative extends AbsCipherNative<KeySymmetric> {
     public String decrypt(String encryptText) throws CipherException {
         try {
             byte[] data = this.conversionStrategy.convert(encryptText);
-            if (algorithm.getIvSize() == 0)
+            if (this.iv == null)
                 cipher.init(Cipher.DECRYPT_MODE, this.secretKey);
             else
                 cipher.init(Cipher.DECRYPT_MODE, this.secretKey, this.iv);

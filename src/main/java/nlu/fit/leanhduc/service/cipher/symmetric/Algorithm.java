@@ -21,11 +21,11 @@ public class Algorithm {
         this.ivSize = ivSize;
     }
 
-    IvParameterSpec getIvParameterSpec() {
-        byte[] ivBytes = new byte[this.ivSize];
-        SecureRandom random = new SecureRandom();
-        random.nextBytes(ivBytes);
-        return new IvParameterSpec(ivBytes);
+    public Algorithm(String cipher, String mode, String padding, int keySize) {
+        this.cipher = cipher;
+        this.mode = mode;
+        this.padding = padding;
+        this.keySize = keySize;
     }
 
     @Override
@@ -35,7 +35,10 @@ public class Algorithm {
             result.append(this.cipher);
         }
         if (this.mode != null) {
-            result.append("/").append(this.mode);
+            if (!this.mode.equals(""))
+                result.append("/").append(this.mode);
+            else
+                result.append("/").append("ECB");
         }
         if (this.padding != null) {
             result.append("/").append(this.padding);
