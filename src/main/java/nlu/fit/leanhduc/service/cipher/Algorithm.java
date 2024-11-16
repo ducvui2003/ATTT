@@ -1,9 +1,6 @@
-package nlu.fit.leanhduc.service.cipher.symmetric;
+package nlu.fit.leanhduc.service.cipher;
 
 import lombok.Data;
-
-import javax.crypto.spec.IvParameterSpec;
-import java.security.SecureRandom;
 
 @Data
 public class Algorithm {
@@ -21,11 +18,11 @@ public class Algorithm {
         this.ivSize = ivSize;
     }
 
-    IvParameterSpec getIvParameterSpec() {
-        byte[] ivBytes = new byte[this.ivSize];
-        SecureRandom random = new SecureRandom();
-        random.nextBytes(ivBytes);
-        return new IvParameterSpec(ivBytes);
+    public Algorithm(String cipher, String mode, String padding, int keySize) {
+        this.cipher = cipher;
+        this.mode = mode;
+        this.padding = padding;
+        this.keySize = keySize;
     }
 
     @Override

@@ -1,9 +1,8 @@
 package nlu.fit.leanhduc.controller;
 
-import nlu.fit.leanhduc.service.cipher.symmetric.AbsCipherNative;
-import nlu.fit.leanhduc.service.cipher.symmetric.SymmetricCipherNative;
+import nlu.fit.leanhduc.service.cipher.AbsCipherNative;
+import nlu.fit.leanhduc.service.cipher.SymmetricCipherNative;
 import nlu.fit.leanhduc.util.FileUtil;
-import nlu.fit.leanhduc.util.constraint.Cipher;
 
 import javax.crypto.SecretKey;
 

@@ -1,4 +1,4 @@
-package nlu.fit.leanhduc.service.cipher.symmetric;
+package nlu.fit.leanhduc.service.cipher;
 
 import nlu.fit.leanhduc.service.IFileEncrypt;
 import nlu.fit.leanhduc.service.IFileKey;

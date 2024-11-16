@@ -1,10 +1,8 @@
-package nlu.fit.leanhduc.service.cipher.symmetric;
+package nlu.fit.leanhduc.service.cipher;
 
 import nlu.fit.leanhduc.service.ICipher;
 import nlu.fit.leanhduc.util.convert.Base64ConversionStrategy;
 import nlu.fit.leanhduc.util.convert.ByteConversionStrategy;
-
-import javax.crypto.SecretKey;
 
 public abstract class AbsCipherNative<T> implements ICipher<T> {
     T t;

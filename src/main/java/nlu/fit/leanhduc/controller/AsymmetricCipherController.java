@@ -1,7 +1,7 @@
 package nlu.fit.leanhduc.controller;
 
-import nlu.fit.leanhduc.service.cipher.symmetric.Algorithm;
-import nlu.fit.leanhduc.service.cipher.symmetric.SymmetricCipherNative;
+import nlu.fit.leanhduc.service.cipher.Algorithm;
+import nlu.fit.leanhduc.service.cipher.SymmetricCipherNative;
 
 public class AsymmetricCipherController {
     private static AsymmetricCipherController INSTANCE;
