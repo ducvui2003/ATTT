@@ -32,7 +32,10 @@ public class Algorithm {
             result.append(this.cipher);
         }
         if (this.mode != null) {
-            result.append("/").append(this.mode);
+            if (!this.mode.equals(""))
+                result.append("/").append(this.mode);
+            else
+                result.append("/").append("ECB");
         }
         if (this.padding != null) {
             result.append("/").append(this.padding);
