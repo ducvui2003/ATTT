@@ -7,7 +7,9 @@ public class Algorithm {
     String cipher;
     String mode;
     String padding;
+    //  đơn vị: bit
     int keySize;
+    //  đơn vị: bit
     int ivSize;
 
     public Algorithm(String cipher, String mode, String padding, int keySize, int ivSize) {
@@ -32,10 +34,7 @@ public class Algorithm {
             result.append(this.cipher);
         }
         if (this.mode != null) {
-            if (!this.mode.equals(""))
-                result.append("/").append(this.mode);
-            else
-                result.append("/").append("ECB");
+            result.append("/").append(this.mode);
         }
         if (this.padding != null) {
             result.append("/").append(this.padding);

@@ -1,7 +1,6 @@
 package nlu.fit.leanhduc.controller;
 
 import nlu.fit.leanhduc.service.ICipher;
-import nlu.fit.leanhduc.service.ITextSubstitutionCipher;
 import nlu.fit.leanhduc.service.cipher.classic.AffineCipher;
 import nlu.fit.leanhduc.service.cipher.classic.HillCipher;
 import nlu.fit.leanhduc.service.cipher.classic.ShiftCipher;

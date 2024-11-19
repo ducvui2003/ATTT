@@ -24,31 +24,27 @@ public abstract class AbsClassicCipher<T> implements ICipher<T> {
     }
 
     @Override
-    public boolean loadKey(String src) throws IOException {
+    public void loadKey(String src) throws IOException {
         File file = new File(src);
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
             T key = (T) ois.readObject();
             this.loadKey(key);
-            return true;
         } catch (EOFException | ClassNotFoundException e) {
             e.printStackTrace();
-            return false;
         } catch (CipherException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public boolean saveKey(String dest) throws IOException {
+    public void saveKey(String dest) throws IOException {
         File file = new File(dest);
         if (!file.exists()) {
             createPathIfNotExists(dest);
         }
         try (ObjectOutputStream ois = new ObjectOutputStream(new FileOutputStream(file))) {
             ois.writeObject(key);
-            return true;
-        } catch (EOFException e) {
-            return false;
+        } catch (EOFException ignored) {
         }
     }
 

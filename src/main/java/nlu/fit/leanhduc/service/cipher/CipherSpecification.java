@@ -24,6 +24,9 @@ public class CipherSpecification {
             case BLOWFISH -> Blowfish;
             case RC2 -> RC2;
             case RC4 -> RC4;
+            case TWOFISH -> TWOFISH;
+            case CAMELLIA -> CAMELLIA;
+            case IDEA -> IDEA;
             default -> null;
         };
         if (result != null) {
@@ -266,7 +269,8 @@ public class CipherSpecification {
     private static final CipherSpecification RC4 = new CipherSpecification(
             Cipher.RC4,
             Map.of(
-                    Mode.NONE, List.of(Padding.NoPadding)
+                    Mode.NONE, List.of(Padding.NoPadding),
+                    Mode.ECB, List.of(Padding.NoPadding)
             ),
             Set.of(Size.Size_5, Size.Size_7, Size.Size_16),  // RC4 supports key sizes of 40, 56, and 128 bits
             Map.of()  // RC4 does not require an IV

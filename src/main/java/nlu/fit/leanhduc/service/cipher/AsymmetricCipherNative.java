@@ -5,8 +5,6 @@ import nlu.fit.leanhduc.util.CipherException;
 
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -50,13 +48,11 @@ public class AsymmetricCipherNative extends AbsCipherNative<KeyAsymmetric> {
     }
 
     @Override
-    public boolean loadKey(String src) throws IOException {
-        return false;
+    public void loadKey(String src) throws IOException {
     }
 
     @Override
-    public boolean saveKey(String dest) throws IOException {
-        return false;
+    public void saveKey(String dest) throws IOException {
     }
 
     @Override

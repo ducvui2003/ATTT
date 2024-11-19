@@ -3,6 +3,7 @@ package nlu.fit.leanhduc.util;
 
 import nlu.fit.leanhduc.config.FontConfig;
 import nlu.fit.leanhduc.config.MetadataConfig;
+import nlu.fit.leanhduc.util.constraint.Mode;
 
 import java.awt.*;
 
@@ -34,5 +35,7 @@ public class Constraint {
     public static final char[] VIET_NAME_ALPHA_ARRAY = VIET_NAM_N.toCharArray();
     public static final int VIET_NAME_ALPHA_BET_SIZE = VIET_NAME_ALPHA_ARRAY.length;
 
+    public static final String DEFAULT_PROVIDER = "SunJCE";
+    public static final Mode DEFAULT_MODE = Mode.CBC;
 
 }

@@ -15,13 +15,20 @@ public enum Cipher {
     RC4("RC4", "RC4"),
     CAMELLIA("Camellia", "Camellia"),
     TWOFISH("Twofish", "Twofish"),
-    IDEA("IDEA","IDEA" );
+    IDEA("IDEA", "IDEA");
     private final String name;
     private final String displayName;
+    private String provider;
 
     Cipher(String name, String displayName) {
         this.name = name;
         this.displayName = displayName;
+    }
+
+    Cipher(String name, String displayName, String provider) {
+        this.name = name;
+        this.displayName = displayName;
+        this.provider = provider;
     }
 
     public String getName() {

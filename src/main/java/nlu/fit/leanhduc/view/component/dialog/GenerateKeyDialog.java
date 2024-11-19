@@ -3,7 +3,6 @@ package nlu.fit.leanhduc.view.component.dialog;
 
 import nlu.fit.leanhduc.controller.MainController;
 import nlu.fit.leanhduc.service.ICipher;
-import nlu.fit.leanhduc.service.ITextKey;
 import nlu.fit.leanhduc.service.key.IKeyDisplay;
 import nlu.fit.leanhduc.service.key.ViginereKey;
 import nlu.fit.leanhduc.util.constraint.Cipher;

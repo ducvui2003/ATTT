@@ -42,4 +42,23 @@ public enum Size {
     public String toString() {
         return String.valueOf(bit);
     }
+
+    public static Size valueOfBit(int bit) {
+        for (Size size : values()) {
+            if (size.bit == bit) {
+                return size;
+            }
+        }
+        return Size_0;
+    }
+
+    public static Size byteFormat(int byteFormat) {
+        for (Size size : values()) {
+            if (size.byteFormat == byteFormat) {
+                return size;
+            }
+        }
+        return Size_0;
+    }
+
 }

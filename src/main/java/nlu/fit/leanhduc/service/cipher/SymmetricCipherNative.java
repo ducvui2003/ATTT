@@ -2,7 +2,10 @@ package nlu.fit.leanhduc.service.cipher;
 
 import nlu.fit.leanhduc.service.key.KeySymmetric;
 import nlu.fit.leanhduc.util.CipherException;
+import nlu.fit.leanhduc.util.Constraint;
 import nlu.fit.leanhduc.util.FileUtil;
+import nlu.fit.leanhduc.util.constraint.Mode;
+import nlu.fit.leanhduc.util.constraint.Padding;
 
 import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
@@ -15,47 +18,40 @@ import java.security.NoSuchProviderException;
 import java.security.SecureRandom;
 
 public class SymmetricCipherNative extends AbsCipherNative<KeySymmetric> {
-    SecretKey secretKey;
     Cipher cipher;
-    IvParameterSpec iv;
-    String provider = "SunJCE";
 
     public SymmetricCipherNative() {
 
     }
 
-    public SymmetricCipherNative(String base64SecretKey, String base64Iv, String cipher, String algorithm) throws Exception {
+    public SymmetricCipherNative(String base64SecretKey, String base64Iv, Algorithm algorithm) throws Exception {
         super();
-        this.secretKey = new SecretKeySpec(
-                conversionStrategy.convert(base64SecretKey), cipher);
+        this.key = new KeySymmetric();
+        this.key.setSecretKey(new SecretKeySpec(
+                conversionStrategy.convert(base64SecretKey), algorithm.getCipher()));
         if (base64Iv != null) {
-            this.iv = new IvParameterSpec(conversionStrategy.convert(base64Iv));
+            this.key.setIv(new IvParameterSpec(conversionStrategy.convert(base64Iv)));
         }
-        this.cipher = Cipher.getInstance(algorithm, provider);
+        this.key.setCipher(algorithm.getCipher());
+        this.cipher = Cipher.getInstance(algorithm.toString());
+        this.key.setMode(Mode.CBC.getName());
+        this.key.setPadding(Padding.PKCS5Padding.getName());
+        this.key.setKeySize(algorithm.getKeySize());
+        this.key.setIvSize(algorithm.getIvSize());
+        this.algorithm = algorithm;
     }
-
-    public SymmetricCipherNative(String base64SecretKey, String base64Iv, String cipher, String algorithm, String provider) throws Exception {
-        super();
-        this.provider = provider;
-        this.secretKey = new SecretKeySpec(
-                conversionStrategy.convert(base64SecretKey), cipher);
-        if (base64Iv != null) {
-            this.iv = new IvParameterSpec(conversionStrategy.convert(base64Iv));
-        }
-        this.cipher = Cipher.getInstance(algorithm, provider);
-    }
-
 
     public SymmetricCipherNative(Algorithm algorithm) throws Exception {
         super(algorithm);
-        this.cipher = Cipher.getInstance(algorithm.toString(), provider);
+        this.key = new KeySymmetric();
+        this.cipher = Cipher.getInstance(algorithm.toString(), Constraint.DEFAULT_PROVIDER);
         if (algorithm.getIvSize() != 0) {
-            iv = generateIV();
+            this.key.setIv(generateIV());
         }
     }
 
     public IvParameterSpec generateIV() {
-        byte[] iv = new byte[algorithm.getIvSize()];
+        byte[] iv = new byte[algorithm.getIvSize() / 8]; // Chuyển đổi bit thành byte
         SecureRandom random = new SecureRandom();
         random.nextBytes(iv);
         return new IvParameterSpec(iv);
@@ -63,17 +59,16 @@ public class SymmetricCipherNative extends AbsCipherNative<KeySymmetric> {
 
     @Override
     public void loadKey(KeySymmetric key) throws CipherException {
-        this.secretKey = key.getSecretKey();
-        this.iv = key.getIv();
+        this.key = key;
     }
 
     @Override
     public KeySymmetric generateKey() {
         KeySymmetric key = new KeySymmetric();
         try {
-            KeyGenerator keyGenerator = KeyGenerator.getInstance(this.algorithm.cipher, provider);
+            KeyGenerator keyGenerator = KeyGenerator.getInstance(this.algorithm.cipher, Constraint.DEFAULT_PROVIDER);
             keyGenerator.init(algorithm.getKeySize());
-            secretKey = keyGenerator.generateKey();
+            SecretKey secretKey = keyGenerator.generateKey();
             IvParameterSpec iv = generateIV();
             key.setSecretKey(secretKey);
             key.setIv(iv);
@@ -88,10 +83,10 @@ public class SymmetricCipherNative extends AbsCipherNative<KeySymmetric> {
 
     @Override
     public String encrypt(String data) throws Exception {
-        if (this.iv == null)
-            cipher.init(Cipher.ENCRYPT_MODE, this.secretKey);
+        if (this.key.getIv() == null)
+            cipher.init(Cipher.ENCRYPT_MODE, this.key.getSecretKey());
         else
-            cipher.init(Cipher.ENCRYPT_MODE, this.secretKey, this.iv);
+            cipher.init(Cipher.ENCRYPT_MODE, this.key.getSecretKey(), this.key.getIv());
         return this.conversionStrategy.convert(cipher.doFinal(data.getBytes(StandardCharsets.UTF_8)));
     }
 
@@ -99,10 +94,10 @@ public class SymmetricCipherNative extends AbsCipherNative<KeySymmetric> {
     public String decrypt(String encryptText) throws CipherException {
         try {
             byte[] data = this.conversionStrategy.convert(encryptText);
-            if (this.iv == null)
-                cipher.init(Cipher.DECRYPT_MODE, this.secretKey);
+            if (this.key.getIv() == null)
+                cipher.init(Cipher.DECRYPT_MODE, this.key.getSecretKey());
             else
-                cipher.init(Cipher.DECRYPT_MODE, this.secretKey, this.iv);
+                cipher.init(Cipher.DECRYPT_MODE, this.key.getSecretKey(), this.key.getIv());
             return new String(cipher.doFinal(data), StandardCharsets.UTF_8);
         } catch (Exception e) {
             throw new CipherException(e.getMessage());
@@ -112,7 +107,7 @@ public class SymmetricCipherNative extends AbsCipherNative<KeySymmetric> {
     @Override
     public boolean encrypt(String src, String dest) throws CipherException {
         try {
-            cipher.init(Cipher.ENCRYPT_MODE, this.secretKey);
+            cipher.init(Cipher.ENCRYPT_MODE, this.key.getSecretKey());
             BufferedInputStream bis = new BufferedInputStream((new FileInputStream(src)));
             BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(dest));
             CipherInputStream cis = new CipherInputStream(bis, cipher);
@@ -143,7 +138,7 @@ public class SymmetricCipherNative extends AbsCipherNative<KeySymmetric> {
     @Override
     public boolean decrypt(String src, String dest) throws CipherException {
         try {
-            cipher.init(Cipher.DECRYPT_MODE, this.secretKey);
+            cipher.init(Cipher.DECRYPT_MODE, this.key.getSecretKey());
             BufferedInputStream bis = new BufferedInputStream((new FileInputStream(src)));
             BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(dest));
             CipherOutputStream cos = new CipherOutputStream(bos, cipher);
@@ -167,25 +162,12 @@ public class SymmetricCipherNative extends AbsCipherNative<KeySymmetric> {
     }
 
     @Override
-    public boolean loadKey(String src) throws IOException {
-        try {
-            FileUtil.loadKeyFromFile(src, algorithm.cipher);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+    public void loadKey(String src) throws IOException, CipherException {
+        this.key = FileUtil.loadKey(src);
     }
 
     @Override
-    public boolean saveKey(String dest) throws IOException {
-        try {
-            FileUtil.saveKeyToFile(secretKey, dest);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+    public void saveKey(String dest) throws CipherException {
+        FileUtil.saveKey(this.key, dest);
     }
-
 }

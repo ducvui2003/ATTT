@@ -5,6 +5,7 @@ import nlu.fit.leanhduc.controller.MainController;
 import nlu.fit.leanhduc.controller.SymmetricCipherNativeController;
 import nlu.fit.leanhduc.service.cipher.CipherSpecification;
 import nlu.fit.leanhduc.service.cipher.SymmetricCipherNative;
+import nlu.fit.leanhduc.util.Constraint;
 import nlu.fit.leanhduc.util.constraint.Cipher;
 import nlu.fit.leanhduc.util.constraint.Mode;
 import nlu.fit.leanhduc.util.constraint.Padding;
@@ -12,6 +13,9 @@ import nlu.fit.leanhduc.util.constraint.Size;
 import nlu.fit.leanhduc.view.component.GridBagConstraintsBuilder;
 import nlu.fit.leanhduc.view.component.SwingComponentUtil;
 import nlu.fit.leanhduc.view.component.fileChooser.FileChooserButton;
+import nlu.fit.leanhduc.view.component.fileChooser.FileChooserEvent;
+import nlu.fit.leanhduc.view.component.fileChooser.FileChooserLoadKey;
+import nlu.fit.leanhduc.view.component.fileChooser.FileChooserSaveKey;
 import nlu.fit.leanhduc.view.component.panel.file.PanelFileHandler;
 import nlu.fit.leanhduc.view.component.panel.text.PanelHandler;
 import nlu.fit.leanhduc.view.component.panel.text.PanelTextHandler;
@@ -21,6 +25,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +36,12 @@ public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEv
             List.of(
                     CipherSpecification.findCipherSpecification(Cipher.AES),
                     CipherSpecification.findCipherSpecification(Cipher.DES),
-                    CipherSpecification.findCipherSpecification(Cipher.DESEDE)
+                    CipherSpecification.findCipherSpecification(Cipher.DESEDE),
+                    CipherSpecification.findCipherSpecification(Cipher.RC2),
+                    CipherSpecification.findCipherSpecification(Cipher.RC4),
+                    CipherSpecification.findCipherSpecification(Cipher.BLOWFISH),
+                    CipherSpecification.findCipherSpecification(Cipher.CAMELLIA),
+                    CipherSpecification.findCipherSpecification(Cipher.IDEA)
             );
 
     JComboBox<Cipher> comboBoxCipher;
@@ -39,9 +49,10 @@ public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEv
     JComboBox<Padding> comboBoxPadding;
     JComboBox<Size> comboBoxKeySize;
     JComboBox<Size> comboBoxIVSize;
+    CipherSpecification selectedSpec;
     JButton btnGenerateKey;
-    FileChooserButton btnLoadKey;
-
+    FileChooserLoadKey btnLoadKey;
+    FileChooserSaveKey btnSaveKey;
     GridBagConstraints gbc;
     JPanel container;
     JTabbedPane tabbedPane;
@@ -79,14 +90,13 @@ public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEv
     }
 
     private void createGeneratePanel() {
-        // Initialize Cipher ComboBox and Listener
         createComboBox();
         this.btnGenerateKey = new JButton("Tạo khóa");
         this.btnGenerateKey.addActionListener(this);
-        this.btnLoadKey = new FileChooserButton("Tải khóa", MetadataConfig.INSTANCE.getUploadIcon());
+        this.btnSaveKey = new FileChooserSaveKey(this, "Lưu khóa", MetadataConfig.INSTANCE.getSaveIcon());
+        this.btnLoadKey = new FileChooserLoadKey(this, "Tải khóa", MetadataConfig.INSTANCE.getUploadIcon());
         this.showSecretKey = createTextArea();
         this.showIv = createTextArea();
-        // Add Components to Panel
         SwingComponentUtil.addComponentGridBag(
                 this.container,
                 GridBagConstraintsBuilder.builder()
@@ -188,15 +198,6 @@ public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEv
                 this.comboBoxIVSize
         );
 
-        SwingComponentUtil.addComponentGridBag(
-                this.container,
-                GridBagConstraintsBuilder.builder()
-                        .grid(11, 0)
-                        .weight(1.0, 0.0)
-                        .fill(GridBagConstraints.HORIZONTAL)
-                        .build(),
-                this.btnGenerateKey
-        );
         this.keyStatus = new JLabel();
         keyStatus.setHorizontalTextPosition(SwingConstants.LEFT);
 
@@ -209,6 +210,35 @@ public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEv
                         .fill(GridBagConstraints.HORIZONTAL)
                         .build(),
                 new JLabel("Tình trạng khóa:")
+        );
+
+        SwingComponentUtil.addComponentGridBag(
+                this.container,
+                GridBagConstraintsBuilder.builder()
+                        .grid(8, 2)
+                        .weight(1.0, 0.0)
+                        .fill(GridBagConstraints.HORIZONTAL)
+                        .build(),
+                this.btnGenerateKey
+        );
+
+        SwingComponentUtil.addComponentGridBag(
+                this.container,
+                GridBagConstraintsBuilder.builder()
+                        .grid(9, 2)
+                        .weight(1.0, 0.0)
+                        .fill(GridBagConstraints.HORIZONTAL)
+                        .build(),
+                btnSaveKey
+        );
+        SwingComponentUtil.addComponentGridBag(
+                this.container,
+                GridBagConstraintsBuilder.builder()
+                        .grid(10, 2)
+                        .weight(1.0, 0.0)
+                        .fill(GridBagConstraints.HORIZONTAL)
+                        .build(),
+                btnLoadKey
         );
 
         SwingComponentUtil.addComponentGridBag(
@@ -251,20 +281,10 @@ public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEv
                 GridBagConstraintsBuilder.builder()
                         .grid(1, 2)
                         .weight(1.0, 0.0)
-                        .gridSpan(5, 1)
+                        .gridSpan(4, 1)
                         .fill(GridBagConstraints.HORIZONTAL)
                         .build(),
                 this.keyStatus
-        );
-
-        SwingComponentUtil.addComponentGridBag(
-                this.container,
-                GridBagConstraintsBuilder.builder()
-                        .grid(10, 2)
-                        .weight(1.0, 0.0)
-                        .fill(GridBagConstraints.HORIZONTAL)
-                        .build(),
-                btnLoadKey
         );
 
         SwingComponentUtil.addComponentGridBag(
@@ -282,7 +302,7 @@ public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEv
                 this.container,
                 GridBagConstraintsBuilder.builder()
                         .grid(1, 4)
-                        .gridSpan(15, 2)
+                        .gridSpan(10, 2)
                         .weight(1.0, 1.0)
                         .fill(GridBagConstraints.BOTH)
                         .insets(10, 0, 10, 0)
@@ -305,7 +325,7 @@ public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEv
                 this.container,
                 GridBagConstraintsBuilder.builder()
                         .grid(1, 6)
-                        .gridSpan(15, 2)
+                        .gridSpan(10, 2)
                         .weight(1.0, 1.0)
                         .fill(GridBagConstraints.BOTH)
                         .insets(10, 0, 10, 0)
@@ -324,76 +344,57 @@ public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEv
                 .toArray(Cipher[]::new));
         this.comboBoxCipher.addActionListener(e -> updateModeAndPadding());
 
-        // Initialize Mode ComboBox and Listener
         this.comboBoxMode = new JComboBox<>();
         this.comboBoxMode.addActionListener(e -> updatePaddingAndIvSize());
 
-        // Initialize Padding ComboBox and Listener
         this.comboBoxPadding = new JComboBox<>();
         this.comboBoxPadding.addActionListener(e -> updateIvSize());
 
-        // Initialize Key Size ComboBox and Listener
         this.comboBoxKeySize = new JComboBox<>();
 
-        // Initialize IV Size ComboBox (No listener needed)
         this.comboBoxIVSize = new JComboBox<>();
     }
 
-    // Update Mode and Padding when Cipher changes
     private void updateModeAndPadding() {
         Cipher selectedCipher = this.getSelectedCipher();
-        CipherSpecification selectedSpec = CipherSpecification.findCipherSpecification(selectedCipher);
 
-        // Temporarily remove mode listener to avoid triggering it during updates
+        this.selectedSpec = CipherSpecification.findCipherSpecification(selectedCipher);
+
         ActionListener modeListener = this.comboBoxMode.getActionListeners()[0];
         this.comboBoxMode.removeActionListener(modeListener);
 
-        // Update Mode ComboBox
         this.comboBoxMode.removeAllItems();
         selectedSpec.getValidModePaddingCombinations().keySet().forEach(mode -> this.comboBoxMode.addItem(mode));
 
-        // Re-add the mode listener
         this.comboBoxMode.addActionListener(modeListener);
 
-        // Update dependent ComboBoxes
         updatePaddingAndIvSize();
         updateKeySize();
         updateIvSize();
     }
 
-    // Update Padding and IV Size when Mode changes
     private void updatePaddingAndIvSize() {
-        Cipher selectedCipher = getSelectedCipher();
-        CipherSpecification selectedSpec = CipherSpecification.findCipherSpecification(selectedCipher);
 
-        // Temporarily remove padding listener to avoid triggering it during updates
         ActionListener paddingListener = this.comboBoxPadding.getActionListeners()[0];
         this.comboBoxPadding.removeActionListener(paddingListener);
 
-        // Update Padding ComboBox
         this.comboBoxPadding.removeAllItems();
         if (this.getSelectedMode() != null) {
             selectedSpec.getValidModePaddingCombinations().get(this.getSelectedMode())
                     .forEach(padding -> this.comboBoxPadding.addItem(padding));
         }
 
-        // Re-add the padding listener
         this.comboBoxPadding.addActionListener(paddingListener);
 
-        // Update IV Size based on Mode
         updateIvSize();
     }
 
-    // Update Key Size based on selected Cipher
     private void updateKeySize() {
-        CipherSpecification selectedSpec = CipherSpecification.findCipherSpecification(this.getSelectedCipher());
         this.comboBoxKeySize.removeAllItems();
         selectedSpec.getSupportedKeySizes().forEach(size -> this.comboBoxKeySize.addItem(size));
     }
 
-    // Update IV Size based on selected Mode
     private void updateIvSize() {
-        CipherSpecification selectedSpec = CipherSpecification.findCipherSpecification(this.getSelectedCipher());
         Mode selectedMode = (Mode) this.comboBoxMode.getSelectedItem();
 
         this.comboBoxIVSize.removeAllItems();
@@ -428,33 +429,42 @@ public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEv
                 this.tabbedPane);
     }
 
-    private Cipher getSelectedCipher() {
+    public Cipher getSelectedCipher() {
         return (Cipher) this.comboBoxCipher.getSelectedItem();
     }
 
-    private Mode getSelectedMode() {
+    public Mode getSelectedMode() {
         return (Mode) this.comboBoxMode.getSelectedItem();
     }
 
-    private Padding getSelectedPadding() {
+    public Padding getSelectedPadding() {
         return (Padding) this.comboBoxPadding.getSelectedItem();
     }
 
-    private Size getSelectedKeySize() {
+    public Size getSelectedKeySize() {
         return (Size) this.comboBoxKeySize.getSelectedItem();
     }
 
-    private Size getSelectedIVSize() {
+    public Size getSelectedIVSize() {
         return (Size) this.comboBoxIVSize.getSelectedItem();
     }
 
-    private String getBase64SecretKey() {
+    public String getBase64SecretKey() {
         return this.showSecretKey.getText();
     }
 
-    private String getBase64Iv() {
+    public String getBase64Iv() {
         return this.showIv.getText();
     }
+
+    public String getCipher() {
+        return cipher;
+    }
+
+    public String getAlgorithm() {
+        return algorithm;
+    }
+
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -483,7 +493,16 @@ public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEv
     @Override
     public String onEncrypt(String plainText) {
         try {
-            return SymmetricCipherNativeController.getInstance().encrypt(getBase64SecretKey(), getBase64Iv(), plainText, this.cipher, this.algorithm);
+            return SymmetricCipherNativeController.getInstance().encrypt(
+                    getBase64SecretKey(),
+                    getBase64Iv(),
+                    plainText,
+                    this.getSelectedCipher(),
+                    this.getSelectedMode(),
+                    this.getSelectedPadding(),
+                    this.getSelectedKeySize(),
+                    this.getSelectedIVSize()
+            );
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -493,7 +512,13 @@ public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEv
     public String onDecrypt(String cipherText) {
         try {
             return SymmetricCipherNativeController.getInstance().decrypt(getBase64SecretKey(), getBase64Iv(),
-                    cipherText, this.cipher, this.algorithm);
+                    cipherText,
+                    this.getSelectedCipher(),
+                    this.getSelectedMode(),
+                    this.getSelectedPadding(),
+                    this.getSelectedKeySize(),
+                    this.getSelectedIVSize()
+            );
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -569,5 +594,23 @@ public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEv
                         .build(),
                 new JLabel("IV Size: " + (this.getSelectedIVSize() == null ? 0 : this.getSelectedIVSize()).toString() + " bits")
         );
+    }
+
+    public void updateComboBox(Cipher cipher, Mode mode, Padding padding, Size keySize, Size ivSize) {
+        this.selectedSpec = CipherSpecification.findCipherSpecification(cipher);
+        comboBoxCipher.setSelectedItem(cipher);
+        this.updateModeAndPadding();
+        comboBoxMode.setSelectedItem(mode);
+        comboBoxPadding.setSelectedItem(padding);
+        this.updateKeySize();
+        comboBoxKeySize.setSelectedItem(keySize);
+        this.updateIvSize();
+        comboBoxIVSize.setSelectedItem(ivSize);
+    }
+
+    public void updateKeyBase64(String base64SecretKey, String base64Iv) {
+        this.showSecretKey.setText(base64SecretKey);
+        this.showIv.setText(base64Iv);
+        setKeyStatus(true);
     }
 }

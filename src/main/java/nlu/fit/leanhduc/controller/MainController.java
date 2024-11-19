@@ -1,8 +1,6 @@
 package nlu.fit.leanhduc.controller;
 
 import nlu.fit.leanhduc.service.ICipher;
-import nlu.fit.leanhduc.service.ITextKey;
-import nlu.fit.leanhduc.service.KeyGeneratorFactory;
 import nlu.fit.leanhduc.service.cipher.classic.*;
 import nlu.fit.leanhduc.service.key.*;
 import nlu.fit.leanhduc.util.constraint.Cipher;
@@ -11,8 +9,6 @@ import nlu.fit.leanhduc.util.alphabet.AlphabetUtil;
 import nlu.fit.leanhduc.util.alphabet.EnglishAlphabetUtil;
 import nlu.fit.leanhduc.util.alphabet.VietnameseAlphabetUtil;
 import nlu.fit.leanhduc.view.MainView;
-
-import java.util.*;
 
 public class MainController {
 

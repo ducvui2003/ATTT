@@ -32,17 +32,15 @@ public interface ICipher<T> {
      * Tải khóa từ src lên và gán cho thuật toán
      *
      * @param src đường dẫn file chứa khóa
-     * @return true nếu tải thành công, ngược lại false
      */
-    boolean loadKey(String src) throws IOException;
+    void loadKey(String src) throws IOException, CipherException;
 
     /**
      * Lưu khá xuống file chỉ định
      *
      * @param dest đường dẫn lưu file khóa
-     * @return true nếu lưu thành công, ngược lại false
      */
-    boolean saveKey(String dest) throws IOException;
+    void saveKey(String dest) throws IOException, CipherException;
 
     /**
      * Mã hóa chuỗi

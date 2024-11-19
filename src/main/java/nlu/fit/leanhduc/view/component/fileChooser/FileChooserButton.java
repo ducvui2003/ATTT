@@ -4,14 +4,17 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 
 @Getter
 @Setter
-public class FileChooserButton extends JButton {
+public class FileChooserButton extends JButton implements ActionListener {
     String text;
     ImageIcon icon;
     Component container;
@@ -29,32 +32,29 @@ public class FileChooserButton extends JButton {
         this.setIcon(this.icon);
         this.setPreferredSize(new Dimension(200, 40));
         this.setBackground(Color.WHITE);
-        this.setEvent();
+
+        this.addActionListener(this);
     }
 
-    private void setEvent() {
-        this.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                super.mouseClicked(e);
-                JFileChooser fileChooser = new JFileChooser();
-                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-                int option = fileChooser.showOpenDialog(container);
-
-                switch (option) {
-                    case JFileChooser.APPROVE_OPTION:
-                        File selectedFile = fileChooser.getSelectedFile();
-                        event.autoAddExtension(selectedFile);
-                        event.onFileSelected(selectedFile);
-                        break;
-                    case JFileChooser.CANCEL_OPTION:
-                        event.onFileUnselected();
-                        break;
-                    case JFileChooser.ERROR_OPTION:
-                        event.onError("Error");
-                        break;
-                }
-            }
-        });
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Text Files (*.txt)", "txt");
+        fileChooser.setFileFilter(filter);
+        int option = fileChooser.showOpenDialog(container);
+        switch (option) {
+            case JFileChooser.APPROVE_OPTION:
+                File selectedFile = fileChooser.getSelectedFile();
+                event.autoAddExtension(selectedFile);
+                event.onFileSelected(selectedFile);
+                break;
+            case JFileChooser.CANCEL_OPTION:
+                event.onFileUnselected();
+                break;
+            case JFileChooser.ERROR_OPTION:
+                event.onError("Error");
+                break;
+        }
     }
 }

@@ -11,6 +11,13 @@ import javax.crypto.spec.IvParameterSpec;
 public class KeySymmetric {
     SecretKey secretKey;
     IvParameterSpec iv;
+    String cipher;
+    String mode;
+    String padding;
+    //  đơn vị: bit
+    int keySize;
+    //  đơn vị: bit
+    int ivSize;
 
     @Override
     public String toString() {
