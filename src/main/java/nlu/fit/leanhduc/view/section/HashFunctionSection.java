@@ -14,8 +14,6 @@ import nlu.fit.leanhduc.view.component.panel.text.PanelTextHashHandler;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.LinkedHashMap;
 import java.util.Map;
 

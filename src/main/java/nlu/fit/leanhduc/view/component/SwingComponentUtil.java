@@ -52,4 +52,17 @@ public class SwingComponentUtil {
         boldSeparator.setBorder(new LineBorder(color, thickness));
         return boldSeparator;
     }
+
+    public static JTextArea createTextArea() {
+        JTextArea textArea = new JTextArea();
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+        textArea.setBackground(Color.WHITE);
+        textArea.setEnabled(false);
+        textArea.setRows(5);
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+        return textArea;
+    }
+
 }

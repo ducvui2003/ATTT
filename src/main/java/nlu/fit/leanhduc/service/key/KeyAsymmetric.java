@@ -9,4 +9,9 @@ import java.security.PublicKey;
 public class KeyAsymmetric {
     PublicKey publicKey;
     PrivateKey privateKey;
+    String cipher;
+    String mode;
+    String padding;
+    //  đơn vị: bit
+    int keySize;
 }

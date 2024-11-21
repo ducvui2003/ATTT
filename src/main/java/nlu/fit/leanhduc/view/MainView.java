@@ -47,9 +47,10 @@ public class MainView extends JFrame {
     }
 
     private void setMetadata() {
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        this.setSize(screenSize);
+        this.setLocation(0, 0);
         this.setName(Constraint.APP_NAME);
-        this.setSize(Constraint.WIDTH, Constraint.HEIGHT);
-        this.setLocationRelativeTo(null);
         this.setVisible(true);
         this.setIconImage(Constraint.APP_ICON_IMAGE);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

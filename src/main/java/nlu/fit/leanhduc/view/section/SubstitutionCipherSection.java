@@ -49,7 +49,7 @@ public class SubstitutionCipherSection extends JPanel implements FileChooserEven
     final KeyTypingPanel<ViginereKey> viginereKeyTypingPanel = new ViginereKeyTypingPanel(controller, languageCurrent);
     final KeyTypingPanel<HillKey> hillKeyTypingPanel = new HillCipherTyping(controller);
     JTabbedPane tabbedPane;
-    PanelHandler panelTextHandler, panelFileHandler;
+    PanelHandler panelTextHandler;
     GridBagConstraints gbc;
     JPanel container;
     FileChooserButton btnLoadKey;
@@ -187,10 +187,8 @@ public class SubstitutionCipherSection extends JPanel implements FileChooserEven
     private void createTabbedPane() {
         this.tabbedPane = new JTabbedPane();
         this.panelTextHandler = new PanelTextHandler(this);
-        this.panelFileHandler = new PanelFileHandler();
         Map<String, JPanel> panelMap = new LinkedHashMap<>();
         panelMap.put("Mã hóa Chuỗi", panelTextHandler);
-        panelMap.put("Mã hóa File", panelFileHandler);
         panelMap.forEach((k, v) -> tabbedPane.addTab(k, v));
 
         SwingComponentUtil.addComponentGridBag(

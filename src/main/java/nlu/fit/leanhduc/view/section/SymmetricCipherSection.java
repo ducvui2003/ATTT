@@ -12,10 +12,7 @@ import nlu.fit.leanhduc.util.constraint.Padding;
 import nlu.fit.leanhduc.util.constraint.Size;
 import nlu.fit.leanhduc.view.component.GridBagConstraintsBuilder;
 import nlu.fit.leanhduc.view.component.SwingComponentUtil;
-import nlu.fit.leanhduc.view.component.fileChooser.FileChooserButton;
-import nlu.fit.leanhduc.view.component.fileChooser.FileChooserEvent;
-import nlu.fit.leanhduc.view.component.fileChooser.FileChooserLoadKey;
-import nlu.fit.leanhduc.view.component.fileChooser.FileChooserSaveKey;
+import nlu.fit.leanhduc.view.component.fileChooser.*;
 import nlu.fit.leanhduc.view.component.panel.file.PanelFileHandler;
 import nlu.fit.leanhduc.view.component.panel.text.PanelHandler;
 import nlu.fit.leanhduc.view.component.panel.text.PanelTextHandler;
@@ -60,8 +57,8 @@ public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEv
     JLabel keyStatus;
     JPanel detailKey;
     JTextArea showSecretKey, showIv;
-    String algorithm;
     String cipher;
+
 
     public SymmetricCipherSection(MainController controller) {
         this.controller = controller;
@@ -77,17 +74,6 @@ public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEv
         createTabbedPane();
     }
 
-    private JTextArea createTextArea() {
-        JTextArea textArea = new JTextArea();
-        textArea.setLineWrap(true);
-        textArea.setWrapStyleWord(true);
-        textArea.setBackground(Color.WHITE);
-        textArea.setEnabled(false);
-        textArea.setRows(5);
-        textArea.setLineWrap(true);
-        textArea.setWrapStyleWord(true);
-        return textArea;
-    }
 
     private void createGeneratePanel() {
         createComboBox();
@@ -95,8 +81,8 @@ public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEv
         this.btnGenerateKey.addActionListener(this);
         this.btnSaveKey = new FileChooserSaveKey(this, "Lưu khóa", MetadataConfig.INSTANCE.getSaveIcon());
         this.btnLoadKey = new FileChooserLoadKey(this, "Tải khóa", MetadataConfig.INSTANCE.getUploadIcon());
-        this.showSecretKey = createTextArea();
-        this.showIv = createTextArea();
+        this.showSecretKey = SwingComponentUtil.createTextArea();
+        this.showIv = SwingComponentUtil.createTextArea();
         SwingComponentUtil.addComponentGridBag(
                 this.container,
                 GridBagConstraintsBuilder.builder()
@@ -161,7 +147,7 @@ public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEv
         SwingComponentUtil.addComponentGridBag(
                 this.container,
                 GridBagConstraintsBuilder.builder()
-                        .grid(7, 0)
+                        .grid(6, 0)
                         .weight(1.0, 0.0)
                         .fill(GridBagConstraints.HORIZONTAL)
                         .build(),
@@ -171,7 +157,7 @@ public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEv
         SwingComponentUtil.addComponentGridBag(
                 this.container,
                 GridBagConstraintsBuilder.builder()
-                        .grid(8, 0)
+                        .grid(7, 0)
                         .weight(1.0, 0.0)
                         .fill(GridBagConstraints.HORIZONTAL)
                         .build(),
@@ -181,7 +167,7 @@ public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEv
         SwingComponentUtil.addComponentGridBag(
                 this.container,
                 GridBagConstraintsBuilder.builder()
-                        .grid(9, 0)
+                        .grid(8, 0)
                         .weight(1.0, 0.0)
                         .fill(GridBagConstraints.HORIZONTAL)
                         .build(),
@@ -191,7 +177,7 @@ public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEv
         SwingComponentUtil.addComponentGridBag(
                 this.container,
                 GridBagConstraintsBuilder.builder()
-                        .grid(10, 0)
+                        .grid(9, 0)
                         .weight(1.0, 0.0)
                         .fill(GridBagConstraints.HORIZONTAL)
                         .build(),
@@ -215,7 +201,7 @@ public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEv
         SwingComponentUtil.addComponentGridBag(
                 this.container,
                 GridBagConstraintsBuilder.builder()
-                        .grid(8, 2)
+                        .grid(7, 2)
                         .weight(1.0, 0.0)
                         .fill(GridBagConstraints.HORIZONTAL)
                         .build(),
@@ -225,7 +211,7 @@ public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEv
         SwingComponentUtil.addComponentGridBag(
                 this.container,
                 GridBagConstraintsBuilder.builder()
-                        .grid(9, 2)
+                        .grid(8, 2)
                         .weight(1.0, 0.0)
                         .fill(GridBagConstraints.HORIZONTAL)
                         .build(),
@@ -234,7 +220,7 @@ public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEv
         SwingComponentUtil.addComponentGridBag(
                 this.container,
                 GridBagConstraintsBuilder.builder()
-                        .grid(10, 2)
+                        .grid(9, 2)
                         .weight(1.0, 0.0)
                         .fill(GridBagConstraints.HORIZONTAL)
                         .build(),
@@ -302,7 +288,7 @@ public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEv
                 this.container,
                 GridBagConstraintsBuilder.builder()
                         .grid(1, 4)
-                        .gridSpan(10, 2)
+                        .gridSpan(9, 2)
                         .weight(1.0, 1.0)
                         .fill(GridBagConstraints.BOTH)
                         .insets(10, 0, 10, 0)
@@ -461,11 +447,6 @@ public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEv
         return cipher;
     }
 
-    public String getAlgorithm() {
-        return algorithm;
-    }
-
-
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == btnGenerateKey) {
@@ -481,7 +462,6 @@ public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEv
                 this.showSecretKey.setText(key.get("secret-key"));
                 this.showIv.setText(key.get("iv"));
                 this.cipher = key.get("cipher");
-                this.algorithm = key.get("algorithm");
                 setKeyStatus(true);
             } catch (Exception ex) {
                 setKeyStatus(false);
@@ -598,14 +578,14 @@ public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEv
 
     public void updateComboBox(Cipher cipher, Mode mode, Padding padding, Size keySize, Size ivSize) {
         this.selectedSpec = CipherSpecification.findCipherSpecification(cipher);
-        comboBoxCipher.setSelectedItem(cipher);
+        this.comboBoxCipher.setSelectedItem(cipher);
         this.updateModeAndPadding();
-        comboBoxMode.setSelectedItem(mode);
-        comboBoxPadding.setSelectedItem(padding);
+        this.comboBoxMode.setSelectedItem(mode);
+        this.comboBoxPadding.setSelectedItem(padding);
         this.updateKeySize();
-        comboBoxKeySize.setSelectedItem(keySize);
+        this.comboBoxKeySize.setSelectedItem(keySize);
         this.updateIvSize();
-        comboBoxIVSize.setSelectedItem(ivSize);
+        this.comboBoxIVSize.setSelectedItem(ivSize);
     }
 
     public void updateKeyBase64(String base64SecretKey, String base64Iv) {

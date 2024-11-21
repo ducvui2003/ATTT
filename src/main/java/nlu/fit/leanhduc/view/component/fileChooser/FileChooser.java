@@ -34,7 +34,7 @@ public class FileChooser extends JPanel {
 
     public FileChooser() {
         this.onlyBtn = false;
-        init();
+        initWithLabel();
     }
 
     public FileChooser(String textBtn) {
@@ -63,9 +63,17 @@ public class FileChooser extends JPanel {
         this.setBorder(combinedBorder);
     }
 
+    private void initWithLabel() {
+        this.setLayout(new BorderLayout(5, 0));
+        createButton();
+        createLabel();
+        this.add(label, BorderLayout.CENTER);
+        this.add(button, BorderLayout.EAST);
+        this.setBorder(combinedBorder);
+    }
+
     private void createLabel() {
         label = new JLabel();
-        label.setPreferredSize(new Dimension(100, 30));
         label.setFont(Constraint.FONT_MEDIUM);
         label.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
     }

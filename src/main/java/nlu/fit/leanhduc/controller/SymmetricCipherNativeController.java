@@ -18,7 +18,6 @@ import java.util.Map;
 public class SymmetricCipherNativeController {
     private static SymmetricCipherNativeController INSTANCE;
 
-
     public static SymmetricCipherNativeController getInstance() {
         if (INSTANCE == null) {
             INSTANCE = new SymmetricCipherNativeController();
@@ -27,16 +26,6 @@ public class SymmetricCipherNativeController {
     }
 
     private SymmetricCipherNativeController() {
-    }
-
-    public SymmetricCipherNative getAlgorithm(Cipher cipher, Mode mode, Padding padding, Size keySize, Size ivSize) throws Exception {
-        Algorithm algorithm = new Algorithm(cipher.getName(), mode.getName(), padding.getName(), keySize.getBit(), ivSize.getByteFormat());
-        return new SymmetricCipherNative(algorithm);
-    }
-
-    public SymmetricCipherNative getAlgorithm(Cipher cipher, Mode mode, Padding padding, Size keySize) throws Exception {
-        Algorithm algorithm = new Algorithm(cipher.getName(), mode.getName(), padding.getName(), keySize.getBit());
-        return new SymmetricCipherNative(algorithm);
     }
 
     public String encrypt(SymmetricCipherNative cipher, String plainText) throws Exception {
@@ -52,7 +41,6 @@ public class SymmetricCipherNativeController {
         return Map.of(
                 "secret-key", byteConversionStrategy.convert(key.getSecretKey().getEncoded()),
                 "iv", byteConversionStrategy.convert(key.getIv().getIV()),
-                "algorithm", algorithm.toString(),
                 "cipher", algorithm.getCipher());
     }
 

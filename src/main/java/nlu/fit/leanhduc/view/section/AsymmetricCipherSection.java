@@ -1,30 +1,43 @@
 package nlu.fit.leanhduc.view.section;
 
+import nlu.fit.leanhduc.controller.AsymmetricCipherController;
 import nlu.fit.leanhduc.controller.MainController;
 import nlu.fit.leanhduc.service.cipher.CipherSpecification;
 import nlu.fit.leanhduc.util.constraint.Cipher;
 import nlu.fit.leanhduc.util.constraint.Mode;
 import nlu.fit.leanhduc.util.constraint.Padding;
 import nlu.fit.leanhduc.util.constraint.Size;
+import nlu.fit.leanhduc.view.component.GridBagConstraintsBuilder;
+import nlu.fit.leanhduc.view.component.SwingComponentUtil;
+import nlu.fit.leanhduc.view.component.panel.file.PanelFileHandler;
+import nlu.fit.leanhduc.view.component.panel.text.PanelTextHandler;
+import nlu.fit.leanhduc.view.component.panel.text.PanelTextHandlerEvent;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
-public class AsymmetricCipherSection extends JPanel implements ActionListener {
+public class AsymmetricCipherSection extends JPanel implements ActionListener, PanelTextHandlerEvent {
     MainController controller;
-    List<CipherSpecification> cipherSpecifications = List.of(CipherSpecification.findCipherSpecification(Cipher.RSA), CipherSpecification.findCipherSpecification(Cipher.DES));
+    List<CipherSpecification> cipherSpecifications = List.of(CipherSpecification.findCipherSpecification(Cipher.RSA));
     JComboBox<Cipher> comboBoxCipher;
     JComboBox<Mode> comboBoxMode;
     JComboBox<Padding> comboBoxPadding;
     JComboBox<Size> comboBoxKeySize;
-    JComboBox<Size> comboBoxIVSize;
     Padding currentPadding;
     Size currentKeySize;
     JButton btnGenerateKey;
     JLabel keyStatus;
+    JPanel container;
+    JRadioButton encryptByPublicKey, encryptByPrivateKey;
+    ButtonGroup group;
+    JTabbedPane tabbedPane;
+    JTextArea publicKeyField, privateKeyField;
+    PanelTextHandler panelTextHandler;
 
     public AsymmetricCipherSection(MainController controller) {
         this.controller = controller;
@@ -32,7 +45,10 @@ public class AsymmetricCipherSection extends JPanel implements ActionListener {
     }
 
     private void createUIComponents() {
-        this.setLayout(new FlowLayout(FlowLayout.LEADING, 5, 5));
+        this.setLayout(new BorderLayout());
+        this.container = new JPanel(new GridBagLayout());
+        this.add(this.container, BorderLayout.NORTH);
+        JPanel panelGenerateKey = new JPanel(new FlowLayout(FlowLayout.LEADING, 5, 5));
 
         // Initialize Cipher ComboBox and Listener
         this.comboBoxCipher = new JComboBox<>(cipherSpecifications.stream()
@@ -46,33 +62,142 @@ public class AsymmetricCipherSection extends JPanel implements ActionListener {
 
         // Initialize Padding ComboBox and Listener
         this.comboBoxPadding = new JComboBox<>();
-        this.comboBoxPadding.addActionListener(e -> updateIvSize());
 
         // Initialize Key Size ComboBox and Listener
         this.comboBoxKeySize = new JComboBox<>();
-        this.comboBoxKeySize.addActionListener(e -> handleKeySizeChange());
 
-        // Initialize IV Size ComboBox (No listener needed)
-        this.comboBoxIVSize = new JComboBox<>();
 
         // Add Components to Panel
-        this.add(new JLabel("Cipher:"));
-        this.add(this.comboBoxCipher);
-        this.add(new JLabel("Mode:"));
-        this.add(this.comboBoxMode);
-        this.add(new JLabel("Padding:"));
-        this.add(this.comboBoxPadding);
-        this.add(new JLabel("Key Size:"));
-        this.add(this.comboBoxKeySize);
-        this.add(new JLabel("IV Size:"));
-        this.add(this.comboBoxIVSize);
+        panelGenerateKey.add(new JLabel("Cipher:"));
+        panelGenerateKey.add(this.comboBoxCipher);
+        panelGenerateKey.add(new JLabel("Mode:"));
+        panelGenerateKey.add(this.comboBoxMode);
+        panelGenerateKey.add(new JLabel("Padding:"));
+        panelGenerateKey.add(this.comboBoxPadding);
+        panelGenerateKey.add(new JLabel("Key Size:"));
+        panelGenerateKey.add(this.comboBoxKeySize);
 
         this.btnGenerateKey = new JButton("Generate Key");
         this.btnGenerateKey.addActionListener(this);
-        this.add(this.btnGenerateKey);
+        panelGenerateKey.add(this.btnGenerateKey);
 
-        // Initialize dependent fields
+        this.encryptByPrivateKey = new JRadioButton("Ma hoá bằng khóa bí mật");
+        this.encryptByPublicKey = new JRadioButton("Ma hoá bằng khóa công khai");
+
+        group = new ButtonGroup();
+        group.add(encryptByPrivateKey);
+        group.add(encryptByPublicKey);
+
+
+        this.publicKeyField = SwingComponentUtil.createTextArea();
+        this.privateKeyField = SwingComponentUtil.createTextArea();
+
+        SwingComponentUtil.addComponentGridBag(
+                this.container,
+                GridBagConstraintsBuilder.builder()
+                        .grid(0, 0)
+                        .weight(1, 0)
+                        .insets(5, 5, 5, 5)
+                        .gridSpan(6, 1)
+                        .fill(GridBagConstraints.HORIZONTAL)
+                        .build(),
+                panelGenerateKey
+        );
+
+        SwingComponentUtil.addComponentGridBag(
+                this.container,
+                GridBagConstraintsBuilder.builder()
+                        .grid(0, 1)
+                        .weight(1, 0)
+                        .insets(5, 5, 5, 5)
+                        .fill(GridBagConstraints.HORIZONTAL)
+                        .build(),
+                new JLabel("Chọn khóa để mã hoá")
+        );
+
+        JPanel panelOptionEncrypt = new JPanel(new FlowLayout(FlowLayout.LEADING, 5, 5));
+        panelOptionEncrypt.add(encryptByPrivateKey);
+        panelOptionEncrypt.add(encryptByPublicKey);
+
+        SwingComponentUtil.addComponentGridBag(
+                this.container,
+                GridBagConstraintsBuilder.builder()
+                        .grid(1, 1)
+                        .insets(5, 5, 5, 5)
+                        .weight(1, 0)
+                        .fill(GridBagConstraints.HORIZONTAL)
+                        .build(),
+                panelOptionEncrypt
+        );
+
+
+        SwingComponentUtil.addComponentGridBag(
+                this.container,
+                GridBagConstraintsBuilder.builder()
+                        .grid(0, 2)
+                        .insets(5, 5, 5, 5)
+                        .fill(GridBagConstraints.HORIZONTAL)
+                        .build(),
+                new JLabel("Tình trạng khóa")
+        );
+
+        this.keyStatus = new JLabel();
+
+        SwingComponentUtil.addComponentGridBag(
+                this.container,
+                GridBagConstraintsBuilder.builder()
+                        .grid(1, 2)
+                        .insets(5, 5, 5, 5)
+                        .fill(GridBagConstraints.HORIZONTAL)
+                        .build(),
+                keyStatus
+        );
+
+        SwingComponentUtil.addComponentGridBag(
+                this.container,
+                GridBagConstraintsBuilder.builder()
+                        .grid(0, 4)
+                        .fill(GridBagConstraints.HORIZONTAL)
+                        .insets(5, 5, 5, 5)
+                        .build(),
+                new JLabel("Khóa cong khai")
+        );
+
+        SwingComponentUtil.addComponentGridBag(
+                this.container,
+                GridBagConstraintsBuilder.builder()
+                        .grid(1, 4)
+                        .gridSpan(4, 2)
+                        .weight(0.8, 1.0)
+                        .insets(5, 5, 5, 5)
+                        .fill(GridBagConstraints.BOTH)
+                        .build(),
+                new JScrollPane(publicKeyField)
+        );
+
+        SwingComponentUtil.addComponentGridBag(
+                this.container,
+                GridBagConstraintsBuilder.builder()
+                        .grid(0, 6)
+                        .fill(GridBagConstraints.HORIZONTAL)
+                        .insets(5, 5, 5, 5)
+                        .build(),
+                new JLabel("Khóa bí mật")
+        );
+
+        SwingComponentUtil.addComponentGridBag(
+                this.container,
+                GridBagConstraintsBuilder.builder()
+                        .grid(1, 6)
+                        .gridSpan(4, 2)
+                        .weight(0.8, 1.0)
+                        .insets(5, 5, 5, 5)
+                        .fill(GridBagConstraints.BOTH)
+                        .build(),
+                new JScrollPane(privateKeyField)
+        );
         updateModeAndPadding();
+        createTabbedPane();
     }
 
 
@@ -95,7 +220,6 @@ public class AsymmetricCipherSection extends JPanel implements ActionListener {
         // Update dependent ComboBoxes
         updatePaddingAndIvSize();
         updateKeySize();
-        updateIvSize();
     }
 
     // Update Padding and IV Size when Mode changes
@@ -103,11 +227,7 @@ public class AsymmetricCipherSection extends JPanel implements ActionListener {
         Cipher selectedCipher = (Cipher) this.comboBoxCipher.getSelectedItem();
         CipherSpecification selectedSpec = getCipherSpecification(selectedCipher);
 
-        // Temporarily remove padding listener to avoid triggering it during updates
-        ActionListener paddingListener = this.comboBoxPadding.getActionListeners()[0];
-        this.comboBoxPadding.removeActionListener(paddingListener);
 
-        // Update Padding ComboBox
         this.comboBoxPadding.removeAllItems();
         if (this.getSelectedMode() != null) {
             selectedSpec.getValidModePaddingCombinations().get(this.getSelectedMode())
@@ -115,11 +235,7 @@ public class AsymmetricCipherSection extends JPanel implements ActionListener {
         }
         this.currentPadding = (Padding) this.comboBoxPadding.getSelectedItem();
 
-        // Re-add the padding listener
-        this.comboBoxPadding.addActionListener(paddingListener);
 
-        // Update IV Size based on Mode
-        updateIvSize();
     }
 
     // Update Key Size based on selected Cipher
@@ -130,20 +246,23 @@ public class AsymmetricCipherSection extends JPanel implements ActionListener {
         this.currentKeySize = (Size) this.comboBoxKeySize.getSelectedItem();
     }
 
-    // Update IV Size based on selected Mode
-    private void updateIvSize() {
-        CipherSpecification selectedSpec = getCipherSpecification(this.getSelectedCipher());
-        Mode selectedMode = (Mode) this.comboBoxMode.getSelectedItem();
+    private void createTabbedPane() {
+        this.tabbedPane = new JTabbedPane();
+        this.panelTextHandler = new PanelTextHandler(this);
+        Map<String, JPanel> panelMap = new LinkedHashMap<>();
+        panelMap.put("Mã hóa Chuỗi", panelTextHandler);
+        panelMap.forEach((k, v) -> tabbedPane.addTab(k, v));
 
-        this.comboBoxIVSize.removeAllItems();
-        if (this.getSelectedIVSize() != null) {
-            this.comboBoxIVSize.addItem(this.getSelectedIVSize());
-        }
-    }
-
-    private void handleKeySizeChange() {
-        Size selectedKeySize = this.getSelectedKeySize();
-        System.out.println("Selected Key Size: " + selectedKeySize);
+        SwingComponentUtil.addComponentGridBag(
+                this.container,
+                GridBagConstraintsBuilder.builder()
+                        .grid(0, 8)        // Starting at the first column in the desired row
+                        .gridSpan(10, 1)
+                        .weight(1, 0)
+                        .fill(GridBagConstraints.HORIZONTAL)
+                        .insets(10, 0, 10, 0) // Optional padding around the separator
+                        .build(),
+                this.tabbedPane);
     }
 
 
@@ -151,8 +270,6 @@ public class AsymmetricCipherSection extends JPanel implements ActionListener {
         switch (cipher) {
             case RSA:
                 return CipherSpecification.findCipherSpecification(Cipher.RSA);
-            case DES:
-                return CipherSpecification.findCipherSpecification(Cipher.DES);
             default:
                 throw new IllegalArgumentException("Unknown cipher: " + cipher);
         }
@@ -174,25 +291,63 @@ public class AsymmetricCipherSection extends JPanel implements ActionListener {
         return (Size) this.comboBoxKeySize.getSelectedItem();
     }
 
-    private Size getSelectedIVSize() {
-        return (Size) this.comboBoxIVSize.getSelectedItem();
+    private void updateKey(String publicKey, String privateKey) {
+        this.publicKeyField.setText(publicKey);
+        this.privateKeyField.setText(privateKey);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-//        if (e.getSource() == btnGenerateKey) {
-//            try {
-//                SymmetricCipherNative symmetricCipherNative = SymmetricCipherNativeController.getInstance().getAlgorithm(
-//                        this.currentCipher.getName(),
-//                        this.currentMode.getName(),
-//                        this.currentPadding.getName(),
-//                        this.currentKeySize,
-//                        this.currentIVSize
-//                );
-//                symmetricCipherNative.loadKey(symmetricCipherNative.generateKey());
-//            } catch (Exception ex) {
-//                throw new RuntimeException(ex);
-//            }
-//        }
+        if (e.getSource() == btnGenerateKey) {
+            try {
+                Map<String, String> key = AsymmetricCipherController.getInstance().generateKey(
+                        this.getSelectedCipher(),
+                        this.getSelectedMode(),
+                        this.getSelectedPadding(),
+                        this.getSelectedKeySize()
+                );
+                updateKey(key.get("public-key"), key.get("private-key"));
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+    }
+
+    @Override
+    public String onEncrypt(String plainText) {
+        String result = "";
+        try {
+            result = AsymmetricCipherController.getInstance().encrypt(
+                    this.publicKeyField.getText(),
+                    this.privateKeyField.getText(),
+                    plainText,
+                    this.getSelectedCipher(),
+                    this.getSelectedMode(),
+                    this.getSelectedPadding(),
+                    this.getSelectedKeySize());
+            return result;
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        return result;
+    }
+
+    @Override
+    public String onDecrypt(String cipherText) {
+        String result = "";
+        try {
+            result = AsymmetricCipherController.getInstance().decrypt(
+                    this.publicKeyField.getText(),
+                    this.privateKeyField.getText(),
+                    cipherText,
+                    this.getSelectedCipher(),
+                    this.getSelectedMode(),
+                    this.getSelectedPadding(),
+                    this.getSelectedKeySize());
+            return result;
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        return result;
     }
 }

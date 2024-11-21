@@ -43,7 +43,10 @@ public class App {
             System.err.println("Failed to initialize LaF");
         }
 
-        SwingUtilities.invokeLater(MainController::new);
+        SwingUtilities.invokeLater(() ->
+        {
+            MainController controller = new MainController();
+        });
 
     }
 }

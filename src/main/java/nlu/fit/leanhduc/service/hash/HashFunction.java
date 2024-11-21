@@ -72,7 +72,7 @@ public class HashFunction extends AbsHash {
         if (!f.exists()) return null;
         SecretKeySpec secretKeySpec = new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), this.hash.getHmacValue());
 
-        Mac mac = Mac.getInstance(this.hash.getValue());
+        Mac mac = Mac.getInstance(this.hash.getHmacValue());
         try {
             mac.init(secretKeySpec);
         } catch (InvalidKeyException e) {
