@@ -13,9 +13,4 @@ public interface FileChooserEvent {
 
     void onError(String message);
 
-    default void autoAddExtension(File file) {
-        if (!file.getName().contains(".")) {
-            file.renameTo(new File(file.getAbsolutePath() + ".txt"));
-        }
-    }
 }

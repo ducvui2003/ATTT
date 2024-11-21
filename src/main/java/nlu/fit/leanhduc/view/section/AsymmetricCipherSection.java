@@ -9,7 +9,7 @@ import nlu.fit.leanhduc.util.constraint.Padding;
 import nlu.fit.leanhduc.util.constraint.Size;
 import nlu.fit.leanhduc.view.component.GridBagConstraintsBuilder;
 import nlu.fit.leanhduc.view.component.SwingComponentUtil;
-import nlu.fit.leanhduc.view.component.panel.file.PanelFileHandler;
+import nlu.fit.leanhduc.view.component.panel.file.PanelFileHandlerEvent;
 import nlu.fit.leanhduc.view.component.panel.text.PanelTextHandler;
 import nlu.fit.leanhduc.view.component.panel.text.PanelTextHandlerEvent;
 
@@ -350,4 +350,5 @@ public class AsymmetricCipherSection extends JPanel implements ActionListener, P
         }
         return result;
     }
+
 }

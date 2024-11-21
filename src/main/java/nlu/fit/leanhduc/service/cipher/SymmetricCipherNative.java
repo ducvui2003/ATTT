@@ -12,10 +12,7 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.SecureRandom;
+import java.security.*;
 
 public class SymmetricCipherNative extends AbsCipherNative<KeySymmetric> {
     Cipher cipher;
@@ -83,10 +80,7 @@ public class SymmetricCipherNative extends AbsCipherNative<KeySymmetric> {
 
     @Override
     public String encrypt(String data) throws Exception {
-        if (this.key.getIv() == null)
-            cipher.init(Cipher.ENCRYPT_MODE, this.key.getSecretKey());
-        else
-            cipher.init(Cipher.ENCRYPT_MODE, this.key.getSecretKey(), this.key.getIv());
+        initCipher();
         return this.conversionStrategy.convert(cipher.doFinal(data.getBytes(StandardCharsets.UTF_8)));
     }
 
@@ -94,10 +88,7 @@ public class SymmetricCipherNative extends AbsCipherNative<KeySymmetric> {
     public String decrypt(String encryptText) throws CipherException {
         try {
             byte[] data = this.conversionStrategy.convert(encryptText);
-            if (this.key.getIv() == null)
-                cipher.init(Cipher.DECRYPT_MODE, this.key.getSecretKey());
-            else
-                cipher.init(Cipher.DECRYPT_MODE, this.key.getSecretKey(), this.key.getIv());
+            initCipher();
             return new String(cipher.doFinal(data), StandardCharsets.UTF_8);
         } catch (Exception e) {
             throw new CipherException(e.getMessage());
@@ -107,7 +98,7 @@ public class SymmetricCipherNative extends AbsCipherNative<KeySymmetric> {
     @Override
     public boolean encrypt(String src, String dest) throws CipherException {
         try {
-            cipher.init(Cipher.ENCRYPT_MODE, this.key.getSecretKey());
+            initCipher();
             BufferedInputStream bis = new BufferedInputStream((new FileInputStream(src)));
             BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(dest));
             CipherInputStream cis = new CipherInputStream(bis, cipher);
@@ -129,8 +120,8 @@ public class SymmetricCipherNative extends AbsCipherNative<KeySymmetric> {
             bos.flush();
             bos.close();
             return true;
-        } catch (InvalidKeyException | IOException |
-                 IllegalBlockSizeException | BadPaddingException e) {
+        } catch (InvalidKeyException | IOException | IllegalBlockSizeException | BadPaddingException |
+                 InvalidAlgorithmParameterException e) {
             throw new CipherException(e.getMessage());
         }
     }
@@ -138,7 +129,7 @@ public class SymmetricCipherNative extends AbsCipherNative<KeySymmetric> {
     @Override
     public boolean decrypt(String src, String dest) throws CipherException {
         try {
-            cipher.init(Cipher.DECRYPT_MODE, this.key.getSecretKey());
+            initCipher();
             BufferedInputStream bis = new BufferedInputStream((new FileInputStream(src)));
             BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(dest));
             CipherOutputStream cos = new CipherOutputStream(bos, cipher);
@@ -169,5 +160,12 @@ public class SymmetricCipherNative extends AbsCipherNative<KeySymmetric> {
     @Override
     public void saveKey(String dest) throws CipherException {
         FileUtil.saveKey(this.key, dest);
+    }
+
+    private void initCipher() throws InvalidKeyException, InvalidAlgorithmParameterException {
+        if (this.key.getIv() == null)
+            cipher.init(Cipher.ENCRYPT_MODE, this.key.getSecretKey());
+        else
+            cipher.init(Cipher.ENCRYPT_MODE, this.key.getSecretKey(), this.key.getIv());
     }
 }

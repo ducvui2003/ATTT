@@ -9,6 +9,7 @@ import nlu.fit.leanhduc.util.Constraint;
 
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -88,6 +89,8 @@ public class FileChooser extends JPanel {
             return;
         }
         fileChooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Text Files (*.txt)", "txt");
+        fileChooser.setFileFilter(filter);
         int option = fileChooser.showOpenDialog(this);
 
         switch (option) {
@@ -96,7 +99,6 @@ public class FileChooser extends JPanel {
                 String name = selectedFile.getName();
                 if (label != null)
                     label.setText(name);
-                this.event.autoAddExtension(selectedFile);
                 setPath(selectedFile.getAbsolutePath());
                 this.event.onFileSelected(selectedFile);
                 break;

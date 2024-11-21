@@ -4,14 +4,14 @@ import nlu.fit.leanhduc.view.component.GridBagConstraintsBuilder;
 import nlu.fit.leanhduc.view.component.SwingComponentUtil;
 import nlu.fit.leanhduc.view.component.fileChooser.FileChooser;
 import nlu.fit.leanhduc.view.component.fileChooser.FileChooserButton;
+import nlu.fit.leanhduc.view.component.fileChooser.FileChooserEvent;
 import nlu.fit.leanhduc.view.component.panel.text.PanelHandler;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.io.File;
 
-public class PanelFileHandler extends PanelHandler implements ActionListener {
+public class PanelFileHandler extends PanelHandler implements FileChooserEvent {
     JPanel container;
     final String commandEncrypt = "encrypt";
     final String commandDecrypt = "decrypt";
@@ -19,7 +19,8 @@ public class PanelFileHandler extends PanelHandler implements ActionListener {
     FileChooserButton btnEncrypt, btnDecrypt;
     protected PanelFileHandlerEvent event;
 
-    public PanelFileHandler() {
+    public PanelFileHandler(PanelFileHandlerEvent event) {
+        this.event = event;
     }
 
     @Override
@@ -29,16 +30,16 @@ public class PanelFileHandler extends PanelHandler implements ActionListener {
         this.add(this.container, BorderLayout.NORTH);
 
         this.fileChooserOriginal = new FileChooser();
+        this.fileChooserOriginal.setEvent(this);
         this.fileChooserEncrypt = new FileChooser();
+        this.fileChooserEncrypt.setEvent(this);
         int leftMargin = 10;
 
         this.btnEncrypt = new FileChooserButton("Mã hóa", null);
         this.btnEncrypt.setActionCommand(commandEncrypt);
-        this.btnEncrypt.addActionListener(this);
 
         this.btnDecrypt = new FileChooserButton("Giải mã", null);
         this.btnDecrypt.setActionCommand(commandDecrypt);
-        this.btnDecrypt.addActionListener(this);
 
 
         SwingComponentUtil.addComponentGridBag(
@@ -110,16 +111,63 @@ public class PanelFileHandler extends PanelHandler implements ActionListener {
                         .insets(10, 0, 10, 0)
                         .build(),
                 btnDecrypt);
-    }
 
+        setEvent();
+    }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
-//        Object source = e.getSource();
-//        if (source == btnEncrypt) {
-//            String src = this.fileEncrypt.getPath();
-//            String dest = this.saveFileEncrypt.getPath();
-//            System.out.println("Encrypt: " + src + " -> " + dest);
-//        }
+    public void onFileSelected(File file) {
+
     }
+
+    @Override
+    public void onFileUnselected() {
+
+    }
+
+    @Override
+    public void onError(String message) {
+
+    }
+
+    public void setEvent() {
+        this.btnEncrypt.setEvent(new FileChooserEvent() {
+            @Override
+            public void onFileSelected(File file) {
+                String src = fileChooserOriginal.getPath();
+                String dest = file.getAbsolutePath();
+                event.onEncryptFile(src, dest);
+            }
+
+            @Override
+            public void onFileUnselected() {
+
+            }
+
+            @Override
+            public void onError(String message) {
+
+            }
+        });
+
+        this.btnDecrypt.setEvent(new FileChooserEvent() {
+            @Override
+            public void onFileSelected(File file) {
+                String src = fileChooserEncrypt.getPath();
+                String dest = file.getAbsolutePath();
+                event.onDecryptFile(src, dest);
+            }
+
+            @Override
+            public void onFileUnselected() {
+
+            }
+
+            @Override
+            public void onError(String message) {
+
+            }
+        });
+    }
+
 }

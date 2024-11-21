@@ -59,6 +59,22 @@ public class SymmetricCipherNativeController {
         return symmetricCipherNative.encrypt(plainText);
     }
 
+    public boolean encryptFile(String base64SecretKey,
+                               String base64Iv,
+                               String src,
+                               String dest,
+                               Cipher cipher,
+                               Mode mode,
+                               Padding padding,
+                               Size keySize,
+                               Size ivSize
+    ) throws Exception {
+        SymmetricCipherNative symmetricCipherNative = new SymmetricCipherNative(base64SecretKey,
+                base64Iv,
+                new Algorithm(cipher.getName(), mode.getName(), padding.getName(), keySize.getByteFormat(), ivSize.getBit()));
+        return symmetricCipherNative.encrypt(src, dest);
+    }
+
     public String decrypt(String base64SecretKey,
                           String base64Iv,
                           String cipherText,
@@ -71,6 +87,21 @@ public class SymmetricCipherNativeController {
                 base64Iv,
                 new Algorithm(cipher.getName(), mode.getName(), padding.getName(), keySize.getByteFormat(), ivSize.getBit()));
         return symmetricCipherNative.decrypt(cipherText);
+    }
+
+    public boolean decryptFile(String base64SecretKey,
+                               String base64Iv,
+                               String src,
+                               String dest,
+                               Cipher cipher,
+                               Mode mode,
+                               Padding padding,
+                               Size keySize,
+                               Size ivSize) throws Exception {
+        SymmetricCipherNative symmetricCipherNative = new SymmetricCipherNative(base64SecretKey,
+                base64Iv,
+                new Algorithm(cipher.getName(), mode.getName(), padding.getName(), keySize.getByteFormat(), ivSize.getBit()));
+        return symmetricCipherNative.decrypt(src, dest);
     }
 
     public Map<String, String> loadKey(String src) {
@@ -109,5 +140,6 @@ public class SymmetricCipherNativeController {
             throw new RuntimeException(e);
         }
     }
+
 
 }

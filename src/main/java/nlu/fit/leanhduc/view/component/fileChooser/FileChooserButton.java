@@ -46,7 +46,6 @@ public class FileChooserButton extends JButton implements ActionListener {
         switch (option) {
             case JFileChooser.APPROVE_OPTION:
                 File selectedFile = fileChooser.getSelectedFile();
-                event.autoAddExtension(selectedFile);
                 event.onFileSelected(selectedFile);
                 break;
             case JFileChooser.CANCEL_OPTION:

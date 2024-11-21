@@ -14,6 +14,7 @@ import nlu.fit.leanhduc.view.component.GridBagConstraintsBuilder;
 import nlu.fit.leanhduc.view.component.SwingComponentUtil;
 import nlu.fit.leanhduc.view.component.fileChooser.*;
 import nlu.fit.leanhduc.view.component.panel.file.PanelFileHandler;
+import nlu.fit.leanhduc.view.component.panel.file.PanelFileHandlerEvent;
 import nlu.fit.leanhduc.view.component.panel.text.PanelHandler;
 import nlu.fit.leanhduc.view.component.panel.text.PanelTextHandler;
 import nlu.fit.leanhduc.view.component.panel.text.PanelTextHandlerEvent;
@@ -27,7 +28,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEvent, ActionListener {
+public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEvent, ActionListener, PanelFileHandlerEvent {
     MainController controller;
     List<CipherSpecification> cipherSpecifications =
             List.of(
@@ -397,7 +398,7 @@ public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEv
     private void createTabbedPane() {
         this.tabbedPane = new JTabbedPane();
         this.panelTextHandler = new PanelTextHandler(this);
-        this.panelFileHandler = new PanelFileHandler();
+        this.panelFileHandler = new PanelFileHandler(this);
         Map<String, JPanel> panelMap = new LinkedHashMap<>();
         panelMap.put("Mã hóa Chuỗi", panelTextHandler);
         panelMap.put("Mã hóa File", panelFileHandler);
@@ -470,39 +471,6 @@ public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEv
         }
     }
 
-    @Override
-    public String onEncrypt(String plainText) {
-        try {
-            return SymmetricCipherNativeController.getInstance().encrypt(
-                    getBase64SecretKey(),
-                    getBase64Iv(),
-                    plainText,
-                    this.getSelectedCipher(),
-                    this.getSelectedMode(),
-                    this.getSelectedPadding(),
-                    this.getSelectedKeySize(),
-                    this.getSelectedIVSize()
-            );
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public String onDecrypt(String cipherText) {
-        try {
-            return SymmetricCipherNativeController.getInstance().decrypt(getBase64SecretKey(), getBase64Iv(),
-                    cipherText,
-                    this.getSelectedCipher(),
-                    this.getSelectedMode(),
-                    this.getSelectedPadding(),
-                    this.getSelectedKeySize(),
-                    this.getSelectedIVSize()
-            );
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     private void setKeyStatus(boolean isSuccess) {
         this.keyStatus.setIcon(isSuccess ? MetadataConfig.getINSTANCE().getSuccessIcon() : MetadataConfig.getINSTANCE().getWarningIcon());
@@ -592,5 +560,85 @@ public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEv
         this.showSecretKey.setText(base64SecretKey);
         this.showIv.setText(base64Iv);
         setKeyStatus(true);
+    }
+
+    @Override
+    public String onEncrypt(String plainText) {
+        try {
+            return SymmetricCipherNativeController.getInstance().encrypt(
+                    getBase64SecretKey(),
+                    getBase64Iv(),
+                    plainText,
+                    this.getSelectedCipher(),
+                    this.getSelectedMode(),
+                    this.getSelectedPadding(),
+                    this.getSelectedKeySize(),
+                    this.getSelectedIVSize()
+            );
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public String onDecrypt(String cipherText) {
+        try {
+            return SymmetricCipherNativeController.getInstance().decrypt(getBase64SecretKey(), getBase64Iv(),
+                    cipherText,
+                    this.getSelectedCipher(),
+                    this.getSelectedMode(),
+                    this.getSelectedPadding(),
+                    this.getSelectedKeySize(),
+                    this.getSelectedIVSize()
+            );
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void onEncryptFile(String src, String dest) {
+        try {
+            boolean isSuccess = SymmetricCipherNativeController.getInstance().encryptFile(
+                    getBase64SecretKey(),
+                    getBase64Iv(),
+                    src,
+                    dest,
+                    this.getSelectedCipher(),
+                    this.getSelectedMode(),
+                    this.getSelectedPadding(),
+                    this.getSelectedKeySize(),
+                    this.getSelectedIVSize()
+            );
+            if (isSuccess)
+                JOptionPane.showMessageDialog(this, "Mã hóa file thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            else
+                JOptionPane.showMessageDialog(this, "Mã hóa file thất bại", "Thông báo", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void onDecryptFile(String src, String dest) {
+        try {
+            boolean isSuccess = SymmetricCipherNativeController.getInstance().decryptFile(
+                    getBase64SecretKey(),
+                    getBase64Iv(),
+                    src,
+                    dest,
+                    this.getSelectedCipher(),
+                    this.getSelectedMode(),
+                    this.getSelectedPadding(),
+                    this.getSelectedKeySize(),
+                    this.getSelectedIVSize()
+            );
+            if (isSuccess)
+                JOptionPane.showMessageDialog(this, "Giải mã file thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            else
+                JOptionPane.showMessageDialog(this, "Giải mã file thất bại", "Thông báo", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
