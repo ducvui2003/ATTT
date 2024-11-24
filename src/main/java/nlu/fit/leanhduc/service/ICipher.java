@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.SignatureException;
 
 /**
  * Interface định nghĩa các phương thức cơ bản của một thuật toán mã hóa
@@ -77,6 +78,22 @@ public interface ICipher<T> {
      * @return bản rõ
      */
     default boolean decrypt(String src, String dest) throws CipherException {
+        throw new UnsupportedOperationException();
+    }
+
+    default String sign(String message) throws SignatureException, InvalidKeyException {
+        throw new UnsupportedOperationException();
+    }
+
+    default boolean verify(String message) throws InvalidKeyException, SignatureException {
+        throw new UnsupportedOperationException();
+    }
+
+    default String signFile(String src) {
+        throw new UnsupportedOperationException();
+    }
+
+    default boolean verifyFile(String src) {
         throw new UnsupportedOperationException();
     }
 }

@@ -48,6 +48,11 @@ public class GridBagConstraintsBuilder {
         return this;
     }
 
+    public GridBagConstraintsBuilder insets(int value) {
+        gbc.insets = new Insets(value, value, value, value);
+        return this;
+    }
+
     public GridBagConstraintsBuilder ipad(int ipadx, int ipady) {
         gbc.ipadx = ipadx;
         gbc.ipady = ipady;

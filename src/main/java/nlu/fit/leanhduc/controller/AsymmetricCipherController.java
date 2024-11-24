@@ -45,10 +45,12 @@ public class AsymmetricCipherController {
                           Cipher cipher,
                           Mode mode,
                           Padding padding,
-                          Size keySize
+                          Size keySize,
+                          boolean usePublicKeyEncryption
     ) throws Exception {
         AsymmetricCipherNative symmetricCipherNative = new AsymmetricCipherNative(base64SecretKey, base64PrivateKey,
                 new Algorithm(cipher.getName(), mode.getName(), padding.getName(), keySize.getByteFormat()));
+        symmetricCipherNative.setEncryptByPublicKey(usePublicKeyEncryption);
         return symmetricCipherNative.encrypt(plainText);
     }
 
@@ -58,10 +60,12 @@ public class AsymmetricCipherController {
                           Cipher cipher,
                           Mode mode,
                           Padding padding,
-                          Size keySize
+                          Size keySize,
+                          boolean usePublicKeyEncryption
     ) throws Exception {
         AsymmetricCipherNative symmetricCipherNative = new AsymmetricCipherNative(base64SecretKey, base64PrivateKey,
                 new Algorithm(cipher.getName(), mode.getName(), padding.getName(), keySize.getByteFormat()));
+        symmetricCipherNative.setEncryptByPublicKey(usePublicKeyEncryption);
         return symmetricCipherNative.decrypt(cipherText);
     }
 }

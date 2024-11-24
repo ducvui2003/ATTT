@@ -15,7 +15,8 @@ public enum Cipher {
     RC4("RC4", "RC4"),
     CAMELLIA("Camellia", "Camellia"),
     TWOFISH("Twofish", "Twofish"),
-    IDEA("IDEA", "IDEA");
+    IDEA("IDEA", "IDEA"),
+    DSA("DSA", "DSA");
     private final String name;
     private final String displayName;
     private String provider;

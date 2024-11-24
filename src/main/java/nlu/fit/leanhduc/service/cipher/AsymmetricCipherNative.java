@@ -19,6 +19,7 @@ import java.util.Base64;
 public class AsymmetricCipherNative extends AbsCipherNative<KeyAsymmetric> {
     KeyPair keyPair;
     Cipher cipher;
+    boolean encryptByPublicKey = true;
 
     public AsymmetricCipherNative(Algorithm algorithm) throws NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException {
         super(algorithm);
@@ -69,9 +70,9 @@ public class AsymmetricCipherNative extends AbsCipherNative<KeyAsymmetric> {
     }
 
     @Override
-    public String encrypt(String plainText) throws CipherException, Exception {
+    public String encrypt(String plainText) throws Exception {
         byte[] bytes = plainText.getBytes(StandardCharsets.UTF_8);
-        cipher.init(Cipher.ENCRYPT_MODE, this.key.getPublicKey());
+        initCipherEncrypt();
         return conversionStrategy.convert(cipher.doFinal(bytes));
     }
 
@@ -79,9 +80,9 @@ public class AsymmetricCipherNative extends AbsCipherNative<KeyAsymmetric> {
     public String decrypt(String encryptText) throws CipherException {
         try {
             byte[] bytes = Base64.getDecoder().decode(encryptText);
-            cipher.init(Cipher.DECRYPT_MODE, this.key.getPrivateKey());
+            initCipherDecrypt();
             return new String(cipher.doFinal(bytes), StandardCharsets.UTF_8);
-        } catch (IllegalBlockSizeException | InvalidKeyException |
+        } catch (IllegalBlockSizeException |
                  BadPaddingException e) {
             throw new RuntimeException(e);
         }
@@ -95,5 +96,33 @@ public class AsymmetricCipherNative extends AbsCipherNative<KeyAsymmetric> {
     @Override
     public boolean decrypt(String src, String dest) throws CipherException {
         return super.decrypt(src, dest);
+    }
+
+    private void initCipherEncrypt() {
+        try {
+            if (encryptByPublicKey) {
+                cipher.init(Cipher.ENCRYPT_MODE, key.getPublicKey());
+            } else {
+                cipher.init(Cipher.ENCRYPT_MODE, key.getPrivateKey());
+            }
+        } catch (InvalidKeyException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void initCipherDecrypt() {
+        try {
+            if (encryptByPublicKey) {
+                cipher.init(Cipher.DECRYPT_MODE, key.getPrivateKey());
+            } else {
+                cipher.init(Cipher.DECRYPT_MODE, key.getPublicKey());
+            }
+        } catch (InvalidKeyException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void setEncryptByPublicKey(boolean encryptByPublicKey) {
+        this.encryptByPublicKey = encryptByPublicKey;
     }
 }

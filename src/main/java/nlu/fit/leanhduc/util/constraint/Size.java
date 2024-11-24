@@ -19,7 +19,8 @@ public enum Size {
     Size_128(1024, 128),
     Size_256(2048, 256),
     Size_512(4096, 512),
-    Size_0(0, 0);
+    Size_0(0, 0),
+    SIZE_384(3072, 384);
 
     private int bit;
     private int byteFormat;
