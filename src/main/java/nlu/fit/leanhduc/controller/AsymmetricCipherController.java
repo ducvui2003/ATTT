@@ -5,6 +5,7 @@ import nlu.fit.leanhduc.service.cipher.AsymmetricCipherNative;
 import nlu.fit.leanhduc.service.cipher.SymmetricCipherNative;
 import nlu.fit.leanhduc.service.key.KeyAsymmetric;
 import nlu.fit.leanhduc.service.key.KeySymmetric;
+import nlu.fit.leanhduc.util.CipherException;
 import nlu.fit.leanhduc.util.Constraint;
 import nlu.fit.leanhduc.util.constraint.Cipher;
 import nlu.fit.leanhduc.util.constraint.Mode;
@@ -13,6 +14,7 @@ import nlu.fit.leanhduc.util.constraint.Size;
 import nlu.fit.leanhduc.util.convert.Base64ConversionStrategy;
 import nlu.fit.leanhduc.util.convert.ByteConversionStrategy;
 
+import java.io.IOException;
 import java.util.Map;
 
 public class AsymmetricCipherController {
@@ -67,5 +69,40 @@ public class AsymmetricCipherController {
                 new Algorithm(cipher.getName(), mode.getName(), padding.getName(), keySize.getByteFormat()));
         symmetricCipherNative.setEncryptByPublicKey(usePublicKeyEncryption);
         return symmetricCipherNative.decrypt(cipherText);
+    }
+
+    public Map<String, String> loadKey(String src) {
+        AsymmetricCipherNative symmetricCipherNative = new AsymmetricCipherNative();
+        try {
+            symmetricCipherNative.loadKey(src);
+            ByteConversionStrategy byteConversionStrategy = new Base64ConversionStrategy();
+            return Map.of(
+                    "public-key", byteConversionStrategy.convert(symmetricCipherNative.getKey().getPublicKey().getEncoded()),
+                    "private-key", byteConversionStrategy.convert(symmetricCipherNative.getKey().getPrivateKey().getEncoded()),
+                    "cipher", symmetricCipherNative.getKey().getCipher(),
+                    "mode", symmetricCipherNative.getKey().getMode(),
+                    "padding", symmetricCipherNative.getKey().getPadding(),
+                    "key-size", String.valueOf(symmetricCipherNative.getKey().getKeySize()));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void saveKey(String dest,
+                        String base64PublicKey,
+                        String base64PrivateKey,
+                        Cipher cipher,
+                        Mode mode,
+                        Padding padding,
+                        Size keySize) {
+        try {
+            AsymmetricCipherNative symmetricCipherNative = new AsymmetricCipherNative(base64PublicKey,
+                    base64PrivateKey,
+                    new Algorithm(cipher.getName(), mode.getName(), padding.getName(), keySize.getBit())
+            );
+            symmetricCipherNative.saveKey(dest);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

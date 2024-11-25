@@ -1,5 +1,6 @@
 package nlu.fit.leanhduc.util;
 
+import nlu.fit.leanhduc.service.key.KeyAsymmetric;
 import nlu.fit.leanhduc.service.key.KeySymmetric;
 
 import javax.crypto.SecretKey;
@@ -8,6 +9,9 @@ import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
 public class FileUtil {
 //    public static void writeStringToFile(String path, String content) throws IOException {
@@ -102,6 +106,47 @@ public class FileUtil {
             key.setIvSize(ivSize);
             return key;
         } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void saveKey(KeyAsymmetric key, String dest){
+        try (DataOutputStream dos = new DataOutputStream(new FileOutputStream(dest))) {
+            byte[] publicKeyBytes = key.getPublicKey().getEncoded();
+            dos.writeInt(publicKeyBytes.length);
+            dos.write(publicKeyBytes);
+            byte[] privateKeyBytes = key.getPrivateKey().getEncoded();
+            dos.writeInt(privateKeyBytes.length);
+            dos.write(privateKeyBytes);
+            dos.writeUTF(key.getCipher());
+            dos.writeUTF(key.getMode());
+            dos.writeUTF(key.getPadding());
+            dos.writeInt(key.getKeySize());
+            dos.flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public static KeyAsymmetric loadKeyAsymmetric(String src) {
+        KeyAsymmetric key = new KeyAsymmetric();
+        try (DataInputStream dis = new DataInputStream(new FileInputStream(src))) {
+            byte[] publicKeyBytes = new byte[dis.readInt()];
+            dis.readFully(publicKeyBytes);
+            byte[] privateKeyBytes = new byte[dis.readInt()];
+            dis.readFully(privateKeyBytes);
+            String algorithm = dis.readUTF();
+            String mode = dis.readUTF();
+            String padding = dis.readUTF();
+            int keySize = dis.readInt();
+            KeyFactory keyFactory = KeyFactory.getInstance(algorithm);
+            key.setPublicKey(keyFactory, publicKeyBytes);
+            key.setPrivateKey(keyFactory, privateKeyBytes);
+            key.setCipher(algorithm);
+            key.setMode(mode);
+            key.setPadding(padding);
+            key.setKeySize(keySize);
+            return key;
+        } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
             throw new RuntimeException(e);
         }
     }

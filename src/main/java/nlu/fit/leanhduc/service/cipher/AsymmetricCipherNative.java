@@ -3,6 +3,7 @@ package nlu.fit.leanhduc.service.cipher;
 import nlu.fit.leanhduc.service.key.KeyAsymmetric;
 import nlu.fit.leanhduc.util.CipherException;
 import nlu.fit.leanhduc.util.Constraint;
+import nlu.fit.leanhduc.util.FileUtil;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -12,14 +13,15 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 
 public class AsymmetricCipherNative extends AbsCipherNative<KeyAsymmetric> {
     KeyPair keyPair;
     Cipher cipher;
     boolean encryptByPublicKey = true;
+
+    public AsymmetricCipherNative() {
+    }
 
     public AsymmetricCipherNative(Algorithm algorithm) throws NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException {
         super(algorithm);
@@ -30,12 +32,14 @@ public class AsymmetricCipherNative extends AbsCipherNative<KeyAsymmetric> {
     public AsymmetricCipherNative(String base64PublicKey, String base64PrivateKey, Algorithm algorithm) throws Exception {
         super(algorithm);
         this.key = new KeyAsymmetric();
-        X509EncodedKeySpec keySpecPublicKey = new X509EncodedKeySpec(this.conversionStrategy.convert(base64PublicKey));
-        PKCS8EncodedKeySpec keySpecPrivateKey = new PKCS8EncodedKeySpec(this.conversionStrategy.convert(base64PrivateKey));
         KeyFactory keyFactory = KeyFactory.getInstance(this.algorithm.getCipher());
-        this.key.setPublicKey(keyFactory.generatePublic(keySpecPublicKey));
-        this.key.setPrivateKey(keyFactory.generatePrivate(keySpecPrivateKey));
         this.cipher = Cipher.getInstance(this.algorithm.toString(), Constraint.DEFAULT_PROVIDER);
+        this.key.setCipher(algorithm.getCipher());
+        this.key.setPublicKey(keyFactory, base64PublicKey);
+        this.key.setPrivateKey(keyFactory, base64PrivateKey);
+        this.key.setMode(algorithm.getMode());
+        this.key.setPadding(algorithm.getPadding());
+        this.key.setKeySize(algorithm.getKeySize());
     }
 
 
@@ -63,10 +67,12 @@ public class AsymmetricCipherNative extends AbsCipherNative<KeyAsymmetric> {
 
     @Override
     public void loadKey(String src) throws IOException {
+        this.key = FileUtil.loadKeyAsymmetric(src);
     }
 
     @Override
     public void saveKey(String dest) throws IOException {
+        FileUtil.saveKey(key, dest);
     }
 
     @Override

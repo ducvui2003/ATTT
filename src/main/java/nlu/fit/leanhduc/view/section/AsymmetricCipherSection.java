@@ -10,8 +10,7 @@ import nlu.fit.leanhduc.util.constraint.Padding;
 import nlu.fit.leanhduc.util.constraint.Size;
 import nlu.fit.leanhduc.view.component.GridBagConstraintsBuilder;
 import nlu.fit.leanhduc.view.component.SwingComponentUtil;
-import nlu.fit.leanhduc.view.component.fileChooser.FileChooserButton;
-import nlu.fit.leanhduc.view.component.fileChooser.FileChooserEvent;
+import nlu.fit.leanhduc.view.component.fileChooser.*;
 import nlu.fit.leanhduc.view.component.panel.text.PanelTextHandler;
 import nlu.fit.leanhduc.view.component.panel.text.PanelTextHandlerEvent;
 
@@ -24,9 +23,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class AsymmetricCipherSection extends JPanel implements ActionListener, PanelTextHandlerEvent, FileChooserEvent {
+public class AsymmetricCipherSection extends JPanel implements ActionListener, PanelTextHandlerEvent {
     MainController controller;
     List<CipherSpecification> cipherSpecifications = List.of(CipherSpecification.findCipherSpecification(Cipher.RSA));
+    CipherSpecification cipherSpecification;
     JComboBox<Cipher> comboBoxCipher;
     JComboBox<Mode> comboBoxMode;
     JComboBox<Padding> comboBoxPadding;
@@ -34,7 +34,8 @@ public class AsymmetricCipherSection extends JPanel implements ActionListener, P
     Padding currentPadding;
     Size currentKeySize;
     JButton btnGenerateKey;
-    FileChooserButton fileChooser;
+    FileChooserSaveKeyAsync btnSaveKey;
+    FileChooserLoadKeyAsync btnLoadKey;
     JLabel keyStatus;
     JPanel container;
     JRadioButton encryptByPublicKey, encryptByPrivateKey;
@@ -87,9 +88,10 @@ public class AsymmetricCipherSection extends JPanel implements ActionListener, P
         this.btnGenerateKey.addActionListener(this);
         panelGenerateKey.add(this.btnGenerateKey);
 
-        this.fileChooser = new FileChooserButton("Lưu khóa", null);
-        this.fileChooser.setEvent(this);
-        panelGenerateKey.add(this.fileChooser);
+        this.btnSaveKey = new FileChooserSaveKeyAsync(this, "Lưu khóa", MetadataConfig.INSTANCE.getSaveIcon());
+        this.btnLoadKey = new FileChooserLoadKeyAsync(this, "Tải khóa", MetadataConfig.INSTANCE.getUploadIcon());
+        panelGenerateKey.add(this.btnSaveKey);
+        panelGenerateKey.add(this.btnLoadKey);
 
         this.encryptByPrivateKey = new JRadioButton("Ma hoá bằng khóa bí mật");
         this.encryptByPrivateKey.setSelected(true);
@@ -312,35 +314,40 @@ public class AsymmetricCipherSection extends JPanel implements ActionListener, P
         }
     }
 
-    private Cipher getSelectedCipher() {
+    public Cipher getSelectedCipher() {
         return (Cipher) this.comboBoxCipher.getSelectedItem();
     }
 
-    private Mode getSelectedMode() {
+    public Mode getSelectedMode() {
         return (Mode) this.comboBoxMode.getSelectedItem();
     }
 
-    private Padding getSelectedPadding() {
+    public Padding getSelectedPadding() {
         return (Padding) this.comboBoxPadding.getSelectedItem();
     }
 
-    private Size getSelectedKeySize() {
+    public Size getSelectedKeySize() {
         return (Size) this.comboBoxKeySize.getSelectedItem();
     }
 
-    private boolean getCurrentRadio() {
-        if (encryptByPublicKey.isSelected()) {
-            return true;
-        }
-        return false;
+    public boolean getCurrentRadio() {
+        return encryptByPublicKey.isSelected();
     }
 
-    private void updateKey(String publicKey, String privateKey) {
+    public String getPrivateKey() {
+        return this.privateKeyField.getText();
+    }
+
+    public String getPublicKey() {
+        return this.publicKeyField.getText();
+    }
+
+    public void updateKey(String publicKey, String privateKey) {
         this.publicKeyField.setText(publicKey);
         this.privateKeyField.setText(privateKey);
     }
 
-    private void setKeyStatus(boolean isSuccess) {
+    public void setKeyStatus(boolean isSuccess) {
         this.keyStatus.setIcon(isSuccess ? MetadataConfig.getINSTANCE().getSuccessIcon() : MetadataConfig.getINSTANCE().getWarningIcon());
         this.keyStatus.setText(isSuccess ? "Đã xét khóa" : "Chưa xét khóa");
         if (!isSuccess) {
@@ -353,7 +360,7 @@ public class AsymmetricCipherSection extends JPanel implements ActionListener, P
         }
     }
 
-    private void createDetailKey() {
+    public void createDetailKey() {
         this.detailKey.removeAll();
         SwingComponentUtil.addComponentGridBag(
                 this.detailKey,
@@ -398,6 +405,16 @@ public class AsymmetricCipherSection extends JPanel implements ActionListener, P
                         .build(),
                 new JLabel("Key Size: " + this.getSelectedKeySize() + " bits")
         );
+    }
+
+    public void updateComboBox(Cipher cipher, Mode mode, Padding padding, Size keySize) {
+        this.cipherSpecification = CipherSpecification.findCipherSpecification(cipher);
+        this.comboBoxCipher.setSelectedItem(cipher);
+        this.updateModeAndPadding();
+        this.comboBoxMode.setSelectedItem(mode);
+        this.comboBoxPadding.setSelectedItem(padding);
+        this.updateKeySize();
+        this.comboBoxKeySize.setSelectedItem(keySize);
     }
 
     @Override
@@ -457,20 +474,5 @@ public class AsymmetricCipherSection extends JPanel implements ActionListener, P
             JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
         return result;
-    }
-
-    @Override
-    public void onFileSelected(File file) {
-
-    }
-
-    @Override
-    public void onFileUnselected() {
-
-    }
-
-    @Override
-    public void onError(String message) {
-
     }
 }

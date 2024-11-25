@@ -4,18 +4,19 @@ import nlu.fit.leanhduc.controller.SymmetricCipherNativeController;
 import nlu.fit.leanhduc.view.section.SymmetricCipherSection;
 
 import javax.swing.*;
+import java.io.File;
 
-public class FileChooserSaveKey extends FileChooserButton implements FileChooserEvent {
+public class FileChooserSaveKeySync extends FileChooserButton implements FileChooserEvent {
     SymmetricCipherSection section;
 
-    public FileChooserSaveKey(SymmetricCipherSection section, String text, ImageIcon icon) {
+    public FileChooserSaveKeySync(SymmetricCipherSection section, String text, ImageIcon icon) {
         super(text, icon);
         this.section = section;
         this.setEvent(this);
     }
 
     @Override
-    public void onFileSelected(java.io.File file) {
+    public void onFileSelected(File file) {
         SymmetricCipherNativeController.getInstance().saveKey(file.getAbsolutePath(),
                 section.getBase64SecretKey(),
                 section.getBase64Iv(),

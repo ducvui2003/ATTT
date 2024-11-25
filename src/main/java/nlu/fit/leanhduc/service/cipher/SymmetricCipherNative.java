@@ -22,7 +22,7 @@ public class SymmetricCipherNative extends AbsCipherNative<KeySymmetric> {
     }
 
     public SymmetricCipherNative(String base64SecretKey, String base64Iv, Algorithm algorithm) throws Exception {
-        super();
+        super(algorithm);
         this.key = new KeySymmetric();
         this.key.setSecretKey(new SecretKeySpec(
                 conversionStrategy.convert(base64SecretKey), algorithm.getCipher()));
@@ -31,11 +31,10 @@ public class SymmetricCipherNative extends AbsCipherNative<KeySymmetric> {
         }
         this.key.setCipher(algorithm.getCipher());
         this.cipher = Cipher.getInstance(algorithm.toString());
-        this.key.setMode(Mode.CBC.getName());
-        this.key.setPadding(Padding.PKCS5Padding.getName());
+        this.key.setMode(algorithm.getMode());
+        this.key.setPadding(algorithm.getPadding());
         this.key.setKeySize(algorithm.getKeySize());
         this.key.setIvSize(algorithm.getIvSize());
-        this.algorithm = algorithm;
     }
 
     public SymmetricCipherNative(Algorithm algorithm) throws Exception {

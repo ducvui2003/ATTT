@@ -5,7 +5,6 @@ import nlu.fit.leanhduc.controller.MainController;
 import nlu.fit.leanhduc.controller.SymmetricCipherNativeController;
 import nlu.fit.leanhduc.service.cipher.CipherSpecification;
 import nlu.fit.leanhduc.service.cipher.SymmetricCipherNative;
-import nlu.fit.leanhduc.util.Constraint;
 import nlu.fit.leanhduc.util.constraint.Cipher;
 import nlu.fit.leanhduc.util.constraint.Mode;
 import nlu.fit.leanhduc.util.constraint.Padding;
@@ -23,7 +22,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,8 +47,8 @@ public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEv
     JComboBox<Size> comboBoxIVSize;
     CipherSpecification selectedSpec;
     JButton btnGenerateKey;
-    FileChooserLoadKey btnLoadKey;
-    FileChooserSaveKey btnSaveKey;
+    FileChooserLoadKeySync btnLoadKey;
+    FileChooserSaveKeySync btnSaveKey;
     GridBagConstraints gbc;
     JPanel container;
     JTabbedPane tabbedPane;
@@ -80,8 +78,8 @@ public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEv
         createComboBox();
         this.btnGenerateKey = new JButton("Tạo khóa");
         this.btnGenerateKey.addActionListener(this);
-        this.btnSaveKey = new FileChooserSaveKey(this, "Lưu khóa", MetadataConfig.INSTANCE.getSaveIcon());
-        this.btnLoadKey = new FileChooserLoadKey(this, "Tải khóa", MetadataConfig.INSTANCE.getUploadIcon());
+        this.btnSaveKey = new FileChooserSaveKeySync(this, "Lưu khóa", MetadataConfig.INSTANCE.getSaveIcon());
+        this.btnLoadKey = new FileChooserLoadKeySync(this, "Tải khóa", MetadataConfig.INSTANCE.getUploadIcon());
         this.showSecretKey = SwingComponentUtil.createTextArea();
         this.showIv = SwingComponentUtil.createTextArea();
         SwingComponentUtil.addComponentGridBag(
