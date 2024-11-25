@@ -22,4 +22,6 @@ public abstract class AbsCipherNative<T> implements ICipher<T> {
     public T getKey() {
         return key;
     }
+
+
 }

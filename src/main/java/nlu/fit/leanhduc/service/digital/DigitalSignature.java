@@ -7,25 +7,28 @@ import nlu.fit.leanhduc.util.CipherException;
 
 import java.io.IOException;
 import java.security.*;
+import java.security.spec.InvalidKeySpecException;
 
 public class DigitalSignature extends AbsCipherNative<KeySignature> {
     SecureRandom secureRandom;
     KeyPair keyPair;
     Signature signature;
+    KeyFactory keyFactory;
 
 
-    public DigitalSignature(Algorithm algorithm) throws NoSuchAlgorithmException, NoSuchProviderException {
+    public DigitalSignature(Algorithm algorithm) throws NoSuchAlgorithmException {
         super(algorithm);
         this.algorithm = algorithm;
         this.key = new KeySignature();
         this.key.setAlgorithm(algorithm.toString());
         this.key.setSize(algorithm.getKeySize());
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(this.key.getAlgorithm());
-        String DEFAULT_SECURE_RANDOM = "SHA1PRNG";
-        secureRandom = SecureRandom.getInstance(DEFAULT_SECURE_RANDOM);
         keyPairGenerator.initialize(this.key.getSize(), secureRandom);
-        keyPair = keyPairGenerator.generateKeyPair();
-        signature = Signature.getInstance(this.algorithm.toSignature());
+        String DEFAULT_SECURE_RANDOM = "SHA1PRNG";
+        this.secureRandom = SecureRandom.getInstance(DEFAULT_SECURE_RANDOM);
+        this.keyPair = keyPairGenerator.generateKeyPair();
+        this.keyFactory = KeyFactory.getInstance(this.key.getAlgorithm());
+        this.signature = Signature.getInstance(this.algorithm.toSignature());
     }
 
     @Override
@@ -62,6 +65,14 @@ public class DigitalSignature extends AbsCipherNative<KeySignature> {
     @Override
     public String decrypt(String encryptText) throws CipherException {
         throw new UnsupportedOperationException();
+    }
+
+    public void setPrivateKey(String privateKey) throws NoSuchAlgorithmException, InvalidKeySpecException {
+        this.key.setPrivateKey(this.keyFactory, privateKey);
+    }
+
+    public void setPublicKey(String publicKey) throws NoSuchAlgorithmException, InvalidKeySpecException {
+        this.key.setPublicKey(this.keyFactory, publicKey);
     }
 
     @Override
