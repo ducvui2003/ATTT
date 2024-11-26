@@ -1,10 +1,7 @@
 package nlu.fit.leanhduc.service.cipher;
 
 import lombok.Data;
-import nlu.fit.leanhduc.util.constraint.Cipher;
-import nlu.fit.leanhduc.util.constraint.Mode;
-import nlu.fit.leanhduc.util.constraint.Padding;
-import nlu.fit.leanhduc.util.constraint.Size;
+import nlu.fit.leanhduc.util.constraint.*;
 
 @Data
 public class Algorithm {
@@ -20,7 +17,7 @@ public class Algorithm {
     String provider;
 
 
-    public Algorithm(String cipher, int keySize, String hashFunction) {
+    private Algorithm(String cipher, int keySize, String hashFunction) {
         this.cipher = cipher;
         this.keySize = keySize;
         this.hashFunction = hashFunction;
@@ -54,6 +51,10 @@ public class Algorithm {
 
     public static Algorithm of(Cipher cipher, Mode mode, Padding padding, Size keySize, Size ivSize) {
         return new Algorithm(cipher.getName(), cipher.getBlockSize(), mode.getName(), padding.getName(), keySize.getBit(), ivSize.getBit(), cipher.getProvider());
+    }
+
+    public static Algorithm of(String cipher, Size keySize, Hash hashFunction) {
+        return new Algorithm(cipher, keySize.getBit(), hashFunction.getHashWithDigitalSignature());
     }
 
     public static Algorithm of(Cipher cipher, Mode mode, Padding padding, Size keySize) {

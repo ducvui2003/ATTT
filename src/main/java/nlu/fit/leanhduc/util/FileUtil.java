@@ -153,7 +153,7 @@ public class FileUtil {
         }
     }
 
-    public void saveKey(KeySignature key, String dest) {
+    public static void saveKeySignature(KeySignature key, String dest) {
         try (DataOutputStream dos = new DataOutputStream(new FileOutputStream(dest))) {
             byte[] publicKeyBytes = key.getPublicKey().getEncoded();
             dos.writeInt(publicKeyBytes.length);
@@ -166,6 +166,28 @@ public class FileUtil {
             dos.writeInt(key.getSize());
             dos.flush();
         } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static KeySignature loadKeySignature(String src) {
+        KeySignature key = new KeySignature();
+        try (DataInputStream dis = new DataInputStream(new FileInputStream(src))) {
+            byte[] publicKeyBytes = new byte[dis.readInt()];
+            dis.readFully(publicKeyBytes);
+            byte[] privateKeyBytes = new byte[dis.readInt()];
+            dis.readFully(privateKeyBytes);
+            String algorithm = dis.readUTF();
+            String hashFunction = dis.readUTF();
+            int size = dis.readInt();
+            KeyFactory keyFactory = KeyFactory.getInstance(algorithm);
+            key.setPublicKey(keyFactory, publicKeyBytes);
+            key.setPrivateKey(keyFactory, privateKeyBytes);
+            key.setAlgorithm(algorithm);
+            key.setHashFunction(hashFunction);
+            key.setSize(size);
+            return key;
+        } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
             throw new RuntimeException(e);
         }
     }
