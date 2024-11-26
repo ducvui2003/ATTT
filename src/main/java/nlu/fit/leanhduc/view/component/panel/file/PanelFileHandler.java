@@ -90,7 +90,7 @@ public class PanelFileHandler extends PanelHandler implements FileChooserEvent {
                         .fill(GridBagConstraints.HORIZONTAL)
                         .insets(10, leftMargin, 10, 0) // Optional padding around the separator
                         .build(),
-                new JLabel("Văn bản mã hóa"));
+                new JLabel("File cần giải mã"));
 
         SwingComponentUtil.addComponentGridBag(
                 this.container,

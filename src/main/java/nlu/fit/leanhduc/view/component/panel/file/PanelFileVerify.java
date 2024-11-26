@@ -1,4 +1,6 @@
 package nlu.fit.leanhduc.view.component.panel.file;
 
-public class PanelFileVerify {
+import javax.swing.*;
+
+public class PanelFileVerify extends JPanel {
 }

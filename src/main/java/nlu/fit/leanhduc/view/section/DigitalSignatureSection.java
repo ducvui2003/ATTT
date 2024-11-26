@@ -8,6 +8,8 @@ import nlu.fit.leanhduc.util.constraint.Size;
 import nlu.fit.leanhduc.view.component.GridBagConstraintsBuilder;
 import nlu.fit.leanhduc.view.component.SwingComponentUtil;
 import nlu.fit.leanhduc.view.component.panel.file.PanelFileHandler;
+import nlu.fit.leanhduc.view.component.panel.file.PanelFileSign;
+import nlu.fit.leanhduc.view.component.panel.file.PanelFileVerify;
 import nlu.fit.leanhduc.view.component.panel.text.PanelTextSign;
 import nlu.fit.leanhduc.view.component.panel.text.PanelTextSignEvent;
 import nlu.fit.leanhduc.view.component.panel.text.PanelTextVerify;
@@ -32,6 +34,8 @@ public class DigitalSignatureSection extends JPanel implements ActionListener, P
     JTextArea txtPublicKey, txtPrivateKey;
     PanelTextSign panelTextSign;
     PanelTextVerify panelTextVerify;
+    PanelFileSign panelFileSign;
+    PanelFileVerify panelFileVerify;
     DigitalSignatureSpecification specification = DigitalSignatureSpecification.findDigitalSignatureSpecification(Cipher.DSA);
 
     public DigitalSignatureSection() {
@@ -129,11 +133,14 @@ public class DigitalSignatureSection extends JPanel implements ActionListener, P
         this.tabbedPane = new JTabbedPane();
         this.panelTextSign = new PanelTextSign(this);
         this.panelTextVerify = new PanelTextVerify(this);
+        this.panelFileSign = new PanelFileSign();
+        this.panelFileVerify = new PanelFileVerify();
         Map<String, JPanel> panelMap = new LinkedHashMap<>();
         panelMap.put("Ký văn bản", panelTextSign);
         panelMap.put("Xác thực văn bản", panelTextVerify);
+        panelMap.put("Ký file", panelFileSign);
+        panelMap.put("Xác thực file", panelFileVerify);
         panelMap.forEach((k, v) -> tabbedPane.addTab(k, v));
-
         SwingComponentUtil.addComponentGridBag(
                 this.container,
                 GridBagConstraintsBuilder.builder()
