@@ -9,7 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class PanelTextVerify extends JPanel implements ActionListener {
-    JTextArea signedTextBlock, verifyTextBlock;
+    JTextArea dataVerifyTextBlock, signatureTextBlock;
     JButton btnVerify;
     PanelTextVerifyEvent event;
 
@@ -20,10 +20,10 @@ public class PanelTextVerify extends JPanel implements ActionListener {
 
     private void createUIComponents() {
         this.setLayout(new GridBagLayout());
-        this.signedTextBlock = SwingComponentUtil.createTextArea();
-        this.signedTextBlock.setEnabled(true);
-        this.verifyTextBlock = SwingComponentUtil.createTextArea();
-        this.verifyTextBlock.setEnabled(true);
+        this.dataVerifyTextBlock = SwingComponentUtil.createTextArea();
+        this.dataVerifyTextBlock.setEnabled(true);
+        this.signatureTextBlock = SwingComponentUtil.createTextArea();
+        this.signatureTextBlock.setEnabled(true);
 
         SwingComponentUtil.addComponentGridBag(
                 this,
@@ -33,7 +33,7 @@ public class PanelTextVerify extends JPanel implements ActionListener {
                         .fill(GridBagConstraints.HORIZONTAL)
                         .insets(10) // Optional padding around the separator
                         .build(),
-                new JLabel("Văn bản đã ký"));
+                new JLabel("Văn bản"));
 
         SwingComponentUtil.addComponentGridBag(
                 this,
@@ -44,7 +44,28 @@ public class PanelTextVerify extends JPanel implements ActionListener {
                         .fill(GridBagConstraints.BOTH)
                         .insets(10) // Optional padding around the separator
                         .build(),
-                new JScrollPane(signedTextBlock));
+                new JScrollPane(dataVerifyTextBlock));
+
+        SwingComponentUtil.addComponentGridBag(
+                this,
+                GridBagConstraintsBuilder.builder()
+                        .grid(0, 2)
+                        .weight(0.25, 0)
+                        .fill(GridBagConstraints.HORIZONTAL)
+                        .insets(10)
+                        .build(),
+                new JLabel("Chữ ký"));
+
+        SwingComponentUtil.addComponentGridBag(
+                this,
+                GridBagConstraintsBuilder.builder()
+                        .grid(1, 2)        // Starting at the first column in the desired row
+                        .weight(1.0, 1)
+                        .gridSpan(0, 1)
+                        .fill(GridBagConstraints.BOTH)
+                        .insets(10) // Optional padding around the separator
+                        .build(),
+                new JScrollPane(signatureTextBlock));
 
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         this.btnVerify = new JButton("Xác thực");
@@ -54,7 +75,7 @@ public class PanelTextVerify extends JPanel implements ActionListener {
         SwingComponentUtil.addComponentGridBag(
                 this,
                 GridBagConstraintsBuilder.builder()
-                        .grid(1, 3)        // Starting at the first column in the desired row
+                        .grid(1, 4)        // Starting at the first column in the desired row
                         .weight(1, 0)
                         .fill(GridBagConstraints.HORIZONTAL)
                         .insets(10) // Optional padding around the separator
@@ -62,10 +83,14 @@ public class PanelTextVerify extends JPanel implements ActionListener {
                 panel);
     }
 
+    private String getSignature() {
+        return this.signatureTextBlock.getText();
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (event != null) {
-            event.onVerify(signedTextBlock.getText());
+            event.onVerify(dataVerifyTextBlock.getText(), getSignature());
         }
     }
 }

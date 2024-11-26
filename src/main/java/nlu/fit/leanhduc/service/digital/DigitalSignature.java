@@ -5,6 +5,8 @@ import nlu.fit.leanhduc.service.cipher.Algorithm;
 import nlu.fit.leanhduc.service.key.KeySignature;
 import nlu.fit.leanhduc.util.CipherException;
 
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
@@ -67,12 +69,12 @@ public class DigitalSignature extends AbsCipherNative<KeySignature> {
         throw new UnsupportedOperationException();
     }
 
-    public void setPrivateKey(String privateKey) throws NoSuchAlgorithmException, InvalidKeySpecException {
-        this.key.setPrivateKey(this.keyFactory, privateKey);
+    public void setPrivateKey(String privateKey) throws InvalidKeySpecException {
+        this.key.setPrivateKey(this.keyFactory, this.conversionStrategy.convert(privateKey));
     }
 
-    public void setPublicKey(String publicKey) throws NoSuchAlgorithmException, InvalidKeySpecException {
-        this.key.setPublicKey(this.keyFactory, publicKey);
+    public void setPublicKey(String publicKey) throws InvalidKeySpecException {
+        this.key.setPublicKey(this.keyFactory, this.conversionStrategy.convert(publicKey));
     }
 
     @Override
@@ -85,21 +87,40 @@ public class DigitalSignature extends AbsCipherNative<KeySignature> {
     }
 
     @Override
-    public boolean verify(String message) throws InvalidKeyException, SignatureException {
-        signature.initVerify(this.getKey().getPublicKey());
+    public boolean verify(String message, String signature) throws InvalidKeyException, SignatureException {
+        this.signature.initVerify(this.getKey().getPublicKey());
         byte[] data = message.getBytes();
-        byte[] signData = conversionStrategy.convert(message);
-        signature.update(data);
-        return signature.verify(signData);
+        byte[] signData = conversionStrategy.convert(signature);
+        this.signature.update(data);
+        return this.signature.verify(signData);
     }
 
     @Override
-    public String signFile(String src) {
-        return super.signFile(src);
+    public String signFile(String src) throws InvalidKeyException, IOException, SignatureException {
+        signature.initSign(this.key.getPrivateKey());
+        BufferedInputStream bis = new BufferedInputStream(new FileInputStream(src));
+        byte[] buffer = new byte[1024];
+        int read;
+        while ((read = bis.read(buffer)) != -1) {
+            signature.update(buffer, 0, read);
+        }
+        bis.close();
+
+        byte[] sign = signature.sign();
+        return this.conversionStrategy.convert(sign);
     }
 
     @Override
-    public boolean verifyFile(String src) {
-        return super.verifyFile(src);
+    public boolean verifyFile(String src, String signature) throws InvalidKeyException, IOException, SignatureException {
+        this.signature.initVerify(this.key.getPublicKey());
+        byte[] signData = this.conversionStrategy.convert(signature);
+        BufferedInputStream bis = new BufferedInputStream(new FileInputStream(src));
+        byte[] buffer = new byte[1024];
+        int read;
+        while ((read = bis.read(buffer)) != -1) {
+            this.signature.update(buffer, 0, read);
+        }
+        bis.close();
+        return this.signature.verify(signData);
     }
 }

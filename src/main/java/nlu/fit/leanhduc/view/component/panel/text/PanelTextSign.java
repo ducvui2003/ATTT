@@ -59,7 +59,7 @@ public class PanelTextSign extends JPanel implements ActionListener {
                         .fill(GridBagConstraints.HORIZONTAL)
                         .insets(10) // Optional padding around the separator
                         .build(),
-                new JLabel("Văn bản đã ký"));
+                new JLabel("Chữ ký"));
 
         SwingComponentUtil.addComponentGridBag(
                 this,

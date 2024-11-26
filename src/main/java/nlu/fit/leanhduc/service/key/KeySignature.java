@@ -48,25 +48,15 @@ public class KeySignature {
         this.algorithm = algorithm;
     }
 
-    public void setPublicKey(KeyFactory keyFactory, String base64) throws InvalidKeySpecException {
-        ByteConversionStrategy conversionStrategy = new Base64ConversionStrategy();
-        X509EncodedKeySpec keySpecPublicKey = new X509EncodedKeySpec(conversionStrategy.convert(base64));
-        this.publicKey = keyFactory.generatePublic(keySpecPublicKey);
-    }
 
     public void setPublicKey(KeyFactory keyFactory, byte[] bytes) throws InvalidKeySpecException {
         X509EncodedKeySpec keySpecPublicKey = new X509EncodedKeySpec(bytes);
         this.publicKey = keyFactory.generatePublic(keySpecPublicKey);
     }
 
-    public void setPrivateKey(KeyFactory keyFactory, String base64) throws InvalidKeySpecException {
-        ByteConversionStrategy conversionStrategy = new Base64ConversionStrategy();
-        PKCS8EncodedKeySpec keySpecPrivateKey = new PKCS8EncodedKeySpec(conversionStrategy.convert(base64));
-        this.privateKey = keyFactory.generatePrivate(keySpecPrivateKey);
-    }
-
     public void setPrivateKey(KeyFactory keyFactory, byte[] bytes) throws InvalidKeySpecException {
         PKCS8EncodedKeySpec keySpecPrivateKey = new PKCS8EncodedKeySpec(bytes);
         this.privateKey = keyFactory.generatePrivate(keySpecPrivateKey);
     }
+
 }

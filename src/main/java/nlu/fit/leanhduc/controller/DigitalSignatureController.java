@@ -8,6 +8,7 @@ import nlu.fit.leanhduc.util.constraint.Size;
 import nlu.fit.leanhduc.util.convert.Base64ConversionStrategy;
 import nlu.fit.leanhduc.util.convert.ByteConversionStrategy;
 
+import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -43,9 +44,21 @@ public class DigitalSignatureController {
         return digitalSignature.sign(plainText);
     }
 
-    public boolean verify(String signedText, String publicKey, Hash hashFunction, Size size) throws NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, InvalidKeyException {
+    public boolean verify(String message, String signature, String publicKey, Hash hashFunction, Size size) throws NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, InvalidKeyException {
         DigitalSignature digitalSignature = new DigitalSignature(new Algorithm("DSA", size.getBit(), hashFunction.getHashWithDigitalSignature()));
         digitalSignature.setPublicKey(publicKey);
-        return digitalSignature.verify(signedText);
+        return digitalSignature.verify(message, signature);
+    }
+
+    public String signFile(String src, String privateKey, Hash hashFunction, Size size) throws NoSuchAlgorithmException, NoSuchProviderException, InvalidKeySpecException, SignatureException, InvalidKeyException, IOException {
+        DigitalSignature digitalSignature = new DigitalSignature(new Algorithm("DSA", size.getBit(), hashFunction.getHashWithDigitalSignature()));
+        digitalSignature.setPrivateKey(privateKey);
+        return digitalSignature.signFile(src);
+    }
+
+    public boolean verifyFile(String src, String signature, String publicKey, Hash hashFunction, Size size) throws NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, InvalidKeyException, IOException {
+        DigitalSignature digitalSignature = new DigitalSignature(new Algorithm("DSA", size.getBit(), hashFunction.getHashWithDigitalSignature()));
+        digitalSignature.setPublicKey(publicKey);
+        return digitalSignature.verifyFile(src, signature);
     }
 }

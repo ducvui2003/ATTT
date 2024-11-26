@@ -12,6 +12,9 @@ import javax.swing.border.Border;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 
 @Getter
@@ -71,6 +74,7 @@ public class FileChooser extends JPanel {
         this.add(label, BorderLayout.CENTER);
         this.add(button, BorderLayout.EAST);
         this.setBorder(combinedBorder);
+        setEvent();
     }
 
     private void createLabel() {
@@ -82,6 +86,17 @@ public class FileChooser extends JPanel {
     private void createButton() {
         button = new JButton(textBtn);
         button.addActionListener(e -> click());
+    }
+
+    private void setEvent() {
+        this.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        this.addMouseListener(
+                new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        click();
+                    }
+                });
     }
 
     private void click() {

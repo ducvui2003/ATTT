@@ -88,15 +88,15 @@ public interface ICipher<T> {
         throw new UnsupportedOperationException();
     }
 
-    default boolean verify(String message) throws InvalidKeyException, SignatureException {
+    default boolean verify(String message, String signature) throws InvalidKeyException, SignatureException {
         throw new UnsupportedOperationException();
     }
 
-    default String signFile(String src) {
+    default String signFile(String src) throws InvalidKeyException, IOException, SignatureException {
         throw new UnsupportedOperationException();
     }
 
-    default boolean verifyFile(String src) {
+    default boolean verifyFile( String src,String signature) throws InvalidKeyException, IOException, SignatureException {
         throw new UnsupportedOperationException();
     }
 }

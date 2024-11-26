@@ -7,9 +7,10 @@ import nlu.fit.leanhduc.util.constraint.Hash;
 import nlu.fit.leanhduc.util.constraint.Size;
 import nlu.fit.leanhduc.view.component.GridBagConstraintsBuilder;
 import nlu.fit.leanhduc.view.component.SwingComponentUtil;
-import nlu.fit.leanhduc.view.component.panel.file.PanelFileHandler;
 import nlu.fit.leanhduc.view.component.panel.file.PanelFileSign;
+import nlu.fit.leanhduc.view.component.panel.file.PanelFileSignEvent;
 import nlu.fit.leanhduc.view.component.panel.file.PanelFileVerify;
+import nlu.fit.leanhduc.view.component.panel.file.PanelFileVerifyEvent;
 import nlu.fit.leanhduc.view.component.panel.text.PanelTextSign;
 import nlu.fit.leanhduc.view.component.panel.text.PanelTextSignEvent;
 import nlu.fit.leanhduc.view.component.panel.text.PanelTextVerify;
@@ -24,7 +25,7 @@ import java.security.NoSuchProviderException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class DigitalSignatureSection extends JPanel implements ActionListener, PanelTextSignEvent, PanelTextVerifyEvent {
+public class DigitalSignatureSection extends JPanel implements ActionListener, PanelTextSignEvent, PanelTextVerifyEvent, PanelFileSignEvent, PanelFileVerifyEvent {
     JTabbedPane tabbedPane;
     JPanel container;
     JComboBox<String> cbMode;
@@ -133,8 +134,8 @@ public class DigitalSignatureSection extends JPanel implements ActionListener, P
         this.tabbedPane = new JTabbedPane();
         this.panelTextSign = new PanelTextSign(this);
         this.panelTextVerify = new PanelTextVerify(this);
-        this.panelFileSign = new PanelFileSign();
-        this.panelFileVerify = new PanelFileVerify();
+        this.panelFileSign = new PanelFileSign(this);
+        this.panelFileVerify = new PanelFileVerify(this);
         Map<String, JPanel> panelMap = new LinkedHashMap<>();
         panelMap.put("Ký văn bản", panelTextSign);
         panelMap.put("Xác thực văn bản", panelTextVerify);
@@ -203,13 +204,51 @@ public class DigitalSignatureSection extends JPanel implements ActionListener, P
     }
 
     @Override
-    public void onVerify(String plainText) {
+    public void onVerify(String plainText, String signature) {
         try {
-            DigitalSignatureController.getInstance().verify(plainText, getPublicKey(), getSelectedHash(), getKeySize());
-            JOptionPane.showMessageDialog(this, "Xác thực thành công", "Xác thực", JOptionPane.INFORMATION_MESSAGE);
+            boolean isSuccess = DigitalSignatureController.getInstance().verify(plainText, signature, getPublicKey(), getSelectedHash(), getKeySize());
+            if (isSuccess)
+                JOptionPane.showMessageDialog(this, "Xác thực thành công", "Xác thực", JOptionPane.INFORMATION_MESSAGE);
+            else
+                JOptionPane.showMessageDialog(this, "Xác thực không thành công", "Lỗi", JOptionPane.ERROR_MESSAGE);
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Xác thực không thành công", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    @Override
+    public String onSignFile(String src) {
+        try {
+            return DigitalSignatureController.getInstance().signFile(
+                    src,
+                    getPrivateKey(),
+                    getSelectedHash(),
+                    getKeySize());
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Ký không thành công", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+        return "";
+    }
+
+    @Override
+    public void onVerifyFile(String src, String signature) {
+        try {
+            boolean isSuccess = DigitalSignatureController.getInstance().verifyFile(
+                    src,
+                    signature,
+                    getPublicKey(),
+                    getSelectedHash(),
+                    getKeySize());
+            if (isSuccess)
+                JOptionPane.showMessageDialog(this, "Chữ ký hợp lệ", "Thành công", JOptionPane.INFORMATION_MESSAGE);
+            else
+                JOptionPane.showMessageDialog(this, "Chữ ký không hợp lệ", "Lỗi", JOptionPane.ERROR_MESSAGE);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Ký không thành công", "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
     }
 }
