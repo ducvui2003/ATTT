@@ -104,8 +104,6 @@ public class FileChooser extends JPanel {
             return;
         }
         fileChooser = new JFileChooser();
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("Text Files (*.txt)", "txt");
-        fileChooser.setFileFilter(filter);
         int option = fileChooser.showOpenDialog(this);
 
         switch (option) {

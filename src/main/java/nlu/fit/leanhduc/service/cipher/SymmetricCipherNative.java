@@ -123,16 +123,12 @@ public class SymmetricCipherNative extends AbsCipherNative<KeySymmetric> {
             while ((i = cis.read(read)) != -1) {
                 bos.write(read, 0, i);
             }
-//            cipher use bos to encrypt
-            read = cipher.doFinal();
-            if (read != null) {
-                bos.write(read);
-            }
+
             cis.close();
             bos.flush();
             bos.close();
             return true;
-        } catch (InvalidKeyException | IOException | IllegalBlockSizeException | BadPaddingException |
+        } catch (InvalidKeyException | IOException |
                  InvalidAlgorithmParameterException e) {
             throw new CipherException(e.getMessage());
         }
@@ -150,10 +146,6 @@ public class SymmetricCipherNative extends AbsCipherNative<KeySymmetric> {
             int i;
             while ((i = bis.read(read)) != -1) {
                 cos.write(read, 0, i);
-            }
-            read = cipher.doFinal();
-            if (read != null) {
-                cos.write(read);
             }
             bis.close();
             bos.flush();

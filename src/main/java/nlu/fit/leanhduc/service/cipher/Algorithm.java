@@ -16,14 +16,14 @@ public class Algorithm {
     int keySize;
     //  đơn vị: bit
     int ivSize;
-    String hashFunctions;
+    String hashFunction;
     String provider;
 
 
-    public Algorithm(String cipher, int keySize, String hashFunctions) {
+    public Algorithm(String cipher, int keySize, String hashFunction) {
         this.cipher = cipher;
         this.keySize = keySize;
-        this.hashFunctions = hashFunctions;
+        this.hashFunction = hashFunction;
     }
 
     public Algorithm(String cipher, String mode, String padding, int keySize, int ivSize) {
@@ -76,6 +76,6 @@ public class Algorithm {
     }
 
     public String toSignature() {
-        return this.hashFunctions + "with" + this.cipher;
+        return this.hashFunction + "with" + this.cipher;
     }
 }

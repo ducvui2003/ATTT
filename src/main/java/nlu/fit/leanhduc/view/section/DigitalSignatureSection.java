@@ -1,5 +1,6 @@
 package nlu.fit.leanhduc.view.section;
 
+import nlu.fit.leanhduc.config.MetadataConfig;
 import nlu.fit.leanhduc.controller.DigitalSignatureController;
 import nlu.fit.leanhduc.service.digital.DigitalSignatureSpecification;
 import nlu.fit.leanhduc.util.constraint.Cipher;
@@ -7,6 +8,8 @@ import nlu.fit.leanhduc.util.constraint.Hash;
 import nlu.fit.leanhduc.util.constraint.Size;
 import nlu.fit.leanhduc.view.component.GridBagConstraintsBuilder;
 import nlu.fit.leanhduc.view.component.SwingComponentUtil;
+import nlu.fit.leanhduc.view.component.fileChooser.FileChooserButton;
+import nlu.fit.leanhduc.view.component.fileChooser.FileChooserEvent;
 import nlu.fit.leanhduc.view.component.panel.file.PanelFileSign;
 import nlu.fit.leanhduc.view.component.panel.file.PanelFileSignEvent;
 import nlu.fit.leanhduc.view.component.panel.file.PanelFileVerify;
@@ -20,18 +23,20 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class DigitalSignatureSection extends JPanel implements ActionListener, PanelTextSignEvent, PanelTextVerifyEvent, PanelFileSignEvent, PanelFileVerifyEvent {
+public class DigitalSignatureSection extends JPanel implements ActionListener, PanelTextSignEvent, PanelTextVerifyEvent, PanelFileSignEvent, PanelFileVerifyEvent , FileChooserEvent {
     JTabbedPane tabbedPane;
     JPanel container;
     JComboBox<String> cbMode;
     JComboBox<Hash> cbHash;
     JComboBox<Size> cbKeySize;
     JButton btnCreateKey;
+    FileChooserButton btnSaveKey;
     JTextArea txtPublicKey, txtPrivateKey;
     PanelTextSign panelTextSign;
     PanelTextVerify panelTextVerify;
@@ -67,7 +72,9 @@ public class DigitalSignatureSection extends JPanel implements ActionListener, P
         this.btnCreateKey = new JButton("Tạo khóa");
         this.btnCreateKey.addActionListener(this);
         panelCreateKey.add(btnCreateKey);
-
+        this.btnSaveKey = new FileChooserButton("Lưu khóa", MetadataConfig.INSTANCE.getSaveIcon());
+        this.btnSaveKey.setEvent(this);
+        panelCreateKey.add(btnSaveKey);
 
         SwingComponentUtil.addComponentGridBag(
                 this.container,
@@ -250,5 +257,20 @@ public class DigitalSignatureSection extends JPanel implements ActionListener, P
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Ký không thành công", "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    @Override
+    public void onFileSelected(File file) {
+
+    }
+
+    @Override
+    public void onFileUnselected() {
+
+    }
+
+    @Override
+    public void onError(String message) {
+
     }
 }

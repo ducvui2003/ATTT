@@ -13,10 +13,9 @@ public class DigitalSignatureSpecification {
     Set<Hash> hashFunctions;
     Set<Size> keySize;
 
-    //    private final static DigitalSignatureSpecification RSA = new DigitalSignatureSpecification(Cipher.RSA, Set.of(Hash.SHA_256), Set.of(2048, 3072, 4096));
     private final static DigitalSignatureSpecification DSA = new DigitalSignatureSpecification(Cipher.DSA,
-            Set.of(Hash.SHA_256),
-            Set.of(Size.Size_128,Size.Size_256, Size.SIZE_384));
+            Set.of(Hash.SHA_1, Hash.SHA_256, Hash.SHA_384, Hash.SHA_512),
+            Set.of(Size.Size_128, Size.Size_256, Size.SIZE_384));
 
     public static DigitalSignatureSpecification findDigitalSignatureSpecification(Cipher cipher) {
         switch (cipher) {

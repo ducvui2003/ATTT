@@ -59,7 +59,7 @@ public class SwingComponentUtil {
         textArea.setWrapStyleWord(true);
         textArea.setBackground(Color.WHITE);
         textArea.setEnabled(false);
-        textArea.setRows(5);
+        textArea.setRows(6);
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
         return textArea;

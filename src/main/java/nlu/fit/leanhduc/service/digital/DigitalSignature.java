@@ -24,13 +24,14 @@ public class DigitalSignature extends AbsCipherNative<KeySignature> {
         this.key = new KeySignature();
         this.key.setAlgorithm(algorithm.toString());
         this.key.setSize(algorithm.getKeySize());
+        this.key.setHashFunction(this.algorithm.toSignature());
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(this.key.getAlgorithm());
         keyPairGenerator.initialize(this.key.getSize(), secureRandom);
         String DEFAULT_SECURE_RANDOM = "SHA1PRNG";
         this.secureRandom = SecureRandom.getInstance(DEFAULT_SECURE_RANDOM);
         this.keyPair = keyPairGenerator.generateKeyPair();
         this.keyFactory = KeyFactory.getInstance(this.key.getAlgorithm());
-        this.signature = Signature.getInstance(this.algorithm.toSignature());
+        this.signature = Signature.getInstance(this.key.getHashFunction());
     }
 
     @Override

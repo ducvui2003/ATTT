@@ -1,6 +1,7 @@
 package nlu.fit.leanhduc.util;
 
 import nlu.fit.leanhduc.service.key.KeyAsymmetric;
+import nlu.fit.leanhduc.service.key.KeySignature;
 import nlu.fit.leanhduc.service.key.KeySymmetric;
 
 import javax.crypto.SecretKey;
@@ -110,7 +111,7 @@ public class FileUtil {
         }
     }
 
-    public static void saveKey(KeyAsymmetric key, String dest){
+    public static void saveKey(KeyAsymmetric key, String dest) {
         try (DataOutputStream dos = new DataOutputStream(new FileOutputStream(dest))) {
             byte[] publicKeyBytes = key.getPublicKey().getEncoded();
             dos.writeInt(publicKeyBytes.length);
@@ -127,6 +128,7 @@ public class FileUtil {
             throw new RuntimeException(e);
         }
     }
+
     public static KeyAsymmetric loadKeyAsymmetric(String src) {
         KeyAsymmetric key = new KeyAsymmetric();
         try (DataInputStream dis = new DataInputStream(new FileInputStream(src))) {
@@ -147,6 +149,23 @@ public class FileUtil {
             key.setKeySize(keySize);
             return key;
         } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void saveKey(KeySignature key, String dest) {
+        try (DataOutputStream dos = new DataOutputStream(new FileOutputStream(dest))) {
+            byte[] publicKeyBytes = key.getPublicKey().getEncoded();
+            dos.writeInt(publicKeyBytes.length);
+            dos.write(publicKeyBytes);
+            byte[] privateKeyBytes = key.getPrivateKey().getEncoded();
+            dos.writeInt(privateKeyBytes.length);
+            dos.write(privateKeyBytes);
+            dos.writeUTF(key.getAlgorithm());
+            dos.writeUTF(key.getHashFunction());
+            dos.writeInt(key.getSize());
+            dos.flush();
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }

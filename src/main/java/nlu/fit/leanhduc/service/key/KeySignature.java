@@ -1,7 +1,6 @@
 package nlu.fit.leanhduc.service.key;
 
-import nlu.fit.leanhduc.util.convert.Base64ConversionStrategy;
-import nlu.fit.leanhduc.util.convert.ByteConversionStrategy;
+import lombok.Data;
 
 import java.security.KeyFactory;
 import java.security.PrivateKey;
@@ -10,44 +9,14 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
+@Data
 public class KeySignature {
+
     PublicKey publicKey;
     PrivateKey privateKey;
     int size; // bit
     String algorithm;
-
-    public PublicKey getPublicKey() {
-        return publicKey;
-    }
-
-    public void setPublicKey(PublicKey publicKey) {
-        this.publicKey = publicKey;
-    }
-
-    public PrivateKey getPrivateKey() {
-        return privateKey;
-    }
-
-    public void setPrivateKey(PrivateKey privateKey) {
-        this.privateKey = privateKey;
-    }
-
-    public int getSize() {
-        return size;
-    }
-
-    public void setSize(int size) {
-        this.size = size;
-    }
-
-    public String getAlgorithm() {
-        return algorithm;
-    }
-
-    public void setAlgorithm(String algorithm) {
-        this.algorithm = algorithm;
-    }
-
+    String hashFunction;
 
     public void setPublicKey(KeyFactory keyFactory, byte[] bytes) throws InvalidKeySpecException {
         X509EncodedKeySpec keySpecPublicKey = new X509EncodedKeySpec(bytes);
