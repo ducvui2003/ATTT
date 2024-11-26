@@ -76,10 +76,15 @@ public class AsymmetricCipherNative extends AbsCipherNative<KeyAsymmetric> {
     }
 
     @Override
-    public String encrypt(String plainText) throws Exception {
-        byte[] bytes = plainText.getBytes(StandardCharsets.UTF_8);
-        initCipherEncrypt();
-        return conversionStrategy.convert(cipher.doFinal(bytes));
+    public String encrypt(String plainText) throws CipherException {
+        try {
+            byte[] bytes = plainText.getBytes(StandardCharsets.UTF_8);
+            initCipherEncrypt();
+            return conversionStrategy.convert(cipher.doFinal(bytes));
+        } catch (IllegalBlockSizeException |
+                 BadPaddingException ignored) {
+            throw new RuntimeException(ignored);
+        }
     }
 
     @Override
@@ -95,7 +100,7 @@ public class AsymmetricCipherNative extends AbsCipherNative<KeyAsymmetric> {
     }
 
     @Override
-    public boolean encrypt(String src, String dest) throws CipherException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, FileNotFoundException {
+    public boolean encrypt(String src, String dest) throws CipherException {
         return super.encrypt(src, dest);
     }
 

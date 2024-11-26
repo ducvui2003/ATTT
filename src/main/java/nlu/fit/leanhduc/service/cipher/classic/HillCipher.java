@@ -111,16 +111,4 @@ public class HillCipher extends AbsClassicCipher<HillKey> {
         int[][] inverseMatrix = MatrixUtil.multiMatrix(detInverse, matrixTransposeKey);
         return inverseMatrix;
     }
-
-
-    @Override
-    public boolean encrypt(String src, String dest) throws CipherException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, FileNotFoundException {
-        return false;
-    }
-
-    @Override
-    public boolean decrypt(String src, String dest) throws CipherException {
-        return false;
-    }
-
 }

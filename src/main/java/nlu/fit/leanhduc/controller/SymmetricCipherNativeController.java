@@ -35,7 +35,12 @@ public class SymmetricCipherNativeController {
     public Map<String, String> generateKey(Cipher cipher, Mode mode, Padding padding, Size keySize, Size ivSize) throws Exception {
         if (Mode.NONE.equals(mode))
             mode = Constraint.DEFAULT_MODE;
-        Algorithm algorithm = new Algorithm(cipher.getName(), mode.getName(), padding.getName(), keySize.getBit(), ivSize.getBit());
+        Algorithm algorithm = Algorithm.of(
+                cipher,
+                mode,
+                padding,
+                keySize,
+                ivSize);
         KeySymmetric key = new SymmetricCipherNative(algorithm).generateKey();
         ByteConversionStrategy byteConversionStrategy = new Base64ConversionStrategy();
         return Map.of(
@@ -55,7 +60,12 @@ public class SymmetricCipherNativeController {
     ) throws Exception {
         SymmetricCipherNative symmetricCipherNative = new SymmetricCipherNative(base64SecretKey,
                 base64Iv,
-                new Algorithm(cipher.getName(), mode.getName(), padding.getName(), keySize.getByteFormat(), ivSize.getBit()));
+                Algorithm.of(
+                        cipher,
+                        mode,
+                        padding,
+                        keySize,
+                        ivSize));
         return symmetricCipherNative.encrypt(plainText);
     }
 
@@ -71,7 +81,12 @@ public class SymmetricCipherNativeController {
     ) throws Exception {
         SymmetricCipherNative symmetricCipherNative = new SymmetricCipherNative(base64SecretKey,
                 base64Iv,
-                new Algorithm(cipher.getName(), mode.getName(), padding.getName(), keySize.getByteFormat(), ivSize.getBit()));
+                Algorithm.of(
+                        cipher,
+                        mode,
+                        padding,
+                        keySize,
+                        ivSize));
         return symmetricCipherNative.encrypt(src, dest);
     }
 
@@ -85,7 +100,12 @@ public class SymmetricCipherNativeController {
                           Size ivSize) throws Exception {
         SymmetricCipherNative symmetricCipherNative = new SymmetricCipherNative(base64SecretKey,
                 base64Iv,
-                new Algorithm(cipher.getName(), mode.getName(), padding.getName(), keySize.getByteFormat(), ivSize.getBit()));
+                Algorithm.of(
+                        cipher,
+                        mode,
+                        padding,
+                        keySize,
+                        ivSize));
         return symmetricCipherNative.decrypt(cipherText);
     }
 
@@ -100,7 +120,12 @@ public class SymmetricCipherNativeController {
                                Size ivSize) throws Exception {
         SymmetricCipherNative symmetricCipherNative = new SymmetricCipherNative(base64SecretKey,
                 base64Iv,
-                new Algorithm(cipher.getName(), mode.getName(), padding.getName(), keySize.getByteFormat(), ivSize.getBit()));
+                Algorithm.of(
+                        cipher,
+                        mode,
+                        padding,
+                        keySize,
+                        ivSize));
         return symmetricCipherNative.decrypt(src, dest);
     }
 
@@ -133,7 +158,12 @@ public class SymmetricCipherNativeController {
         try {
             SymmetricCipherNative symmetricCipherNative = new SymmetricCipherNative(base64SecretKey,
                     base64Iv,
-                    new Algorithm(cipher.getName(), mode.getName(), padding.getName(), keySize.getBit(), ivSize.getBit())
+                    Algorithm.of(
+                            cipher,
+                            mode,
+                            padding,
+                            keySize,
+                            ivSize)
             );
             symmetricCipherNative.saveKey(dest);
         } catch (Exception e) {

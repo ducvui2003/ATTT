@@ -35,7 +35,7 @@ public class HashFunction extends AbsHash {
     public String hashWithHMAC(String message, String key) throws NoSuchAlgorithmException {
         SecretKeySpec secretKeySpec = new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), this.hash.getHmacValue());
 
-        Mac mac = Mac.getInstance("Hmac" + hash.getValue());
+        Mac mac = Mac.getInstance(this.hash.getHmacValue());
         try {
             mac.init(secretKeySpec);
         } catch (InvalidKeyException e) {
@@ -92,26 +92,26 @@ public class HashFunction extends AbsHash {
     }
 
     public static void main(String[] args) {
-        Set<String> messageDigests = new TreeSet<>();
-        Set<String> macs = new TreeSet<>();
-
-        for (String algorithm : Security.getAlgorithms("MessageDigest")) {
-            messageDigests.add(algorithm);
-        }
-
-        for (String algorithm : Security.getAlgorithms("Mac")) {
-            macs.add(algorithm);
-        }
-
-//        for (String algorithm : Security.getAlgorithms("Cipher")) {
-//            System.out.println(algorithm);
+//        Set<String> messageDigests = new TreeSet<>();
+//        Set<String> macs = new TreeSet<>();
+//
+//        for (String algorithm : Security.getAlgorithms("MessageDigest")) {
+//            messageDigests.add(algorithm);
+//        }
+//
+//        for (String algorithm : Security.getAlgorithms("Mac")) {
+//            macs.add(algorithm);
 //        }
 
+        for (String algorithm : Security.getAlgorithms("Cipher")) {
+            System.out.println(algorithm);
+        }
 
-        System.out.println("Supported Hash Functions (MessageDigests):");
-        messageDigests.forEach(System.out::println);
-
-        System.out.println("\nSupported HMAC Algorithms (Mac):");
-        macs.forEach(System.out::println);
+//
+//        System.out.println("Supported Hash Functions (MessageDigests):");
+//        messageDigests.forEach(System.out::println);
+//
+//        System.out.println("\nSupported HMAC Algorithms (Mac):");
+//        macs.forEach(System.out::println);
     }
 }

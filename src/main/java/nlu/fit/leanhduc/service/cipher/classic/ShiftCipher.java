@@ -79,14 +79,4 @@ public class ShiftCipher extends AbsClassicCipher<ShiftKey> {
         }
         return result;
     }
-
-    @Override
-    public boolean encrypt(String src, String dest) throws CipherException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, FileNotFoundException {
-        return false;
-    }
-
-    @Override
-    public boolean decrypt(String src, String dest) throws CipherException {
-        return false;
-    }
 }

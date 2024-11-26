@@ -2,9 +2,12 @@ package nlu.fit.leanhduc.service;
 
 import nlu.fit.leanhduc.util.CipherException;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
@@ -49,7 +52,7 @@ public interface ICipher<T> {
      * @param plainText bản rõ
      * @return bản mã
      */
-    String encrypt(String plainText) throws CipherException, Exception;
+    String encrypt(String plainText) throws CipherException;
 
     /**
      * Mã hóa chuỗi
@@ -66,7 +69,7 @@ public interface ICipher<T> {
      * @param dest nơi lưu file cần mã hóa
      * @return bản rõ
      */
-    default boolean encrypt(String src, String dest) throws CipherException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, FileNotFoundException {
+    default boolean encrypt(String src, String dest) throws CipherException {
         throw new UnsupportedOperationException();
     }
 

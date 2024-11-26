@@ -33,7 +33,7 @@ public class AsymmetricCipherController {
     public Map<String, String> generateKey(Cipher cipher, Mode mode, Padding padding, Size keySize) throws Exception {
         if (Mode.NONE.equals(mode))
             mode = Constraint.DEFAULT_MODE;
-        Algorithm algorithm = new Algorithm(cipher.getName(), mode.getName(), padding.getName(), keySize.getBit());
+        Algorithm algorithm = Algorithm.of(cipher, mode, padding, keySize);
         KeyAsymmetric key = new AsymmetricCipherNative(algorithm).generateKey();
         ByteConversionStrategy byteConversionStrategy = new Base64ConversionStrategy();
         return Map.of(
@@ -51,7 +51,7 @@ public class AsymmetricCipherController {
                           boolean usePublicKeyEncryption
     ) throws Exception {
         AsymmetricCipherNative symmetricCipherNative = new AsymmetricCipherNative(base64SecretKey, base64PrivateKey,
-                new Algorithm(cipher.getName(), mode.getName(), padding.getName(), keySize.getByteFormat()));
+                Algorithm.of(cipher, mode, padding, keySize));
         symmetricCipherNative.setEncryptByPublicKey(usePublicKeyEncryption);
         return symmetricCipherNative.encrypt(plainText);
     }
@@ -66,7 +66,7 @@ public class AsymmetricCipherController {
                           boolean usePublicKeyEncryption
     ) throws Exception {
         AsymmetricCipherNative symmetricCipherNative = new AsymmetricCipherNative(base64SecretKey, base64PrivateKey,
-                new Algorithm(cipher.getName(), mode.getName(), padding.getName(), keySize.getByteFormat()));
+                Algorithm.of(cipher, mode, padding, keySize));
         symmetricCipherNative.setEncryptByPublicKey(usePublicKeyEncryption);
         return symmetricCipherNative.decrypt(cipherText);
     }
@@ -98,7 +98,7 @@ public class AsymmetricCipherController {
         try {
             AsymmetricCipherNative symmetricCipherNative = new AsymmetricCipherNative(base64PublicKey,
                     base64PrivateKey,
-                    new Algorithm(cipher.getName(), mode.getName(), padding.getName(), keySize.getBit())
+                    Algorithm.of(cipher, mode, padding, keySize)
             );
             symmetricCipherNative.saveKey(dest);
         } catch (Exception e) {

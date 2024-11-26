@@ -58,7 +58,7 @@ public class DigitalSignature extends AbsCipherNative<KeySignature> {
     }
 
     @Override
-    public String encrypt(String plainText) throws CipherException, Exception {
+    public String encrypt(String plainText) throws CipherException {
         throw new UnsupportedOperationException();
     }
 

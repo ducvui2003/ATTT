@@ -9,10 +9,14 @@ import nlu.fit.leanhduc.util.alphabet.AlphabetUtil;
 import nlu.fit.leanhduc.util.alphabet.EnglishAlphabetUtil;
 import nlu.fit.leanhduc.util.alphabet.VietnameseAlphabetUtil;
 import nlu.fit.leanhduc.view.MainView;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+
+import java.security.Security;
 
 public class MainController {
 
     public MainController() {
+        Security.addProvider(new BouncyCastleProvider());
         MainView view = new MainView(this);
         view.createUIComponents();
     }
@@ -26,7 +30,7 @@ public class MainController {
 
     public ICipher<?> generateKey(Cipher cipher, Language language) {
         AlphabetUtil alphabetUtil = language == Language.ENGLISH ? new EnglishAlphabetUtil() : new VietnameseAlphabetUtil();
-        ICipher<?> key = switch (cipher) {
+        return switch (cipher) {
             case SHIFT -> new ShiftCipher(alphabetUtil);
             case SUBSTITUTION -> new ClassicCipher(alphabetUtil);
             case AFFINE -> new AffineCipher(alphabetUtil);
@@ -34,6 +38,5 @@ public class MainController {
             case HILL -> new HillCipher(alphabetUtil);
             default -> null;
         };
-        return key;
     }
 }

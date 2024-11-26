@@ -46,27 +46,6 @@ public class PanelTextVerify extends JPanel implements ActionListener {
                         .build(),
                 new JScrollPane(signedTextBlock));
 
-        SwingComponentUtil.addComponentGridBag(
-                this,
-                GridBagConstraintsBuilder.builder()
-                        .grid(0, 2)        // Starting at the first column in the desired row
-                        .weight(0.25, 0)
-                        .fill(GridBagConstraints.HORIZONTAL)
-                        .insets(10) // Optional padding around the separator
-                        .build(),
-                new JLabel("Văn bản gốc"));
-
-        SwingComponentUtil.addComponentGridBag(
-                this,
-                GridBagConstraintsBuilder.builder()
-                        .grid(1, 2)        // Starting at the first column in the desired row
-                        .weight(1, 1)
-                        .gridSpan(0, 1)
-                        .fill(GridBagConstraints.BOTH)
-                        .insets(10) // Optional padding around the separator
-                        .build(),
-                verifyTextBlock);
-
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         this.btnVerify = new JButton("Xác thực");
         this.btnVerify.addActionListener(this);
@@ -75,7 +54,7 @@ public class PanelTextVerify extends JPanel implements ActionListener {
         SwingComponentUtil.addComponentGridBag(
                 this,
                 GridBagConstraintsBuilder.builder()
-                        .grid(1, 4)        // Starting at the first column in the desired row
+                        .grid(1, 3)        // Starting at the first column in the desired row
                         .weight(1, 0)
                         .fill(GridBagConstraints.HORIZONTAL)
                         .insets(10) // Optional padding around the separator

@@ -4,8 +4,7 @@ import nlu.fit.leanhduc.service.key.KeySymmetric;
 import nlu.fit.leanhduc.util.CipherException;
 import nlu.fit.leanhduc.util.Constraint;
 import nlu.fit.leanhduc.util.FileUtil;
-import nlu.fit.leanhduc.util.constraint.Mode;
-import nlu.fit.leanhduc.util.constraint.Padding;
+import nlu.fit.leanhduc.util.PaddingUtil;
 
 import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
@@ -30,7 +29,8 @@ public class SymmetricCipherNative extends AbsCipherNative<KeySymmetric> {
             this.key.setIv(new IvParameterSpec(conversionStrategy.convert(base64Iv)));
         }
         this.key.setCipher(algorithm.getCipher());
-        this.cipher = Cipher.getInstance(algorithm.toString());
+        String provider = algorithm.getProvider() != null ? algorithm.getProvider() : Constraint.DEFAULT_PROVIDER;
+        this.cipher = Cipher.getInstance(algorithm.toString(), provider);
         this.key.setMode(algorithm.getMode());
         this.key.setPadding(algorithm.getPadding());
         this.key.setKeySize(algorithm.getKeySize());
@@ -40,14 +40,15 @@ public class SymmetricCipherNative extends AbsCipherNative<KeySymmetric> {
     public SymmetricCipherNative(Algorithm algorithm) throws Exception {
         super(algorithm);
         this.key = new KeySymmetric();
-        this.cipher = Cipher.getInstance(algorithm.toString(), Constraint.DEFAULT_PROVIDER);
+        String provider = algorithm.getProvider() != null ? algorithm.getProvider() : Constraint.DEFAULT_PROVIDER;
+        this.cipher = Cipher.getInstance(algorithm.toString(), provider);
         if (algorithm.getIvSize() != 0) {
             this.key.setIv(generateIV());
         }
     }
 
     public IvParameterSpec generateIV() {
-        byte[] iv = new byte[algorithm.getIvSize() / 8]; // Chuyển đổi bit thành byte
+        byte[] iv = new byte[algorithm.getIvSize() / 8];
         SecureRandom random = new SecureRandom();
         random.nextBytes(iv);
         return new IvParameterSpec(iv);
@@ -62,7 +63,8 @@ public class SymmetricCipherNative extends AbsCipherNative<KeySymmetric> {
     public KeySymmetric generateKey() {
         KeySymmetric key = new KeySymmetric();
         try {
-            KeyGenerator keyGenerator = KeyGenerator.getInstance(this.algorithm.cipher, Constraint.DEFAULT_PROVIDER);
+            String provider = algorithm.getProvider() != null ? algorithm.getProvider() : Constraint.DEFAULT_PROVIDER;
+            KeyGenerator keyGenerator = KeyGenerator.getInstance(this.algorithm.cipher, provider);
             keyGenerator.init(algorithm.getKeySize());
             SecretKey secretKey = keyGenerator.generateKey();
             IvParameterSpec iv = generateIV();
@@ -78,17 +80,28 @@ public class SymmetricCipherNative extends AbsCipherNative<KeySymmetric> {
     }
 
     @Override
-    public String encrypt(String data) throws Exception {
-        initCipher();
-        return this.conversionStrategy.convert(cipher.doFinal(data.getBytes(StandardCharsets.UTF_8)));
+    public String encrypt(String plainText) throws CipherException {
+        try {
+            initCipher(Cipher.ENCRYPT_MODE);
+            byte[] bytePlainText = plainText.getBytes(StandardCharsets.UTF_8);
+            if (this.key.getPadding().equals("NoPadding"))
+                bytePlainText = PaddingUtil.handleNoPaddingEncrypt(bytePlainText, this.algorithm.getBlockSize());
+            byte[] byteEncrypt = cipher.doFinal(bytePlainText);
+            return this.conversionStrategy.convert(byteEncrypt);
+        } catch (Exception e) {
+            throw new CipherException(e.getMessage());
+        }
     }
 
     @Override
     public String decrypt(String encryptText) throws CipherException {
         try {
-            byte[] data = this.conversionStrategy.convert(encryptText);
-            initCipher();
-            return new String(cipher.doFinal(data), StandardCharsets.UTF_8);
+            initCipher(Cipher.DECRYPT_MODE);
+            byte[] bytesEncryptText = this.conversionStrategy.convert(encryptText);
+            byte[] bytesAfterDecrypt = cipher.doFinal(bytesEncryptText);
+            if (this.key.getPadding().equals("NoPadding"))
+                bytesAfterDecrypt = PaddingUtil.handleNoPaddingDecrypt(bytesAfterDecrypt);
+            return new String(bytesAfterDecrypt, StandardCharsets.UTF_8);
         } catch (Exception e) {
             throw new CipherException(e.getMessage());
         }
@@ -97,7 +110,7 @@ public class SymmetricCipherNative extends AbsCipherNative<KeySymmetric> {
     @Override
     public boolean encrypt(String src, String dest) throws CipherException {
         try {
-            initCipher();
+            initCipher(Cipher.ENCRYPT_MODE);
             BufferedInputStream bis = new BufferedInputStream((new FileInputStream(src)));
             BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(dest));
             CipherInputStream cis = new CipherInputStream(bis, cipher);
@@ -128,7 +141,7 @@ public class SymmetricCipherNative extends AbsCipherNative<KeySymmetric> {
     @Override
     public boolean decrypt(String src, String dest) throws CipherException {
         try {
-            initCipher();
+            initCipher(Cipher.DECRYPT_MODE);
             BufferedInputStream bis = new BufferedInputStream((new FileInputStream(src)));
             BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(dest));
             CipherOutputStream cos = new CipherOutputStream(bos, cipher);
@@ -161,10 +174,10 @@ public class SymmetricCipherNative extends AbsCipherNative<KeySymmetric> {
         FileUtil.saveKey(this.key, dest);
     }
 
-    private void initCipher() throws InvalidKeyException, InvalidAlgorithmParameterException {
+    private void initCipher(int mode) throws InvalidKeyException, InvalidAlgorithmParameterException {
         if (this.key.getIv() == null)
-            cipher.init(Cipher.ENCRYPT_MODE, this.key.getSecretKey());
+            cipher.init(mode, this.key.getSecretKey());
         else
-            cipher.init(Cipher.ENCRYPT_MODE, this.key.getSecretKey(), this.key.getIv());
+            cipher.init(mode, this.key.getSecretKey(), this.key.getIv());
     }
 }
