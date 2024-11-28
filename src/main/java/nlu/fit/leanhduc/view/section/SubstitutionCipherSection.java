@@ -142,10 +142,10 @@ public class SubstitutionCipherSection extends JPanel implements FileChooserEven
         SwingComponentUtil.addComponentGridBag(
                 this.container,
                 GridBagConstraintsBuilder.builder()
-                        .grid(0, 1)        // Starting at the first column in the desired row
-                        .gridSpan(6, 1)    // Span 5 columns
+                        .grid(0, 1)         
+                        .gridSpan(6, 1)     
                         .fill(GridBagConstraints.HORIZONTAL)
-                        .insets(10, 0, 10, 0) // Optional padding around the separator
+                        .insets(10, 0, 10, 0)  
                         .build(),
                 SwingComponentUtil.createSeparator());
 
@@ -161,10 +161,10 @@ public class SubstitutionCipherSection extends JPanel implements FileChooserEven
         SwingComponentUtil.addComponentGridBag(
                 this.container,
                 GridBagConstraintsBuilder.builder()
-                        .grid(0, 4)        // Starting at the first column in the desired row
-                        .gridSpan(6, 1)    // Span 5 columns
+                        .grid(0, 4)         
+                        .gridSpan(6, 1)     
                         .fill(GridBagConstraints.HORIZONTAL)
-                        .insets(10, 0, 10, 0) // Optional padding around the separator
+                        .insets(10, 0, 10, 0)  
                         .build(),
                 SwingComponentUtil.createSeparator());
     }
@@ -190,11 +190,11 @@ public class SubstitutionCipherSection extends JPanel implements FileChooserEven
         SwingComponentUtil.addComponentGridBag(
                 this.container,
                 GridBagConstraintsBuilder.builder()
-                        .grid(0, 5)        // Starting at the first column in the desired row
+                        .grid(0, 5)         
                         .gridSpan(6, 1)
                         .weight(1, 0)
                         .fill(GridBagConstraints.HORIZONTAL)
-                        .insets(10, 0, 10, 0) // Optional padding around the separator
+                        .insets(10, 0, 10, 0)  
                         .build(),
                 this.tabbedPane);
     }

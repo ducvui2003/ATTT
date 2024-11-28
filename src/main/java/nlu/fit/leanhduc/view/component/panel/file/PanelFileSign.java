@@ -39,10 +39,10 @@ public class PanelFileSign extends JPanel implements FileChooserEvent {
         SwingComponentUtil.addComponentGridBag(
                 this.container,
                 GridBagConstraintsBuilder.builder()
-                        .grid(0, 0)        // Starting at the first column in the desired row
+                        .grid(0, 0)         
                         .weight(0.15, 0)
                         .fill(GridBagConstraints.HORIZONTAL)
-                        .insets(10) // Optional padding around the separator
+                        .insets(10)  
                         .build(),
                 new JLabel("File cần ký"));
 
@@ -59,21 +59,21 @@ public class PanelFileSign extends JPanel implements FileChooserEvent {
         SwingComponentUtil.addComponentGridBag(
                 this.container,
                 GridBagConstraintsBuilder.builder()
-                        .grid(0, 2)        // Starting at the first column in the desired row
+                        .grid(0, 2)         
                         .weight(0.25, 0)
                         .fill(GridBagConstraints.HORIZONTAL)
-                        .insets(10) // Optional padding around the separator
+                        .insets(10)  
                         .build(),
                 new JLabel("Chữ ký"));
 
         SwingComponentUtil.addComponentGridBag(
                 this.container,
                 GridBagConstraintsBuilder.builder()
-                        .grid(1, 2)        // Starting at the first column in the desired row
+                        .grid(1, 2)         
                         .weight(1, 1)
                         .gridSpan(0, 1)
                         .fill(GridBagConstraints.BOTH)
-                        .insets(10) // Optional padding around the separator
+                        .insets(10)  
                         .build(),
                 signatureTextBlock);
 

@@ -56,24 +56,24 @@ public class AsymmetricCipherSection extends JPanel implements ActionListener, P
         this.add(this.container, BorderLayout.NORTH);
         JPanel panelGenerateKey = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
 
-        // Initialize Cipher ComboBox and Listener
+         
         this.comboBoxCipher = new JComboBox<>(cipherSpecifications.stream()
                 .map(CipherSpecification::getAlgorithm)
                 .toArray(Cipher[]::new));
         this.comboBoxCipher.addActionListener(e -> updateModeAndPadding());
 
-        // Initialize Mode ComboBox and Listener
+         
         this.comboBoxMode = new JComboBox<>();
         this.comboBoxMode.addActionListener(e -> updatePaddingAndIvSize());
 
-        // Initialize Padding ComboBox and Listener
+         
         this.comboBoxPadding = new JComboBox<>();
 
-        // Initialize Key Size ComboBox and Listener
+         
         this.comboBoxKeySize = new JComboBox<>();
 
 
-        // Add Components to Panel
+         
         panelGenerateKey.add(new JLabel("Cipher:"));
         panelGenerateKey.add(this.comboBoxCipher);
         panelGenerateKey.add(new JLabel("Mode:"));
@@ -240,28 +240,28 @@ public class AsymmetricCipherSection extends JPanel implements ActionListener, P
     }
 
 
-    // Update Mode and Padding when Cipher changes
+     
     private void updateModeAndPadding() {
         Cipher selectedCipher = this.getSelectedCipher();
         CipherSpecification selectedSpec = getCipherSpecification(selectedCipher);
 
-        // Temporarily remove mode listener to avoid triggering it during updates
+         
         ActionListener modeListener = this.comboBoxMode.getActionListeners()[0];
         this.comboBoxMode.removeActionListener(modeListener);
 
-        // Update Mode ComboBox
+         
         this.comboBoxMode.removeAllItems();
         selectedSpec.getValidModePaddingCombinations().keySet().forEach(mode -> this.comboBoxMode.addItem(mode));
 
-        // Re-add the mode listener
+         
         this.comboBoxMode.addActionListener(modeListener);
 
-        // Update dependent ComboBoxes
+         
         updatePaddingAndIvSize();
         updateKeySize();
     }
 
-    // Update Padding and IV Size when Mode changes
+     
     private void updatePaddingAndIvSize() {
         Cipher selectedCipher = (Cipher) this.comboBoxCipher.getSelectedItem();
         CipherSpecification selectedSpec = getCipherSpecification(selectedCipher);
@@ -277,7 +277,7 @@ public class AsymmetricCipherSection extends JPanel implements ActionListener, P
 
     }
 
-    // Update Key Size based on selected Cipher
+     
     private void updateKeySize() {
         CipherSpecification selectedSpec = getCipherSpecification(this.getSelectedCipher());
         this.comboBoxKeySize.removeAllItems();
@@ -295,11 +295,11 @@ public class AsymmetricCipherSection extends JPanel implements ActionListener, P
         SwingComponentUtil.addComponentGridBag(
                 this.container,
                 GridBagConstraintsBuilder.builder()
-                        .grid(0, 8)        // Starting at the first column in the desired row
+                        .grid(0, 8)         
                         .gridSpan(10, 1)
                         .weight(1, 0)
                         .fill(GridBagConstraints.HORIZONTAL)
-                        .insets(10, 0, 10, 0) // Optional padding around the separator
+                        .insets(10, 0, 10, 0)  
                         .build(),
                 this.tabbedPane);
     }

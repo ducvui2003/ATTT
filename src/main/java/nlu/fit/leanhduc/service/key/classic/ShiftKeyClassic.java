@@ -6,6 +6,12 @@ import nlu.fit.leanhduc.util.constraint.Cipher;
 import java.io.Serial;
 import java.io.Serializable;
 
+/**
+ * Class {@code ShiftKeyClassic}
+ * <p>
+ * Class đại diện cho khóa của thuật toán Shift
+ * </p>
+ */
 @Getter
 public class ShiftKeyClassic implements IKeyClassic, Serializable {
     @Serial

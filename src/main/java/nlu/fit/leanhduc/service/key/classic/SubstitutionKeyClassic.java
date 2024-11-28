@@ -7,6 +7,12 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.Map;
 
+/**
+ * Class {@code SubstitutionKeyClassic}
+ * <p>
+ * Class đại diện cho khóa của thuật toán Substitution
+ * </p>
+ */
 @Getter
 public class SubstitutionKeyClassic implements IKeyClassic, Serializable {
     @Serial

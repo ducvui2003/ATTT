@@ -45,20 +45,20 @@ public class PanelFileHandler extends PanelHandler implements FileChooserEvent {
         SwingComponentUtil.addComponentGridBag(
                 this.container,
                 GridBagConstraintsBuilder.builder()
-                        .grid(0, 0)        // Starting at the first column in the desired row
+                        .grid(0, 0)         
                         .weight(0.15, 0)
                         .fill(GridBagConstraints.HORIZONTAL)
-                        .insets(10, leftMargin, 10, 0) // Optional padding around the separator
+                        .insets(10, leftMargin, 10, 0)  
                         .build(),
                 new JLabel("File cần mã hóa"));
 
         SwingComponentUtil.addComponentGridBag(
                 this.container,
                 GridBagConstraintsBuilder.builder()
-                        .grid(1, 0)        // Starting at the first column in the desired row
+                        .grid(1, 0)         
                         .weight(1.0, 0)
                         .fill(GridBagConstraints.HORIZONTAL)
-                        .insets(10, 0, 10, 0) // Optional padding around the separator
+                        .insets(10, 0, 10, 0)  
                         .build(),
                 fileChooserOriginal);
 
@@ -75,10 +75,10 @@ public class PanelFileHandler extends PanelHandler implements FileChooserEvent {
         SwingComponentUtil.addComponentGridBag(
                 this.container,
                 GridBagConstraintsBuilder.builder()
-                        .grid(0, 3)        // Starting at the first column in the desired row
-                        .gridSpan(6, 1)    // Span 5 columns
+                        .grid(0, 3)         
+                        .gridSpan(6, 1)     
                         .fill(GridBagConstraints.HORIZONTAL)
-                        .insets(10, 0, 10, 0) // Optional padding around the separator
+                        .insets(10, 0, 10, 0)  
                         .build(),
                 SwingComponentUtil.createSeparator());
 
@@ -88,7 +88,7 @@ public class PanelFileHandler extends PanelHandler implements FileChooserEvent {
                         .grid(0, 4)
                         .weight(0.15, 0)
                         .fill(GridBagConstraints.HORIZONTAL)
-                        .insets(10, leftMargin, 10, 0) // Optional padding around the separator
+                        .insets(10, leftMargin, 10, 0)  
                         .build(),
                 new JLabel("File cần giải mã"));
 
@@ -98,7 +98,7 @@ public class PanelFileHandler extends PanelHandler implements FileChooserEvent {
                         .grid(1, 4)
                         .weight(1, 0)
                         .fill(GridBagConstraints.HORIZONTAL)
-                        .insets(10, 0, 10, 0) // Optional padding around the separator
+                        .insets(10, 0, 10, 0)  
                         .build(),
                 fileChooserEncrypt);
 

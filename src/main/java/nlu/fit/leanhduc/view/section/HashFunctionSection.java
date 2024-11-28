@@ -169,11 +169,11 @@ public class HashFunctionSection extends JPanel implements PanelTextHashEvent, P
         SwingComponentUtil.addComponentGridBag(
                 this.container,
                 GridBagConstraintsBuilder.builder()
-                        .grid(0, 2)        // Starting at the first column in the desired row
+                        .grid(0, 2)         
                         .gridSpan(15, 1)
                         .weight(1, 0)
                         .fill(GridBagConstraints.HORIZONTAL)
-                        .insets(10, 0, 10, 0) // Optional padding around the separator
+                        .insets(10, 0, 10, 0)  
                         .build(),
                 this.tabbedPane);
     }

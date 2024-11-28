@@ -13,6 +13,11 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
 
+/**
+ * Class {@code SymmetricCipherNative}
+ * <p>Class đại diện cho các thuật toán mã hóa đối xứng java hỗ trợ</p>
+ * <p>Cung cấp các phương thức mã hóa, giải mã và tạo khóa cho thuật toán mã hóa đối xứng</p>
+ */
 public class SymmetricCipherNative extends AbsCipherNative<KeySymmetric> {
     Cipher cipher;
 
@@ -20,16 +25,20 @@ public class SymmetricCipherNative extends AbsCipherNative<KeySymmetric> {
 
     }
 
+
     public SymmetricCipherNative(String base64SecretKey, String base64Iv, Algorithm algorithm) throws Exception {
         super(algorithm);
         this.key = new KeySymmetric();
+        // Chuyển base64 của SecretKey về object
         this.key.setSecretKey(new SecretKeySpec(
                 conversionStrategy.convert(base64SecretKey), algorithm.getCipher()));
         if (base64Iv != null) {
+            // Chuyển base64 của IV về object
             this.key.setIv(new IvParameterSpec(conversionStrategy.convert(base64Iv)));
         }
         this.key.setCipher(algorithm.getCipher());
         String provider = algorithm.getProvider() != null ? algorithm.getProvider() : Constraint.DEFAULT_PROVIDER;
+        // Khởi tạo cipher với thuật toán và provider
         this.cipher = Cipher.getInstance(algorithm.toString(), provider);
         this.key.setMode(algorithm.getMode());
         this.key.setPadding(algorithm.getPadding());
@@ -47,6 +56,11 @@ public class SymmetricCipherNative extends AbsCipherNative<KeySymmetric> {
         }
     }
 
+    /**
+     * Tạo một vector khởi tạo (IV) ngẫu nhiên
+     *
+     * @return vector khởi tạo
+     */
     public IvParameterSpec generateIV() {
         byte[] iv = new byte[algorithm.getIvSize() / 8];
         SecureRandom random = new SecureRandom();
@@ -59,6 +73,11 @@ public class SymmetricCipherNative extends AbsCipherNative<KeySymmetric> {
         this.key = key;
     }
 
+    /**
+     * Tạo khóa cho thuật toán mã hóa đối xứng
+     *
+     * @return khóa
+     */
     @Override
     public KeySymmetric generateKey() {
         KeySymmetric key = new KeySymmetric();
@@ -79,11 +98,19 @@ public class SymmetricCipherNative extends AbsCipherNative<KeySymmetric> {
         }
     }
 
+    /**
+     * Thực hiện mã hóa văn bản
+     *
+     * @param plainText văn bản cần mã hóa
+     * @return văn bản đã mã hóa
+     */
     @Override
     public String encrypt(String plainText) throws CipherException {
         try {
+            // Khởi tạo cipher với chế độ mã hóa
             initCipher(Cipher.ENCRYPT_MODE);
             byte[] bytePlainText = plainText.getBytes(StandardCharsets.UTF_8);
+            // Nếu không có padding thì thực hiện padding nếu chuỗi không đủ block size
             if (this.key.getPadding().equals("NoPadding"))
                 bytePlainText = PaddingUtil.handleNoPaddingEncrypt(bytePlainText, this.algorithm.getBlockSize());
             byte[] byteEncrypt = cipher.doFinal(bytePlainText);
@@ -93,12 +120,20 @@ public class SymmetricCipherNative extends AbsCipherNative<KeySymmetric> {
         }
     }
 
+    /**
+     * Thực hiện giải mã văn bản
+     *
+     * @param encryptText văn bản cần giải mã
+     * @return văn bản đã giải mã
+     */
     @Override
     public String decrypt(String encryptText) throws CipherException {
         try {
+            // Khởi tạo cipher với chế độ giải mã
             initCipher(Cipher.DECRYPT_MODE);
             byte[] bytesEncryptText = this.conversionStrategy.convert(encryptText);
             byte[] bytesAfterDecrypt = cipher.doFinal(bytesEncryptText);
+            // Xóa padding đã đệm vào trước đó
             if (this.key.getPadding().equals("NoPadding"))
                 bytesAfterDecrypt = PaddingUtil.handleNoPaddingDecrypt(bytesAfterDecrypt);
             return new String(bytesAfterDecrypt, StandardCharsets.UTF_8);
@@ -107,6 +142,14 @@ public class SymmetricCipherNative extends AbsCipherNative<KeySymmetric> {
         }
     }
 
+    /**
+     * Thực hiện mã hóa file
+     *
+     * @param src  đường dẫn đến file cần mã hóa
+     * @param dest đường dẫn lưu file sau khi mã hóa
+     * @return {@code true} nếu mã hóa thành công, ngược lại {@code false}
+     * @throws CipherException nếu có lỗi trong quá trình mã hóa
+     */
     @Override
     public boolean encrypt(String src, String dest) throws CipherException {
         try {
@@ -115,11 +158,11 @@ public class SymmetricCipherNative extends AbsCipherNative<KeySymmetric> {
             BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(dest));
             CipherInputStream cis = new CipherInputStream(bis, cipher);
 
-// Read: doc tu file (input - read)
-// Write: ghi vao file (output - write)
+            // Read: doc tu file (input - read)
+            // Write: ghi vao file (output - write)
             byte[] read = new byte[1024];
             int i;
-//            byte from bis -> bos
+            //  byte from bis -> bos
             while ((i = cis.read(read)) != -1) {
                 bos.write(read, 0, i);
             }
@@ -134,6 +177,14 @@ public class SymmetricCipherNative extends AbsCipherNative<KeySymmetric> {
         }
     }
 
+    /**
+     * Thực hiện giải mã file
+     *
+     * @param src  đường dẫn đến file cần giải mã
+     * @param dest đường dẫn lưu file sau khi giải mã
+     * @return {@code true} nếu giải mã thành công, ngược lại {@code false}
+     * @throws CipherException nếu có lỗi trong quá trình giải mã
+     */
     @Override
     public boolean decrypt(String src, String dest) throws CipherException {
         try {
@@ -166,6 +217,13 @@ public class SymmetricCipherNative extends AbsCipherNative<KeySymmetric> {
         FileUtil.saveKey(this.key, dest);
     }
 
+    /**
+     * Khởi tạo cipher với chế độ mã hóa
+     *
+     * @param mode chế độ mã hóa
+     * @throws InvalidKeyException
+     * @throws InvalidAlgorithmParameterException
+     */
     private void initCipher(int mode) throws InvalidKeyException, InvalidAlgorithmParameterException {
         if (this.key.getIv() == null)
             cipher.init(mode, this.key.getSecretKey());

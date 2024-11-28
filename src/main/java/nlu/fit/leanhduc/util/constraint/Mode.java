@@ -2,6 +2,12 @@ package nlu.fit.leanhduc.util.constraint;
 
 import lombok.Getter;
 
+/**
+ * Enum {@code Mode}
+ * <p>
+ * Enum định nghĩa các chế độ mã hóa hỗ trợ
+ * </p>
+ */
 public enum Mode {
     NONE("None", "None", false),
     CBC("CBC", "Cipher Block Chaining", true),

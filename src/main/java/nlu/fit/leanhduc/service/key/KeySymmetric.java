@@ -7,6 +7,12 @@ import nlu.fit.leanhduc.util.convert.ByteConversionStrategy;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 
+/**
+ * Class {@code KeySymmetric}
+ * <p>
+ * Class đại diện cho khóa của thuật toán đối xứng
+ * </p>
+ */
 @Data
 public class KeySymmetric {
     SecretKey secretKey;

@@ -33,42 +33,42 @@ public class PanelTextSign extends JPanel implements ActionListener {
         SwingComponentUtil.addComponentGridBag(
                 this,
                 GridBagConstraintsBuilder.builder()
-                        .grid(0, 0)        // Starting at the first column in the desired row
+                        .grid(0, 0)         
                         .weight(0.25, 0)
                         .fill(GridBagConstraints.HORIZONTAL)
-                        .insets(10) // Optional padding around the separator
+                        .insets(10)  
                         .build(),
                 new JLabel("Văn bản cần ký "));
 
         SwingComponentUtil.addComponentGridBag(
                 this,
                 GridBagConstraintsBuilder.builder()
-                        .grid(1, 0)        // Starting at the first column in the desired row
+                        .grid(1, 0)         
                         .weight(1.0, 1)
                         .gridSpan(0, 1)
                         .fill(GridBagConstraints.BOTH)
-                        .insets(10) // Optional padding around the separator
+                        .insets(10)  
                         .build(),
                 new JScrollPane(plainTextBlock));
 
         SwingComponentUtil.addComponentGridBag(
                 this,
                 GridBagConstraintsBuilder.builder()
-                        .grid(0, 2)        // Starting at the first column in the desired row
+                        .grid(0, 2)         
                         .weight(0.25, 0)
                         .fill(GridBagConstraints.HORIZONTAL)
-                        .insets(10) // Optional padding around the separator
+                        .insets(10)  
                         .build(),
                 new JLabel("Chữ ký"));
 
         SwingComponentUtil.addComponentGridBag(
                 this,
                 GridBagConstraintsBuilder.builder()
-                        .grid(1, 2)        // Starting at the first column in the desired row
+                        .grid(1, 2)         
                         .weight(1, 1)
                         .gridSpan(0, 1)
                         .fill(GridBagConstraints.BOTH)
-                        .insets(10) // Optional padding around the separator
+                        .insets(10)  
                         .build(),
                 signedTextBlock);
 
@@ -80,10 +80,10 @@ public class PanelTextSign extends JPanel implements ActionListener {
         SwingComponentUtil.addComponentGridBag(
                 this,
                 GridBagConstraintsBuilder.builder()
-                        .grid(1, 4)        // Starting at the first column in the desired row
+                        .grid(1, 4)         
                         .weight(1, 0)
                         .fill(GridBagConstraints.HORIZONTAL)
-                        .insets(10) // Optional padding around the separator
+                        .insets(10)  
                         .build(),
                 panel);
 
@@ -103,13 +103,13 @@ public class PanelTextSign extends JPanel implements ActionListener {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (!signedTextBlock.getText().isBlank()) {
-                    // Copy the text to the clipboard
+                     
                     String textToCopy = signedTextBlock.getText();
                     StringSelection stringSelection = new StringSelection(textToCopy);
                     Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
                     clipboard.setContents(stringSelection, null);
 
-                    // Optional: Show a confirmation message
+                     
                     JOptionPane.showMessageDialog(null, "Copy chữ vào clipboard!");
                 }
             };

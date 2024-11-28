@@ -1,5 +1,11 @@
 package nlu.fit.leanhduc.util.constraint;
 
+/**
+ * Enum {@code Size}
+ * <p>
+ * Enum định nghĩa các kích thước hỗ trợ
+ * </p>
+ */
 public enum Size {
     Size_1(8, 1),
     Size_2(16, 2),

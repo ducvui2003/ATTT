@@ -11,16 +11,29 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
 
+/**
+ * Class {@code HashFunction}
+ * <p>
+ * Class đại diện cho các thuật toán băm
+ * </p>
+ * <p>
+ * Cung cấp các phương thức băm thông điệp, file và băm kèm HMAC
+ * </p>
+ */
 public class HashFunction extends AbsHash {
     Hash hash;
-
-    public HashFunction() {
-    }
 
     public HashFunction(Hash hash) {
         this.hash = hash;
     }
 
+    /**
+     * Băm văn bản
+     *
+     * @param message thông điệp cần băm
+     * @return chuỗi băm
+     * @throws NoSuchAlgorithmException nếu thuật toán băm không tồn tại
+     */
     @Override
     public String hash(String message) throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance(hash.getValue());
@@ -29,22 +42,38 @@ public class HashFunction extends AbsHash {
         return byteConversionStrategy.convert(digest);
     }
 
+    /**
+     * Băm văn bản kèm HMAC
+     *
+     * @param message thông điệp cần băm
+     * @param key     khóa băm
+     * @return chuỗi băm
+     * @throws NoSuchAlgorithmException nếu thuật toán băm không tồn tại
+     */
     @Override
     public String hashWithHMAC(String message, String key) throws NoSuchAlgorithmException {
+//       Khởi tạo MAC với thuật toán băm và khóa
         SecretKeySpec secretKeySpec = new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), this.hash.getHmacValue());
-
         Mac mac = Mac.getInstance(this.hash.getHmacValue());
         try {
             mac.init(secretKeySpec);
         } catch (InvalidKeyException e) {
             throw new RuntimeException(e);
         }
-
+//Tiến hanh băm văn bản
         byte[] hmacBytes = mac.doFinal(message.getBytes(StandardCharsets.UTF_8));
 
         return this.byteConversionStrategy.convert(hmacBytes);
     }
 
+    /**
+     * Băm file
+     *
+     * @param src đường dẫn file cần băm
+     * @return chuỗi băm
+     * @throws NoSuchAlgorithmException nếu thuật toán băm không tồn tại
+     * @throws IOException              nếu không thể đọc file
+     */
     @Override
     public String hashFile(String src) throws NoSuchAlgorithmException, IOException {
         MessageDigest md = MessageDigest.getInstance(hash.getValue());
@@ -64,6 +93,15 @@ public class HashFunction extends AbsHash {
         return this.byteConversionStrategy.convert(digest);
     }
 
+    /**
+     * Băm file kèm HMAC
+     *
+     * @param src đường dẫn file cần băm
+     * @param key khóa băm
+     * @return chuỗi băm
+     * @throws NoSuchAlgorithmException nếu thuật toán băm không tồn tại
+     * @throws IOException              nếu không thể đọc file
+     */
     @Override
     public String hashFileWithHMAC(String src, String key) throws NoSuchAlgorithmException, IOException {
         File f = new File(src);
@@ -87,29 +125,5 @@ public class HashFunction extends AbsHash {
         }
         byte[] hmacBytes = mac.doFinal();
         return this.byteConversionStrategy.convert(hmacBytes);
-    }
-
-    public static void main(String[] args) {
-//        Set<String> messageDigests = new TreeSet<>();
-//        Set<String> macs = new TreeSet<>();
-//
-//        for (String algorithm : Security.getAlgorithms("MessageDigest")) {
-//            messageDigests.add(algorithm);
-//        }
-//
-//        for (String algorithm : Security.getAlgorithms("Mac")) {
-//            macs.add(algorithm);
-//        }
-
-        for (String algorithm : Security.getAlgorithms("Cipher")) {
-            System.out.println(algorithm);
-        }
-
-//
-//        System.out.println("Supported Hash Functions (MessageDigests):");
-//        messageDigests.forEach(System.out::println);
-//
-//        System.out.println("\nSupported HMAC Algorithms (Mac):");
-//        macs.forEach(System.out::println);
     }
 }

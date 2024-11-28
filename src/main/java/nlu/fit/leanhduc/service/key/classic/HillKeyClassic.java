@@ -7,6 +7,12 @@ import nlu.fit.leanhduc.util.constraint.Cipher;
 import java.io.Serial;
 import java.io.Serializable;
 
+/**
+ * Class {@code HillKeyClassic}
+ * <p>
+ * Class đại diện cho khóa của thuật toán Hill
+ * </p>
+ */
 @Setter
 @Getter
 public class HillKeyClassic implements IKeyClassic, Serializable {

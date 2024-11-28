@@ -1,5 +1,6 @@
 package nlu.fit.leanhduc.service.cipher;
 
+import lombok.Setter;
 import nlu.fit.leanhduc.service.key.KeyAsymmetric;
 import nlu.fit.leanhduc.util.CipherException;
 import nlu.fit.leanhduc.util.Constraint;
@@ -14,9 +15,18 @@ import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.util.Base64;
 
+/**
+ * Class {@code AsymmetricCipherNative}
+ * <p>Class đại diện cho các thuật toán mã hóa bất đối xứng java hỗ trợ</p>
+ * <p>Mặc định sử dụng thuật toán RSA</p>
+ * <p>Cung cấp các phương thức mã hóa, giải mã và tạo khóa cho thuật toán mã hóa bất đối xứng</p>
+ */
 public class AsymmetricCipherNative extends AbsCipherNative<KeyAsymmetric> {
     KeyPair keyPair;
     Cipher cipher;
+
+    // Mặc định sử dụng khóa công khai để mã hóa
+    @Setter
     boolean encryptByPublicKey = true;
 
     public AsymmetricCipherNative() {
@@ -32,8 +42,10 @@ public class AsymmetricCipherNative extends AbsCipherNative<KeyAsymmetric> {
         super(algorithm);
         this.key = new KeyAsymmetric();
         KeyFactory keyFactory = KeyFactory.getInstance(this.algorithm.getCipher());
+        // Khởi tạo cipher với thuật toán và provider
         this.cipher = Cipher.getInstance(this.algorithm.toString(), Constraint.DEFAULT_PROVIDER);
         this.key.setCipher(algorithm.getCipher());
+        // Chuyển base64 của PublicKey và PrivateKey về object
         this.key.setPublicKey(keyFactory, base64PublicKey);
         this.key.setPrivateKey(keyFactory, base64PrivateKey);
         this.key.setMode(algorithm.getMode());
@@ -47,6 +59,11 @@ public class AsymmetricCipherNative extends AbsCipherNative<KeyAsymmetric> {
         this.key = key;
     }
 
+    /**
+     * Tạo khóa cho thuật toán
+     *
+     * @return khóa mới tạo
+     */
     @Override
     public KeyAsymmetric generateKey() {
         KeyAsymmetric key = new KeyAsymmetric();
@@ -64,16 +81,32 @@ public class AsymmetricCipherNative extends AbsCipherNative<KeyAsymmetric> {
         }
     }
 
+    /**
+     * Tải khóa từ file
+     *
+     * @param src đường dẫn file chứa khóa
+     */
     @Override
     public void loadKey(String src) throws IOException {
         this.key = FileUtil.loadKeyAsymmetric(src);
     }
 
+    /**
+     * Lưu khóa xuống file chỉ định
+     *
+     * @param dest đường dẫn lưu file khóa
+     */
     @Override
     public void saveKey(String dest) throws IOException {
         FileUtil.saveKey(key, dest);
     }
 
+    /**
+     * Mã hóa văn bản bằng thuật toán bất đối xứng
+     *
+     * @param plainText bản rõ
+     * @return bản mã
+     */
     @Override
     public String encrypt(String plainText) throws CipherException {
         try {
@@ -86,6 +119,12 @@ public class AsymmetricCipherNative extends AbsCipherNative<KeyAsymmetric> {
         }
     }
 
+    /**
+     * Giải mã văn bản bằng thuật toán bất đối xứng
+     *
+     * @param encryptText bản mã
+     * @return bản rõ
+     */
     @Override
     public String decrypt(String encryptText) throws CipherException {
         try {
@@ -108,6 +147,9 @@ public class AsymmetricCipherNative extends AbsCipherNative<KeyAsymmetric> {
         return super.decrypt(src, dest);
     }
 
+    /**
+     * Khởi tạo cipher cho việc mã hóa
+     */
     private void initCipherEncrypt() {
         try {
             if (encryptByPublicKey) {
@@ -120,6 +162,9 @@ public class AsymmetricCipherNative extends AbsCipherNative<KeyAsymmetric> {
         }
     }
 
+    /**
+     * Khởi tạo cipher cho việc giải mã
+     */
     private void initCipherDecrypt() {
         try {
             if (encryptByPublicKey) {
@@ -132,7 +177,4 @@ public class AsymmetricCipherNative extends AbsCipherNative<KeyAsymmetric> {
         }
     }
 
-    public void setEncryptByPublicKey(boolean encryptByPublicKey) {
-        this.encryptByPublicKey = encryptByPublicKey;
-    }
 }

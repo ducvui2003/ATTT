@@ -14,9 +14,18 @@ import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 
+/**
+ * Class {@code FileUtil}
+ * <p>Hiện thực các hàm hỗ trợ cho xử lý file và lưu khóa vào file</p>
+ */
 public class FileUtil {
 
-
+    /**
+     * Tạo thư mục và file nếu chưa tồn tại
+     *
+     * @param filePath đường dẫn file
+     * @throws IOException nếu không thể tạo thư mục hoặc file
+     */
     public static void createPathIfNotExists(String filePath) throws IOException {
         Path file = Path.of(filePath);
         Path parentDir = file.getParent();
@@ -30,6 +39,12 @@ public class FileUtil {
         }
     }
 
+    /**
+     * Lưu khóa của mã hóa đối xứng vào file
+     *
+     * @param key  khóa đối xứng cần lưu
+     * @param dest đường dẫn file lưu khóa
+     */
     public static void saveKey(KeySymmetric key, String dest) {
         try (DataOutputStream dos = new DataOutputStream(new FileOutputStream(dest))) {
 //            Lưu chiều dài và byte của secretKey
@@ -54,19 +69,30 @@ public class FileUtil {
         }
     }
 
+    /**
+     * Tải khóa mã hóa đối xứng từ file
+     *
+     * @param src đường dẫn file chứa khóa
+     * @return khóa mã hóa đối xứng
+     */
     public static KeySymmetric loadKey(String src) {
         KeySymmetric key = new KeySymmetric();
         try (DataInputStream dis = new DataInputStream(new FileInputStream(src))) {
             byte[] secretKeyBytes = new byte[dis.readInt()];
+            // Đọc secretKey từ file
             dis.readFully(secretKeyBytes);
+            // Đọc iv từ file
             byte[] ivBytes = new byte[dis.readInt()];
             dis.readFully(ivBytes);
+            // Chuyển đổi iv thành đối tượng IvParameterSpec
             IvParameterSpec iv = new IvParameterSpec(ivBytes);
+            // Đọc thông tin thuật toán, mode, padding, kích thước từ file
             String algorithm = dis.readUTF();
             String mode = dis.readUTF();
             String padding = dis.readUTF();
             int keySize = dis.readInt();
             int ivSize = dis.readInt();
+            // Chuyển đổi secretKey từ byte[] thành đối tượng SecretKey
             SecretKey secretKey = new SecretKeySpec(secretKeyBytes, algorithm);
             key.setSecretKey(secretKey);
             key.setIv(iv);
@@ -81,14 +107,23 @@ public class FileUtil {
         }
     }
 
+    /**
+     * Lưu khóa của mã hóa bất đối xứng vào file
+     *
+     * @param key  khóa đối xứng cần lưu
+     * @param dest đường dẫn file lưu khóa
+     */
     public static void saveKey(KeyAsymmetric key, String dest) {
         try (DataOutputStream dos = new DataOutputStream(new FileOutputStream(dest))) {
             byte[] publicKeyBytes = key.getPublicKey().getEncoded();
+            // Lưu chiều dài và byte của publicKey
             dos.writeInt(publicKeyBytes.length);
             dos.write(publicKeyBytes);
             byte[] privateKeyBytes = key.getPrivateKey().getEncoded();
+            // Lưu chiều dài và byte của privateKey
             dos.writeInt(privateKeyBytes.length);
             dos.write(privateKeyBytes);
+            // Lưu tên thuật toán, mode, padding, kích thước của key
             dos.writeUTF(key.getCipher());
             dos.writeUTF(key.getMode());
             dos.writeUTF(key.getPadding());
@@ -99,17 +134,27 @@ public class FileUtil {
         }
     }
 
+    /**
+     * Tải khóa bất đối xứng từ file
+     *
+     * @param src đường dẫn file chứa khóa
+     * @return khóa bất đối xứng
+     */
     public static KeyAsymmetric loadKeyAsymmetric(String src) {
         KeyAsymmetric key = new KeyAsymmetric();
         try (DataInputStream dis = new DataInputStream(new FileInputStream(src))) {
+            // Đọc publicKey từ file
             byte[] publicKeyBytes = new byte[dis.readInt()];
             dis.readFully(publicKeyBytes);
+            // Đọc privateKey từ file
             byte[] privateKeyBytes = new byte[dis.readInt()];
             dis.readFully(privateKeyBytes);
+            // Đọc thông tin thuật toán, mode, padding, kích thước từ file
             String algorithm = dis.readUTF();
             String mode = dis.readUTF();
             String padding = dis.readUTF();
             int keySize = dis.readInt();
+            //Khởi tạo KeyFactory để chuyển đổi byte[] thành PublicKey và PrivateKey
             KeyFactory keyFactory = KeyFactory.getInstance(algorithm);
             key.setPublicKey(keyFactory, publicKeyBytes);
             key.setPrivateKey(keyFactory, privateKeyBytes);
@@ -123,14 +168,23 @@ public class FileUtil {
         }
     }
 
+    /**
+     * Lưu khóa của chữ ký điện tử vào file
+     *
+     * @param key  khóa đối xứng cần lưu
+     * @param dest đường dẫn file lưu khóa
+     */
     public static void saveKeySignature(KeySignature key, String dest) {
         try (DataOutputStream dos = new DataOutputStream(new FileOutputStream(dest))) {
+            // Lưu publicKey xuống file
             byte[] publicKeyBytes = key.getPublicKey().getEncoded();
             dos.writeInt(publicKeyBytes.length);
             dos.write(publicKeyBytes);
+            // Lưu privateKey xuống file
             byte[] privateKeyBytes = key.getPrivateKey().getEncoded();
             dos.writeInt(privateKeyBytes.length);
             dos.write(privateKeyBytes);
+            // Lưu tên thuật toán, hashFunction, kích thước của key
             dos.writeUTF(key.getAlgorithm());
             dos.writeUTF(key.getHashFunction());
             dos.writeInt(key.getSize());
@@ -140,13 +194,22 @@ public class FileUtil {
         }
     }
 
+    /**
+     * Tải khóa của chữ ký điện tử từ file
+     *
+     * @param src đường dẫn file chứa khóa
+     * @return khóa bất đối xứng
+     */
     public static KeySignature loadKeySignature(String src) {
         KeySignature key = new KeySignature();
         try (DataInputStream dis = new DataInputStream(new FileInputStream(src))) {
+            // Đọc publicKey từ file
             byte[] publicKeyBytes = new byte[dis.readInt()];
             dis.readFully(publicKeyBytes);
+            // Đọc privateKey từ file
             byte[] privateKeyBytes = new byte[dis.readInt()];
             dis.readFully(privateKeyBytes);
+            // Đọc thông tin thuật toán, hashFunction, kích thước từ file
             String algorithm = dis.readUTF();
             String hashFunction = dis.readUTF();
             int size = dis.readInt();

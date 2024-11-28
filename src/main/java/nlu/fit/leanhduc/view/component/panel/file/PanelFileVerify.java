@@ -34,10 +34,10 @@ public class PanelFileVerify extends JPanel implements FileChooserEvent {
         SwingComponentUtil.addComponentGridBag(
                 this.container,
                 GridBagConstraintsBuilder.builder()
-                        .grid(0, 0)        // Starting at the first column in the desired row
+                        .grid(0, 0)         
                         .weight(0.15, 0)
                         .fill(GridBagConstraints.HORIZONTAL)
-                        .insets(10) // Optional padding around the separator
+                        .insets(10)  
                         .build(),
                 new JLabel("File cần xác thực"));
 
@@ -54,10 +54,10 @@ public class PanelFileVerify extends JPanel implements FileChooserEvent {
         SwingComponentUtil.addComponentGridBag(
                 this.container,
                 GridBagConstraintsBuilder.builder()
-                        .grid(0, 1)        // Starting at the first column in the desired row
+                        .grid(0, 1)         
                         .weight(0.15, 0)
                         .fill(GridBagConstraints.HORIZONTAL)
-                        .insets(10) // Optional padding around the separator
+                        .insets(10)  
                         .build(),
                 new JLabel("Chữ  ký"));
 

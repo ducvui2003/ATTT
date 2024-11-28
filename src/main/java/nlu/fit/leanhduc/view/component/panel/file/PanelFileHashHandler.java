@@ -40,40 +40,40 @@ public class PanelFileHashHandler extends PanelHandler implements ActionListener
         SwingComponentUtil.addComponentGridBag(
                 this,
                 GridBagConstraintsBuilder.builder()
-                        .grid(0, 0)        // Starting at the first column in the desired row
+                        .grid(0, 0)         
                         .weight(0.25, 0)
                         .fill(GridBagConstraints.HORIZONTAL)
-                        .insets(10, leftMargin, 10, 0) // Optional padding around the separator
+                        .insets(10, leftMargin, 10, 0)  
                         .build(),
                 new JLabel("Chọn file"));
 
         SwingComponentUtil.addComponentGridBag(
                 this,
                 GridBagConstraintsBuilder.builder()
-                        .grid(1, 0)        // Starting at the first column in the desired row
+                        .grid(1, 0)         
                         .weight(1.0, 0)
                         .fill(GridBagConstraints.HORIZONTAL)
-                        .insets(10, 0, 10, 0) // Optional padding around the separator
+                        .insets(10, 0, 10, 0)  
                         .build(),
                 plainTextBlock);
 
         SwingComponentUtil.addComponentGridBag(
                 this,
                 GridBagConstraintsBuilder.builder()
-                        .grid(0, 1)        // Starting at the first column in the desired row
+                        .grid(0, 1)         
                         .weight(0.25, 0)
                         .fill(GridBagConstraints.HORIZONTAL)
-                        .insets(10, leftMargin, 10, 0) // Optional padding around the separator
+                        .insets(10, leftMargin, 10, 0)  
                         .build(),
                 new JLabel("Văn bản đã hash"));
 
         SwingComponentUtil.addComponentGridBag(
                 this,
                 GridBagConstraintsBuilder.builder()
-                        .grid(1, 1)        // Starting at the first column in the desired row
+                        .grid(1, 1)         
                         .weight(1, 0)
                         .fill(GridBagConstraints.HORIZONTAL)
-                        .insets(10, 0, 10, 0) // Optional padding around the separator
+                        .insets(10, 0, 10, 0)  
                         .build(),
                 hashBlock);
         JPanel panelContainBtn = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
@@ -82,7 +82,7 @@ public class PanelFileHashHandler extends PanelHandler implements ActionListener
         SwingComponentUtil.addComponentGridBag(
                 this,
                 GridBagConstraintsBuilder.builder()
-                        .grid(1, 2)        // Starting at the first column in the desired row
+                        .grid(1, 2)         
                         .weight(0.5, 0)
                         .fill(GridBagConstraints.HORIZONTAL)
                         .build(),

@@ -1,7 +1,17 @@
 package nlu.fit.leanhduc.util;
 
-
+/**
+ * Class {@code MatrixUtil}
+ * <p>Hiện thực các hàm hỗ trợ cho xử lý ma trận</p>
+ */
 public class MatrixUtil {
+    /**
+     * <p>Nhân hai ma trận</p>
+     *
+     * @param a ma trận thứ nhất
+     * @param b ma trận thứ hai
+     * @return ma trận sau khi cộng
+     */
     public static int[] multiMatrix(int[] a, int[][] b) {
         int[] result = new int[a.length];
         if (a.length != b.length) return null;
@@ -13,6 +23,13 @@ public class MatrixUtil {
         return result;
     }
 
+    /**
+     * <p>Nhân ma trận với một số thực</p>
+     *
+     * @param a số thực
+     * @param b ma trận
+     * @return ma trận sau khi nhân
+     */
     public static int[][] multiMatrix(int a, int[][] b) {
         int[][] result = new int[b.length][b[0].length];
         for (int i = 0; i < b.length; i++) {
@@ -23,6 +40,13 @@ public class MatrixUtil {
         return result;
     }
 
+    /**
+     * <p>Nhân ma trận với một số thực</p>
+     *
+     * @param a số thực
+     * @param b ma trận
+     * @return ma trận sau khi nhân
+     */
     public static int[][] multiMatrix(double a, int[][] b) {
         int[][] result = new int[b.length][b[0].length];
         for (int i = 0; i < b.length; i++) {
@@ -33,6 +57,12 @@ public class MatrixUtil {
         return result;
     }
 
+    /**
+     * <p>Tính định thức ma trận</p>
+     *
+     * @param matrix ma trận
+     * @return định thức của ma trận
+     */
     public static int determinant(int[][] matrix) {
         int n = matrix.length;
 
@@ -131,17 +161,4 @@ public class MatrixUtil {
         return (int) (Math.pow(-1, row + col) * determinant(matrixM));
     }
 
-    public static String displayMatrix(int[][] matrix) {
-        StringBuilder result = new StringBuilder();
-        for (int[] ints : matrix) {
-            for (int j = 0; j < matrix[0].length; j++) {
-                result.append(ints[j]);
-                if (j < matrix[0].length - 1) {
-                    result.append("\t");
-                }
-            }
-            result.append("\n");
-        }
-        return result.toString();
-    }
 }

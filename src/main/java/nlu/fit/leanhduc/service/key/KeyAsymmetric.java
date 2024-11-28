@@ -11,6 +11,12 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
+/**
+ * Class {@code KeyAsymmetric}
+ * <p>
+ * Class đại diện cho khóa của thuật toán băm hỗ trợ
+ * </p>
+ */
 @Data
 public class KeyAsymmetric {
     PublicKey publicKey;

@@ -14,7 +14,6 @@ public class MainView extends JFrame {
     Menu menu;
     JTabbedPane tabbedPane;
     Map<String, JPanel> panelMap;
-    Footer footer;
     MainController controller;
 
     public MainView(MainController controller) {

@@ -27,7 +27,7 @@ public abstract class CustomDialog extends JDialog {
 
     public void handleClose() {
         Dialog dialog = this;
-        // Add a KeyListener to handle key events
+         
         dialog.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {

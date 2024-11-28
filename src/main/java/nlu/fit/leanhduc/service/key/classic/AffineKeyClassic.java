@@ -5,6 +5,12 @@ import nlu.fit.leanhduc.util.constraint.Cipher;
 
 import java.io.Serializable;
 
+/**
+ * Class {@code AffineKeyClassic}
+ * <p>
+ * Class đại diện cho khóa của thuật toán Affine
+ * </p>
+ */
 @Getter
 @Setter
 public class AffineKeyClassic implements IKeyClassic, Serializable {

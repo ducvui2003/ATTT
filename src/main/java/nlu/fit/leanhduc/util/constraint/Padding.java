@@ -1,5 +1,11 @@
 package nlu.fit.leanhduc.util.constraint;
 
+/**
+ * Enum {@code Padding}
+ * <p>
+ * Enum định nghĩa các thuật toán padding hỗ trợ
+ * </p>
+ */
 public enum Padding {
     NoPadding("NoPadding", "No Padding"),
     PKCS1Padding("PKCS1Padding", "PKCS1 padding"),

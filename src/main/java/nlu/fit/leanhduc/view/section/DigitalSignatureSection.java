@@ -97,7 +97,7 @@ public class DigitalSignatureSection extends JPanel implements ActionListener, P
                 this.container,
                 GridBagConstraintsBuilder.builder()
                         .grid(0, 4)
-                        .weight(0.25, 0) // Ensure weights are balanced
+                        .weight(0.25, 0)  
                         .insets(5, 5, 5, 5)
                         .fill(GridBagConstraints.HORIZONTAL)
                         .build(),
@@ -119,7 +119,7 @@ public class DigitalSignatureSection extends JPanel implements ActionListener, P
                 this.container,
                 GridBagConstraintsBuilder.builder()
                         .grid(0, 8)
-                        .weight(0.25, 0) // Ensure weights are balanced
+                        .weight(0.25, 0)  
                         .insets(5, 5, 5, 5)
                         .fill(GridBagConstraints.HORIZONTAL)
                         .build(),
@@ -154,11 +154,11 @@ public class DigitalSignatureSection extends JPanel implements ActionListener, P
         SwingComponentUtil.addComponentGridBag(
                 this.container,
                 GridBagConstraintsBuilder.builder()
-                        .grid(0, 11)        // Starting at the first column in the desired row
+                        .grid(0, 11)         
                         .gridSpan(10, 1)
                         .weight(1, 0)
                         .fill(GridBagConstraints.HORIZONTAL)
-                        .insets(10, 0, 10, 0) // Optional padding around the separator
+                        .insets(10, 0, 10, 0)  
                         .build(),
                 this.tabbedPane);
     }

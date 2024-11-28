@@ -9,9 +9,14 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
+/**
+ * Class {@code KeySignature}
+ * <p>
+ * Class đại diện cho khóa của thuật toán chữ ký số
+ * </p>
+ */
 @Data
 public class KeySignature {
-
     PublicKey publicKey;
     PrivateKey privateKey;
     int size; // bit

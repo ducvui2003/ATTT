@@ -1,5 +1,11 @@
 package nlu.fit.leanhduc.util.constraint;
 
+/**
+ * Enum {@code Cipher}
+ * <p>
+ * Enum định nghĩa các thuật toán mã hóa hỗ trợ
+ * </p>
+ */
 public enum Cipher {
     SHIFT("Shift", "Dịch chuyển"),
     SUBSTITUTION("Substitution", "Thay thế"),

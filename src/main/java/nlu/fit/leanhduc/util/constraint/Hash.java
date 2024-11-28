@@ -1,5 +1,11 @@
 package nlu.fit.leanhduc.util.constraint;
 
+/**
+ * Enum {@code Hash}
+ * <p>
+ * Enum định nghĩa các thuật toán băm hỗ trợ
+ * </p>
+ */
 public enum Hash {
     MD2("MD2"),
     MD5("MD5", "HmacMD5", "MD5"),
