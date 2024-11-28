@@ -46,6 +46,7 @@ public class VigenereCipher extends AbsClassicCipher<ViginereKeyClassic> {
     public void loadKey(ViginereKeyClassic key) throws CipherException {
         super.loadKey(key);
         this.keyLength = key.getKey().size();
+        this.keys = key.getKey();
     }
 
     /**

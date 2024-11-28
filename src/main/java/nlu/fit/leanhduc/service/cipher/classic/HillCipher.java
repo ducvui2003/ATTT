@@ -32,13 +32,15 @@ public class HillCipher extends AbsClassicCipher<HillKeyClassic> {
     public HillKeyClassic generateKey() {
         int size = 3;
         int[][] key = new int[size][size];
+        int determinant;
         do {
             for (int i = 0; i < size; i++) {
                 for (int j = 0; j < size; j++) {
                     key[i][j] = (int) (Math.random() * alphabetUtil.getLength());
                 }
             }
-        } while (MatrixUtil.determinant(key) == 0);
+            determinant = MatrixUtil.determinant(key);
+        } while (determinant == 0 || ModularUtil.findGCD(determinant, this.getAlphabetUtil().getLength()) != 1);
         return new HillKeyClassic(key);
     }
 
@@ -54,6 +56,15 @@ public class HillCipher extends AbsClassicCipher<HillKeyClassic> {
         int lengthText = plainText.length();
         int lengthKey = this.key.getKey().length;
         int start = 0;
+        // Kiểm tra số lượng ký tự trong văn bản cần đệm
+        int padding = lengthKey - (lengthText % lengthKey);
+        lengthText = lengthText + padding;
+        // Đệm ký tự vào phần cuối của văn bản
+        if (padding != 0) {
+            for (int i = 0; i < padding; i++) {
+                plainText += this.alphabetUtil.getChar(0);
+            }
+        }
         while (start < lengthText) {
             int[] plainTextArr = new int[lengthKey];
             boolean[] isLower = new boolean[lengthKey];
@@ -76,6 +87,12 @@ public class HillCipher extends AbsClassicCipher<HillKeyClassic> {
                 result += alphabetUtil.getChar(encryptArr[i], isLower[lengthKeyTemp]);
             }
         }
+
+        if (padding != 0) {
+            for (int i = 0; i < padding; i++) {
+                result += "=";
+            }
+        }
         return result;
     }
 
@@ -92,6 +109,9 @@ public class HillCipher extends AbsClassicCipher<HillKeyClassic> {
         int lengthKey = this.key.getKey().length;
         int[][] inverseKey = findInverseKey();
         int start = 0;
+        int padding = lengthKey - (lengthText % lengthKey);
+        encryptText = encryptText.replaceAll("=", "");
+        lengthText = encryptText.length();
         while (start < lengthText) {
             int[] cipherTextArr = new int[lengthKey];
             boolean[] isLower = new boolean[lengthKey];
@@ -112,6 +132,9 @@ public class HillCipher extends AbsClassicCipher<HillKeyClassic> {
                 result += alphabetUtil.getChar(encryptArr[i], isLower[lengthKeyTemp]);
             }
         }
+        if (padding != 0) {
+            result = result.substring(0, result.length() + 1 - padding);
+        }
         return result;
     }
 
@@ -124,7 +147,7 @@ public class HillCipher extends AbsClassicCipher<HillKeyClassic> {
      * <p>det(K): định thức ma trận vuông K</p>
      * <p>A^T: ma trận phụ hợp đã chuyển vị</p>
      *
-     * @return  ma trận nghịch đảo K^-1
+     * @return ma trận nghịch đảo K^-1
      */
     private int[][] findInverseKey() {
 //        Định thức của khóa K

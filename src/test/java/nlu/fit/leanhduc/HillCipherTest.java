@@ -28,7 +28,7 @@ public class HillCipherTest {
         });
 
         englishCipher.loadKey(key);
-        Assertions.assertEquals(englishCipher.encrypt("DHNONGLA"), "CVDUFQRK");
+        Assertions.assertEquals(englishCipher.encrypt("hello"), "lgyjyi=");
     }
 
     @Test
@@ -39,7 +39,7 @@ public class HillCipherTest {
         });
 
         englishCipher.loadKey(key);
-        Assertions.assertEquals(englishCipher.decrypt("CVDUFQRK"), "DHNONGLA");
+        Assertions.assertEquals(englishCipher.decrypt("lgyjyi="), "hello");
     }
 
     @Test
@@ -57,5 +57,29 @@ public class HillCipherTest {
         } catch (CipherException | IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Test
+    public void testEncryptHillWithMatrix3() throws CipherException {
+        key = new HillKeyClassic(new int[][]{
+                {2, 14, 6},
+                {1, 13, 23},
+                {16, 14, 11}
+        });
+
+        englishCipher.loadKey(key);
+        Assertions.assertEquals(englishCipher.encrypt("hello"), "msvkyy=");
+    }
+
+    @Test
+    public void testDecryptHillWithMatrix3() throws CipherException {
+        key = new HillKeyClassic(new int[][]{
+                {2, 14, 6},
+                {1, 13, 23},
+                {16, 14, 11}
+        });
+
+        englishCipher.loadKey(key);
+        Assertions.assertEquals(englishCipher.decrypt("msvkyy="), "hello");
     }
 }
