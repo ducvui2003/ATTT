@@ -1,7 +1,7 @@
 package nlu.fit.leanhduc.view.component.panel.key;
 
 import nlu.fit.leanhduc.controller.MainController;
-import nlu.fit.leanhduc.service.key.SubstitutionKey;
+import nlu.fit.leanhduc.service.key.classic.SubstitutionKeyClassic;
 import nlu.fit.leanhduc.util.Constraint;
 
 import javax.swing.*;
@@ -9,13 +9,13 @@ import java.awt.*;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class SubstitutionTypingPanel extends KeyTypingPanel<SubstitutionKey> {
+public class SubstitutionKeyTypingPanel extends KeyTypingPanel<SubstitutionKeyClassic> {
 
 
     JTextField inputAlphabet, inputAlphabetSubstitution;
 
 
-    public SubstitutionTypingPanel(MainController controller) {
+    public SubstitutionKeyTypingPanel(MainController controller) {
 
         super(controller);
     }
@@ -63,13 +63,13 @@ public class SubstitutionTypingPanel extends KeyTypingPanel<SubstitutionKey> {
     }
 
     @Override
-    public SubstitutionKey getKey() {
+    public SubstitutionKeyClassic getKey() {
         Map<Character, Character> key = inputAlphabet.getText().chars().mapToObj(c -> (char) c).collect(
                 Collectors.toMap(c -> c, c -> inputAlphabetSubstitution.getText().charAt(inputAlphabet.getText().indexOf(c))));
-        return new SubstitutionKey(key);
+        return new SubstitutionKeyClassic(key);
     }
 
-    public void setKey(SubstitutionKey key) {
+    public void setKey(SubstitutionKeyClassic key) {
         this.key = key;
         inputAlphabet.setText(key.getKey().keySet().stream().map(Object::toString).reduce("", String::concat));
         inputAlphabetSubstitution.setText(key.getKey().values().stream().map(Object::toString).reduce("", String::concat));

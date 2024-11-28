@@ -10,7 +10,6 @@ public class GridBagConstraintsBuilder {
         this.gbc = new GridBagConstraints();
     }
 
-    // Static method to initialize the builder
     public static GridBagConstraintsBuilder builder() {
         return new GridBagConstraintsBuilder();
     }

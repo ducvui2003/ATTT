@@ -4,7 +4,7 @@ public enum Cipher {
     SHIFT("Shift", "Dịch chuyển"),
     SUBSTITUTION("Substitution", "Thay thế"),
     AFFINE("Affine", "Affine"),
-    VIGENERE("Vigenere", "Vigenere"),
+    VIGINERE("Vigenere", "Vigenere"),
     HILL("Hill", "Hill"),
     AES("AES", "AES", 16),
     DES("DES", "DES", 8),

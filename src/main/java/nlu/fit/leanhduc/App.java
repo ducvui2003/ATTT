@@ -42,7 +42,7 @@ public class App {
         } catch (Exception ex) {
             System.err.println("Failed to initialize LaF");
         }
-
+        Security.addProvider(new BouncyCastleProvider());
         SwingUtilities.invokeLater(() ->
         {
             MainController controller = new MainController();

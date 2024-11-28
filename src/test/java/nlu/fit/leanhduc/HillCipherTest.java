@@ -1,7 +1,7 @@
 package nlu.fit.leanhduc;
 
 import nlu.fit.leanhduc.service.cipher.classic.HillCipher;
-import nlu.fit.leanhduc.service.key.HillKey;
+import nlu.fit.leanhduc.service.key.classic.HillKeyClassic;
 import nlu.fit.leanhduc.util.CipherException;
 import nlu.fit.leanhduc.util.alphabet.EnglishAlphabetUtil;
 import org.junit.jupiter.api.Assertions;
@@ -13,7 +13,7 @@ import java.io.IOException;
 public class HillCipherTest {
     private HillCipher englishCipher;
 
-    private HillKey key;
+    private HillKeyClassic key;
 
     @BeforeEach
     void setup() {
@@ -22,7 +22,7 @@ public class HillCipherTest {
 
     @Test
     public void testEncryptHill() throws CipherException {
-        key = new HillKey(new int[][]{
+        key = new HillKeyClassic(new int[][]{
                 {11, 8},
                 {3, 7},
         });
@@ -33,7 +33,7 @@ public class HillCipherTest {
 
     @Test
     public void testDecryptHill() throws CipherException {
-        key = new HillKey(new int[][]{
+        key = new HillKeyClassic(new int[][]{
                 {11, 8},
                 {3, 7},
         });
@@ -44,7 +44,7 @@ public class HillCipherTest {
 
     @Test
     public void testLoadAndSaveFile() {
-        key = new HillKey(new int[][]{
+        key = new HillKeyClassic(new int[][]{
                 {11, 8},
                 {3, 7},
         });
@@ -52,8 +52,8 @@ public class HillCipherTest {
             this.englishCipher.loadKey(key);
             englishCipher.saveKey("D:\\university\\ATTT\\security-tool\\src\\test\\resources\\hill\\key.txt");
             englishCipher.loadKey("D:\\university\\ATTT\\security-tool\\src\\test\\resources\\hill\\key.txt");
-            System.out.println(this.key.display());
-            System.out.println(englishCipher.getKey().display());
+            System.out.println(this.key.name());
+            System.out.println(englishCipher.getKey().name());
         } catch (CipherException | IOException e) {
             throw new RuntimeException(e);
         }

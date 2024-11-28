@@ -2,21 +2,17 @@ package nlu.fit.leanhduc.service.cipher.classic;
 
 import lombok.Getter;
 import lombok.Setter;
-import nlu.fit.leanhduc.service.key.ViginereKey;
+import nlu.fit.leanhduc.service.key.classic.ViginereKeyClassic;
 import nlu.fit.leanhduc.util.CipherException;
 import nlu.fit.leanhduc.util.alphabet.AlphabetUtil;
 
-import javax.crypto.NoSuchPaddingException;
-import java.io.FileNotFoundException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 @Getter
 @Setter
-public class VigenereCipher extends AbsClassicCipher<ViginereKey> {
+public class VigenereCipher extends AbsClassicCipher<ViginereKeyClassic> {
     protected List<Integer> keys;
     protected int keyLength;
     protected Random rd = new Random();
@@ -26,17 +22,17 @@ public class VigenereCipher extends AbsClassicCipher<ViginereKey> {
     }
 
     @Override
-    public void loadKey(ViginereKey key) throws CipherException {
+    public void loadKey(ViginereKeyClassic key) throws CipherException {
         super.loadKey(key);
         this.keyLength = key.getKey().size();
     }
 
     @Override
-    public ViginereKey generateKey() {
+    public ViginereKeyClassic generateKey() {
         List<Integer> result = new ArrayList<>();
         for (int i = 0; i < 4; i++)
             result.add(rd.nextInt(alphabetUtil.getLength() - 1));
-        return new ViginereKey(result);
+        return new ViginereKeyClassic(result);
     }
 
     @Override

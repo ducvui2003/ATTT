@@ -38,8 +38,8 @@ public class FileChooserButton extends JButton implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("Text Files (*.txt)", "txt");
-        fileChooser.setFileFilter(filter);
+        if (!event.onBeforeFileSelected())
+            return;
         int option = fileChooser.showOpenDialog(container);
         switch (option) {
             case JFileChooser.APPROVE_OPTION:

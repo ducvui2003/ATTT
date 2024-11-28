@@ -4,20 +4,16 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
-import nlu.fit.leanhduc.service.key.ShiftKey;
+import nlu.fit.leanhduc.service.key.classic.ShiftKeyClassic;
 import nlu.fit.leanhduc.util.CipherException;
 import nlu.fit.leanhduc.util.alphabet.AlphabetUtil;
 
-import javax.crypto.NoSuchPaddingException;
-import java.io.*;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.Random;
 
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ShiftCipher extends AbsClassicCipher<ShiftKey> {
+public class ShiftCipher extends AbsClassicCipher<ShiftKeyClassic> {
     protected Integer shift;
     protected Random rd = new Random();
 
@@ -26,12 +22,12 @@ public class ShiftCipher extends AbsClassicCipher<ShiftKey> {
     }
 
     @Override
-    public ShiftKey generateKey() {
-        return new ShiftKey(rd.nextInt(alphabetUtil.getLength()) + 1);
+    public ShiftKeyClassic generateKey() {
+        return new ShiftKeyClassic(rd.nextInt(alphabetUtil.getLength()) + 1);
     }
 
     @Override
-    public void loadKey(ShiftKey key) throws CipherException {
+    public void loadKey(ShiftKeyClassic key) throws CipherException {
         super.loadKey(key);
         this.shift = key.getKey();
     }

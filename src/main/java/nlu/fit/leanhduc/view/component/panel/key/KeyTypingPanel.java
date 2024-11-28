@@ -1,7 +1,8 @@
 package nlu.fit.leanhduc.view.component.panel.key;
 
 import nlu.fit.leanhduc.controller.MainController;
-import nlu.fit.leanhduc.service.key.IKeyDisplay;
+import nlu.fit.leanhduc.service.key.classic.IKeyClassic;
+import nlu.fit.leanhduc.util.CipherException;
 
 import javax.swing.*;
 
@@ -16,7 +17,7 @@ public abstract class KeyTypingPanel<T> extends JPanel {
 
     public abstract void init();
 
-    public abstract IKeyDisplay getKey();
+    public abstract IKeyClassic getKey() throws CipherException;
 
     public abstract void setKey(T key);
 }

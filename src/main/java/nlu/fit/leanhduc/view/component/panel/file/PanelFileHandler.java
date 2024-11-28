@@ -135,6 +135,10 @@ public class PanelFileHandler extends PanelHandler implements FileChooserEvent {
             @Override
             public void onFileSelected(File file) {
                 String src = fileChooserOriginal.getPath();
+                if (src == null) {
+                    JOptionPane.showMessageDialog(null, "Chưa chọn file cần mã hóa", "Lỗi", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
                 String dest = file.getAbsolutePath();
                 event.onEncryptFile(src, dest);
             }

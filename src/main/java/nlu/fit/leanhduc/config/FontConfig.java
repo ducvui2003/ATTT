@@ -1,12 +1,14 @@
 package nlu.fit.leanhduc.config;
 
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 
 import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
 
+@Getter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class FontConfig {
     public static FontConfig INSTANCE;
@@ -27,29 +29,24 @@ public class FontConfig {
 
     public void setFont() {
         try {
-            // Load fonts from the classpath using getResourceAsStream
             InputStream regularStream = FontConfig.class.getResourceAsStream("/fonts/Roboto-Regular.ttf");
             InputStream mediumStream = FontConfig.class.getResourceAsStream("/fonts/Roboto-Medium.ttf");
             InputStream boldStream = FontConfig.class.getResourceAsStream("/fonts/Roboto-Bold.ttf");
 
-            // Create fonts from the InputStream
             Font haslMultiRegular = Font.createFont(Font.TRUETYPE_FONT, regularStream);
             Font haslMultiMedium = Font.createFont(Font.TRUETYPE_FONT, mediumStream);
             Font haslMultiBold = Font.createFont(Font.TRUETYPE_FONT, boldStream);
 
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 
-            // Register the fonts
             ge.registerFont(haslMultiRegular);
             ge.registerFont(haslMultiMedium);
             ge.registerFont(haslMultiBold);
 
-            // Derive different sizes if necessary
             fontRegular = haslMultiRegular.deriveFont(16f);
             fontBold = haslMultiBold.deriveFont(18f);
             fontLight = haslMultiMedium.deriveFont(14f);
 
-            // Close streams
             regularStream.close();
             mediumStream.close();
             boldStream.close();
@@ -62,15 +59,4 @@ public class FontConfig {
         }
     }
 
-    public Font getFontRegular() {
-        return fontRegular;
-    }
-
-    public Font getFontBold() {
-        return fontBold;
-    }
-
-    public Font getFontLight() {
-        return fontLight;
-    }
 }

@@ -2,7 +2,7 @@ package nlu.fit.leanhduc.view.component.panel.key;
 
 import nlu.fit.leanhduc.controller.MainController;
 import nlu.fit.leanhduc.controller.SubstitutionCipherController;
-import nlu.fit.leanhduc.service.key.HillKey;
+import nlu.fit.leanhduc.service.key.classic.HillKeyClassic;
 import nlu.fit.leanhduc.view.component.SwingComponentUtil;
 
 import javax.swing.*;
@@ -10,13 +10,13 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class HillCipherTyping extends KeyTypingPanel<HillKey> implements ActionListener {
+public class HillKeyTypingPanel extends KeyTypingPanel<HillKeyClassic> implements ActionListener {
     JPanel matrixView;
     JPanel matrixViewWrapper;
     JFormattedTextField[][] matrixTextField;
     JComboBox<Integer> comboBox;
 
-    public HillCipherTyping(MainController controller) {
+    public HillKeyTypingPanel(MainController controller) {
         super(controller);
     }
 
@@ -69,7 +69,7 @@ public class HillCipherTyping extends KeyTypingPanel<HillKey> implements ActionL
     }
 
     @Override
-    public HillKey getKey() {
+    public HillKeyClassic getKey() {
         String[][] matrix = new String[matrixTextField.length][matrixTextField.length];
         for (int i = 0; i < matrixTextField.length; i++)
             for (int j = 0; j < matrixTextField.length; j++)
@@ -78,7 +78,7 @@ public class HillCipherTyping extends KeyTypingPanel<HillKey> implements ActionL
     }
 
     @Override
-    public void setKey(HillKey key) {
+    public void setKey(HillKeyClassic key) {
         int size = key.getKey().length;
         changeMatrixSize(size);
         comboBox.setSelectedIndex(size - 2);

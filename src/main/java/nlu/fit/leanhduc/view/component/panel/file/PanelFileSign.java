@@ -32,7 +32,7 @@ public class PanelFileSign extends JPanel implements FileChooserEvent {
         this.add(this.container, BorderLayout.NORTH);
         this.chooseFileData = new FileChooser();
         this.chooseFileData.setEvent(this);
-        this.btnSign = new JButton("Mã hóa", null);
+        this.btnSign = new JButton("Ký", null);
         this.signatureTextBlock = SwingComponentUtil.createTextArea();
         this.signatureTextBlock.setEnabled(true);
 
@@ -96,13 +96,11 @@ public class PanelFileSign extends JPanel implements FileChooserEvent {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (!signatureTextBlock.getText().isBlank()) {
-                    // Copy the text to the clipboard
                     String textToCopy = signatureTextBlock.getText();
                     StringSelection stringSelection = new StringSelection(textToCopy);
                     Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
                     clipboard.setContents(stringSelection, null);
 
-                    // Optional: Show a confirmation message
                     JOptionPane.showMessageDialog(null, "Copy chữ vào clipboard!");
                 }
             }
@@ -118,9 +116,7 @@ public class PanelFileSign extends JPanel implements FileChooserEvent {
 
     @Override
     public void onFileSelected(File file) {
-        String src = this.chooseFileData.getPath();
-        String dest = file.getAbsolutePath();
-        this.src = src;
+        this.src = this.chooseFileData.getPath();
     }
 
     @Override

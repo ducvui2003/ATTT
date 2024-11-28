@@ -8,7 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 
 @Getter
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class MetadataConfig {
     public static MetadataConfig INSTANCE;
     Image logo;

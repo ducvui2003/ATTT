@@ -1,14 +1,14 @@
 package nlu.fit.leanhduc.view.component.panel.key;
 
 import nlu.fit.leanhduc.controller.MainController;
-import nlu.fit.leanhduc.service.key.ShiftKey;
+import nlu.fit.leanhduc.service.key.classic.ShiftKeyClassic;
 import nlu.fit.leanhduc.view.component.SwingComponentUtil;
 
 import javax.swing.*;
 import java.awt.*;
 
 
-public class ShiftKeyTypingPanel extends KeyTypingPanel<ShiftKey> {
+public class ShiftKeyTypingPanel extends KeyTypingPanel<ShiftKeyClassic> {
     JFormattedTextField inputKeyLength;
 
     public ShiftKeyTypingPanel(MainController controller) {
@@ -27,12 +27,12 @@ public class ShiftKeyTypingPanel extends KeyTypingPanel<ShiftKey> {
     }
 
     @Override
-    public ShiftKey getKey() {
-        return new ShiftKey(Integer.parseInt(inputKeyLength.getText()));
+    public ShiftKeyClassic getKey() {
+        return new ShiftKeyClassic(Integer.parseInt(inputKeyLength.getText()));
     }
 
     @Override
-    public void setKey(ShiftKey key) {
+    public void setKey(ShiftKeyClassic key) {
         inputKeyLength.setValue(key.getKey());
     }
 }

@@ -4,7 +4,7 @@ import nlu.fit.leanhduc.config.MetadataConfig;
 import nlu.fit.leanhduc.controller.MainController;
 import nlu.fit.leanhduc.controller.SubstitutionCipherController;
 import nlu.fit.leanhduc.service.ICipher;
-import nlu.fit.leanhduc.service.key.*;
+import nlu.fit.leanhduc.service.key.classic.*;
 import nlu.fit.leanhduc.util.CipherException;
 import nlu.fit.leanhduc.util.constraint.Cipher;
 import nlu.fit.leanhduc.util.constraint.Language;
@@ -12,7 +12,6 @@ import nlu.fit.leanhduc.view.component.GridBagConstraintsBuilder;
 import nlu.fit.leanhduc.view.component.SwingComponentUtil;
 import nlu.fit.leanhduc.view.component.fileChooser.FileChooserButton;
 import nlu.fit.leanhduc.view.component.fileChooser.FileChooserEvent;
-import nlu.fit.leanhduc.view.component.panel.file.PanelFileHandler;
 import nlu.fit.leanhduc.view.component.panel.key.*;
 import nlu.fit.leanhduc.view.component.panel.text.PanelHandler;
 import nlu.fit.leanhduc.view.component.panel.text.PanelTextHandler;
@@ -30,24 +29,21 @@ import java.util.Map;
 public class SubstitutionCipherSection extends JPanel implements FileChooserEvent, ActionListener, PanelTextHandlerEvent {
     JComboBox<Cipher> comboBoxCipher;
     JComboBox<Language> comboBoxLanguage;
-    JTextField plainTextBlock, encryptBlock, decryptBlock;
     JButton btnCreateKey;
     KeyTypingPanel currentKeyTypingPanel;
     MainController controller;
     Cipher cipherCurrent;
     Language languageCurrent;
     JPanel panelTypeKey;
-    final String commandEncrypt = "encrypt";
-    final String commandDecrypt = "decrypt";
     final String commandComboBoxCipher = "comboBoxCipher";
     final String commandComboBoxLanguage = "comboBoxLanguage";
     final String commandCreateKey = "createKey";
     final String commandLoadKey = "LoadKey";
-    final KeyTypingPanel<ShiftKey> shiftKeyTypingPanel = new ShiftKeyTypingPanel(controller);
-    final KeyTypingPanel<SubstitutionKey> substitutionKeyTypingPanel = new SubstitutionTypingPanel(controller);
-    final KeyTypingPanel<AffineKey> affineKeyTypingPanel = new AffineKeyTypingPanel(controller);
-    final KeyTypingPanel<ViginereKey> viginereKeyTypingPanel = new ViginereKeyTypingPanel(controller, languageCurrent);
-    final KeyTypingPanel<HillKey> hillKeyTypingPanel = new HillCipherTyping(controller);
+    final KeyTypingPanel<ShiftKeyClassic> shiftKeyTypingPanel = new ShiftKeyTypingPanel(controller);
+    final KeyTypingPanel<SubstitutionKeyClassic> substitutionKeyTypingPanel = new SubstitutionKeyTypingPanel(controller);
+    final KeyTypingPanel<AffineKeyClassic> affineKeyTypingPanel = new AffineKeyTypingPanel(controller);
+    final KeyTypingPanel<ViginereKeyClassic> viginereKeyTypingPanel = new ViginereKeyTypingPanel(controller, languageCurrent);
+    final KeyTypingPanel<HillKeyClassic> hillKeyTypingPanel = new HillKeyTypingPanel(controller);
     JTabbedPane tabbedPane;
     PanelHandler panelTextHandler;
     GridBagConstraints gbc;
@@ -64,7 +60,7 @@ public class SubstitutionCipherSection extends JPanel implements FileChooserEven
         this.gbc = new GridBagConstraints();
         this.container = new JPanel(new GridBagLayout());
         this.add(container, BorderLayout.NORTH);
-        this.comboBoxCipher = new JComboBox<>(List.of(Cipher.SHIFT, Cipher.SUBSTITUTION, Cipher.AFFINE, Cipher.VIGENERE, Cipher.HILL).toArray(new Cipher[0]));
+        this.comboBoxCipher = new JComboBox<>(List.of(Cipher.SHIFT, Cipher.SUBSTITUTION, Cipher.AFFINE, Cipher.VIGINERE, Cipher.HILL).toArray(new Cipher[0]));
         this.comboBoxLanguage = new JComboBox<>(Language.values());
         this.btnLoadKey = new FileChooserButton("Chọn file", MetadataConfig.INSTANCE.getUploadIcon());
         this.btnLoadKey.setEvent(this);
@@ -229,24 +225,6 @@ public class SubstitutionCipherSection extends JPanel implements FileChooserEven
     @Override
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
-            case commandEncrypt:
-                try {
-                    String encrypt = SubstitutionCipherController.getINSTANCE().encrypt(plainTextBlock.getText(), currentKeyTypingPanel.getKey(), cipherCurrent, languageCurrent);
-                    encryptBlock.setText(encrypt);
-                } catch (CipherException ex) {
-                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
-                } catch (Exception ex) {
-                    throw new RuntimeException(ex);
-                }
-                break;
-            case commandDecrypt:
-                try {
-                    String decrypt = SubstitutionCipherController.getINSTANCE().decrypt(encryptBlock.getText(), currentKeyTypingPanel.getKey(), cipherCurrent, languageCurrent);
-                    decryptBlock.setText(decrypt);
-                } catch (CipherException ex) {
-                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
-                }
-                break;
             case commandComboBoxCipher:
                 cipherCurrent = (Cipher) comboBoxCipher.getSelectedItem();
                 assert cipherCurrent != null;
@@ -277,7 +255,7 @@ public class SubstitutionCipherSection extends JPanel implements FileChooserEven
             case AFFINE:
                 currentKeyTypingPanel = affineKeyTypingPanel;
                 break;
-            case VIGENERE:
+            case VIGINERE:
                 currentKeyTypingPanel = viginereKeyTypingPanel;
                 break;
             case HILL:
@@ -288,6 +266,25 @@ public class SubstitutionCipherSection extends JPanel implements FileChooserEven
         if (keyGenerator != null) {
             currentKeyTypingPanel.setKey(keyGenerator.generateKey());
         }
+    }
+
+    @Override
+    public boolean canEncrypt(String plainText) {
+        if (plainText.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập văn bản cần mã hóa", "Lỗi", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+        return true;
+    }
+
+
+    @Override
+    public boolean canDecrypt(String encryptText) {
+        if (encryptText.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập văn bản cần giải mã", "Lỗi", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+        return true;
     }
 
     @Override

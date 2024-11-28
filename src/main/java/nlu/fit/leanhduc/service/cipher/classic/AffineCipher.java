@@ -1,20 +1,15 @@
 package nlu.fit.leanhduc.service.cipher.classic;
 
 import lombok.Getter;
-import nlu.fit.leanhduc.service.key.AffineKey;
+import nlu.fit.leanhduc.service.key.classic.AffineKeyClassic;
 import nlu.fit.leanhduc.util.CipherException;
-import nlu.fit.leanhduc.util.Constraint;
 import nlu.fit.leanhduc.util.ModularUtil;
 import nlu.fit.leanhduc.util.alphabet.AlphabetUtil;
 
-import javax.crypto.NoSuchPaddingException;
-import java.io.*;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.Random;
 
 @Getter
-public class AffineCipher extends AbsClassicCipher<AffineKey> {
+public class AffineCipher extends AbsClassicCipher<AffineKeyClassic> {
     protected Random rd;
     protected int range;
 
@@ -25,16 +20,16 @@ public class AffineCipher extends AbsClassicCipher<AffineKey> {
     }
 
     @Override
-    public void loadKey(AffineKey key) throws CipherException {
+    public void loadKey(AffineKeyClassic key) throws CipherException {
         super.loadKey(key);
-        if (ModularUtil.findGCD(key.getA(), Constraint.ALPHABET_SIZE) != 1)
-            throw new CipherException("Key is not a greatest common divisor");
+        if (ModularUtil.findGCD(key.getA(), this.alphabetUtil.getLength()) != 1)
+            throw new CipherException("Ước chung lớn nhất của a và b phải bằng 1");
         this.key = key;
     }
 
     @Override
-    public AffineKey generateKey() {
-        AffineKey key = new AffineKey();
+    public AffineKeyClassic generateKey() {
+        AffineKeyClassic key = new AffineKeyClassic();
         int a;
         do {
             a = rd.nextInt(1, this.range);

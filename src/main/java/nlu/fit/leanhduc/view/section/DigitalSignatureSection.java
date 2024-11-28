@@ -1,6 +1,7 @@
 package nlu.fit.leanhduc.view.section;
 
-import nlu.fit.leanhduc.config.MetadataConfig;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import nlu.fit.leanhduc.controller.DigitalSignatureController;
 import nlu.fit.leanhduc.service.digital.DigitalSignatureSpecification;
 import nlu.fit.leanhduc.util.constraint.Cipher;
@@ -8,8 +9,6 @@ import nlu.fit.leanhduc.util.constraint.Hash;
 import nlu.fit.leanhduc.util.constraint.Size;
 import nlu.fit.leanhduc.view.component.GridBagConstraintsBuilder;
 import nlu.fit.leanhduc.view.component.SwingComponentUtil;
-import nlu.fit.leanhduc.view.component.fileChooser.FileChooserButton;
-import nlu.fit.leanhduc.view.component.fileChooser.FileChooserEvent;
 import nlu.fit.leanhduc.view.component.fileChooser.FileChooserLoadKeySignature;
 import nlu.fit.leanhduc.view.component.fileChooser.FileChooserSaveKeySignature;
 import nlu.fit.leanhduc.view.component.panel.file.PanelFileSign;
@@ -25,7 +24,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.util.LinkedHashMap;
@@ -205,6 +203,14 @@ public class DigitalSignatureSection extends JPanel implements ActionListener, P
 
     @Override
     public String onSign(String plainText) {
+        if (getPrivateKey() == null || getPrivateKey().isBlank()) {
+            JOptionPane.showMessageDialog(this, "Chưa nhập khóa bí mật", "Lỗi", JOptionPane.WARNING_MESSAGE);
+            return "";
+        }
+        if (plainText == null || plainText.isBlank()) {
+            JOptionPane.showMessageDialog(this, "Chưa nhập văn bản cần ký", "Lỗi", JOptionPane.WARNING_MESSAGE);
+            return "";
+        }
         try {
             return DigitalSignatureController.getInstance().sign(plainText, getPrivateKey(), getSelectedHash(), getKeySize());
         } catch (Exception e) {
@@ -216,6 +222,14 @@ public class DigitalSignatureSection extends JPanel implements ActionListener, P
 
     @Override
     public void onVerify(String plainText, String signature) {
+        if (getPrivateKey() == null || getPrivateKey().isBlank()) {
+            JOptionPane.showMessageDialog(this, "Chưa nhập khóa công khai", "Lỗi", JOptionPane.WARNING_MESSAGE);
+            return ;
+        }
+        if (plainText == null || plainText.isBlank()) {
+            JOptionPane.showMessageDialog(this, "Chưa nhập văn bản cần xác thực", "Lỗi", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
         try {
             boolean isSuccess = DigitalSignatureController.getInstance().verify(plainText, signature, getPublicKey(), getSelectedHash(), getKeySize());
             if (isSuccess)
@@ -231,6 +245,10 @@ public class DigitalSignatureSection extends JPanel implements ActionListener, P
     @Override
     public String onSignFile(String src) {
         try {
+            if (src == null) {
+                JOptionPane.showMessageDialog(null, "Chưa chọn file cần ký", "Lỗi", JOptionPane.WARNING_MESSAGE);
+                return "";
+            }
             return DigitalSignatureController.getInstance().signFile(
                     src,
                     getPrivateKey(),
@@ -246,6 +264,10 @@ public class DigitalSignatureSection extends JPanel implements ActionListener, P
     @Override
     public void onVerifyFile(String src, String signature) {
         try {
+            if (src == null) {
+                JOptionPane.showMessageDialog(null, "Chưa chọn file cần xác thực", "Lỗi", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
             boolean isSuccess = DigitalSignatureController.getInstance().verifyFile(
                     src,
                     signature,

@@ -10,7 +10,8 @@ import nlu.fit.leanhduc.util.constraint.Padding;
 import nlu.fit.leanhduc.util.constraint.Size;
 import nlu.fit.leanhduc.view.component.GridBagConstraintsBuilder;
 import nlu.fit.leanhduc.view.component.SwingComponentUtil;
-import nlu.fit.leanhduc.view.component.fileChooser.*;
+import nlu.fit.leanhduc.view.component.fileChooser.FileChooserLoadKeyAsync;
+import nlu.fit.leanhduc.view.component.fileChooser.FileChooserSaveKeyAsync;
 import nlu.fit.leanhduc.view.component.panel.text.PanelTextHandler;
 import nlu.fit.leanhduc.view.component.panel.text.PanelTextHandlerEvent;
 
@@ -18,7 +19,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -438,6 +438,10 @@ public class AsymmetricCipherSection extends JPanel implements ActionListener, P
 
     @Override
     public String onEncrypt(String plainText) {
+        if (!validation()) {
+            return "";
+        }
+
         String result = "";
         try {
             result = AsymmetricCipherController.getInstance().encrypt(
@@ -458,6 +462,9 @@ public class AsymmetricCipherSection extends JPanel implements ActionListener, P
 
     @Override
     public String onDecrypt(String cipherText) {
+        if (!validation()) {
+            return "";
+        }
         String result = "";
         try {
             result = AsymmetricCipherController.getInstance().decrypt(
@@ -474,5 +481,34 @@ public class AsymmetricCipherSection extends JPanel implements ActionListener, P
             JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
         return result;
+    }
+
+    private boolean validation(){
+        if (this.publicKeyField.getText().isBlank()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập khóa công khai", "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if (this.privateKeyField.getText().isBlank()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập khóa bí mật", "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if (this.getSelectedCipher() == null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn thuật toán", "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if (this.getSelectedMode() == null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn mode", "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if (this.getSelectedPadding() == null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn padding", "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if (this.getSelectedKeySize() == null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn key size", "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        return true;
     }
 }

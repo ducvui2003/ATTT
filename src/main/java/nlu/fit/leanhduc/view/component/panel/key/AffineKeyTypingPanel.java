@@ -2,14 +2,14 @@ package nlu.fit.leanhduc.view.component.panel.key;
 
 import nlu.fit.leanhduc.controller.MainController;
 import nlu.fit.leanhduc.controller.SubstitutionCipherController;
-import nlu.fit.leanhduc.service.key.AffineKey;
+import nlu.fit.leanhduc.service.key.classic.AffineKeyClassic;
+import nlu.fit.leanhduc.util.CipherException;
 import nlu.fit.leanhduc.view.component.SwingComponentUtil;
-import nlu.fit.leanhduc.view.component.button.ToolTipButton;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class AffineKeyTypingPanel extends KeyTypingPanel<AffineKey> {
+public class AffineKeyTypingPanel extends KeyTypingPanel<AffineKeyClassic> {
     JFormattedTextField inputA, inputB;
 
     public AffineKeyTypingPanel(MainController controller) {
@@ -20,8 +20,9 @@ public class AffineKeyTypingPanel extends KeyTypingPanel<AffineKey> {
     @Override
     public void init() {
         this.setLayout(new BorderLayout());
-        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         this.add(panel, BorderLayout.CENTER);
+
         panel.add(new Label("a"));
         inputA = SwingComponentUtil.createFormatTextFieldNumber(3, 1, 26, 1, false, true);
         panel.add(inputA);
@@ -30,34 +31,22 @@ public class AffineKeyTypingPanel extends KeyTypingPanel<AffineKey> {
         inputB = SwingComponentUtil.createFormatTextFieldNumber(3, 1, 26, 1, false, true);
         panel.add(inputB);
 
-
-        String tooltipText = "<html>" +
-                "<b>Biểu thức thuật toán</b><br>" +
-                "<i>c = (ax + b) mod 26</i><br>" +
-                "<br>" +
-                "<p><b>Where:</b></p>" +
-                "<ul>" +
-                "<li><b>a</b> and <b>b</b> are the key values.</li>" +
-                "<li><b>x</b> is the plaintext letter.</li>" +
-                "<li><b>c</b> is the ciphertext letter.</li>" +
-                "</ul>" +
-                "</html>";
-
-        JButton btnToolTip = new ToolTipButton(null, tooltipText);
-        panel.add(btnToolTip, BorderLayout.EAST);
-
     }
 
     @Override
-    public AffineKey getKey() {
-        int a = Integer.parseInt(inputA.getText());
-        int b = Integer.parseInt(inputB.getText());
-        this.key = SubstitutionCipherController.getINSTANCE().generateAffineKey(a, b);
-        return this.key;
+    public AffineKeyClassic getKey() throws CipherException {
+        try {
+            int a = Integer.parseInt(inputA.getText());
+            int b = Integer.parseInt(inputB.getText());
+            this.key = SubstitutionCipherController.getINSTANCE().generateAffineKey(a, b);
+            return this.key;
+        } catch (Exception e) {
+            throw new CipherException("Khóa không hợp lệ");
+        }
     }
 
     @Override
-    public void setKey(AffineKey key) {
+    public void setKey(AffineKeyClassic key) {
         inputA.setText(String.valueOf(key.getA()));
         inputB.setText(String.valueOf(key.getB()));
     }

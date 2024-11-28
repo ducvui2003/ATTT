@@ -1,7 +1,7 @@
 package nlu.fit.leanhduc;
 
 import nlu.fit.leanhduc.service.cipher.classic.ShiftCipher;
-import nlu.fit.leanhduc.service.key.ShiftKey;
+import nlu.fit.leanhduc.service.key.classic.ShiftKeyClassic;
 import nlu.fit.leanhduc.util.CipherException;
 import nlu.fit.leanhduc.util.Constraint;
 import nlu.fit.leanhduc.util.alphabet.EnglishAlphabetUtil;
@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ShiftCipherTest {
     int shift = 3;
-    private final ShiftKey key = new ShiftKey(shift);
+    private final ShiftKeyClassic key = new ShiftKeyClassic(shift);
     private final ShiftCipher shiftCipher = new ShiftCipher(new EnglishAlphabetUtil());
     private final ShiftCipher shiftCipherVietnamese = new ShiftCipher(new VietnameseAlphabetUtil());
 
@@ -105,8 +105,8 @@ class ShiftCipherTest {
             this.shiftCipher.loadKey(key);
             shiftCipher.saveKey("D:\\university\\ATTT\\security-tool\\src\\test\\resources\\shift\\key.txt");
             shiftCipher.loadKey("D:\\university\\ATTT\\security-tool\\src\\test\\resources\\shift\\key.txt");
-            System.out.println(this.key.display());
-            System.out.println(shiftCipher.getKey().display());
+            System.out.println(this.key.name());
+            System.out.println(shiftCipher.getKey().name());
         } catch (CipherException | IOException e) {
             throw new RuntimeException(e);
         }

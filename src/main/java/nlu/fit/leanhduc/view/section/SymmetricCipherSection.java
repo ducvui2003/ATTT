@@ -561,6 +561,40 @@ public class SymmetricCipherSection extends JPanel implements PanelTextHandlerEv
     }
 
     @Override
+    public boolean canEncrypt(String plainText) {
+        if (this.getSelectedCipher() == null || this.getSelectedMode() == null || this.getSelectedPadding() == null || this.getSelectedKeySize() == null || this.getSelectedIVSize() == null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng tạo khóa trước khi mã hóa", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+        if (this.getBase64SecretKey().isEmpty() || this.getBase64Iv().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng tạo khóa trước khi mã hóa", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+        if (plainText.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập bản rõ trước khi mã hóa", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean canDecrypt(String cipherText) {
+        if (this.getSelectedCipher() == null || this.getSelectedMode() == null || this.getSelectedPadding() == null || this.getSelectedKeySize() == null || this.getSelectedIVSize() == null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng tạo khóa trước khi giải mã", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+        if (this.getBase64SecretKey().isEmpty() || this.getBase64Iv().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng tạo khóa trước khi giải mã", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+        if (cipherText.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập bản mã trước khi giải mã", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public String onEncrypt(String plainText) {
         try {
             return SymmetricCipherNativeController.getInstance().encrypt(

@@ -2,7 +2,7 @@ package nlu.fit.leanhduc.view.component.panel.key;
 
 import nlu.fit.leanhduc.controller.MainController;
 import nlu.fit.leanhduc.controller.SubstitutionCipherController;
-import nlu.fit.leanhduc.service.key.ViginereKey;
+import nlu.fit.leanhduc.service.key.classic.ViginereKeyClassic;
 import nlu.fit.leanhduc.util.alphabet.AlphabetUtil;
 import nlu.fit.leanhduc.util.alphabet.EnglishAlphabetUtil;
 import nlu.fit.leanhduc.util.alphabet.VietnameseAlphabetUtil;
@@ -11,7 +11,7 @@ import nlu.fit.leanhduc.util.constraint.Language;
 import javax.swing.*;
 import java.awt.*;
 
-public class ViginereKeyTypingPanel extends KeyTypingPanel<ViginereKey> {
+public class ViginereKeyTypingPanel extends KeyTypingPanel<ViginereKeyClassic> {
     JTextField inputKey;
     Language language;
 
@@ -44,13 +44,13 @@ public class ViginereKeyTypingPanel extends KeyTypingPanel<ViginereKey> {
     }
 
     @Override
-    public ViginereKey getKey() {
+    public ViginereKeyClassic getKey() {
         String keyString = inputKey.getText();
         return SubstitutionCipherController.getINSTANCE().generateVigenereKey(keyString, language);
     }
 
     @Override
-    public void setKey(ViginereKey key) {
+    public void setKey(ViginereKeyClassic key) {
         AlphabetUtil alphabetUtil = Language.VIETNAMESE.equals(language) ? new VietnameseAlphabetUtil() : new EnglishAlphabetUtil();
         String keyString = key.getKey().stream().map(alphabetUtil::getChar).map(String::valueOf).reduce("", String::concat);
         inputKey.setText(keyString);

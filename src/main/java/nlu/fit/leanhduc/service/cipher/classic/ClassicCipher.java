@@ -2,18 +2,14 @@ package nlu.fit.leanhduc.service.cipher.classic;
 
 
 import lombok.Getter;
-import nlu.fit.leanhduc.service.key.SubstitutionKey;
+import nlu.fit.leanhduc.service.key.classic.SubstitutionKeyClassic;
 import nlu.fit.leanhduc.util.CipherException;
 import nlu.fit.leanhduc.util.alphabet.AlphabetUtil;
 
-import javax.crypto.NoSuchPaddingException;
-import java.io.FileNotFoundException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 @Getter
-public class ClassicCipher extends AbsClassicCipher<SubstitutionKey> {
+public class ClassicCipher extends AbsClassicCipher<SubstitutionKeyClassic> {
     private Map<Character, Character> encryptMap;
     private Map<Character, Character> decryptMap;
 
@@ -22,7 +18,7 @@ public class ClassicCipher extends AbsClassicCipher<SubstitutionKey> {
     }
 
     @Override
-    public SubstitutionKey generateKey() {
+    public SubstitutionKeyClassic generateKey() {
         List<Character> alphabet = this.alphabetUtil.generateAlphabet(false);
         List<Character> mappingAlphabet = this.alphabetUtil.generateAlphabet(true);
 
@@ -39,11 +35,11 @@ public class ClassicCipher extends AbsClassicCipher<SubstitutionKey> {
         for (int i = 0; i < alphabet.size(); i++) {
             key.put(alphabet.get(i), mappingAlphabet.get(i));
         }
-        return new SubstitutionKey(key);
+        return new SubstitutionKeyClassic(key);
     }
 
     @Override
-    public void loadKey(SubstitutionKey key) throws CipherException {
+    public void loadKey(SubstitutionKeyClassic key) throws CipherException {
         super.loadKey(key);
         this.encryptMap = key.getKey();
         this.decryptMap = createDecryptMap();

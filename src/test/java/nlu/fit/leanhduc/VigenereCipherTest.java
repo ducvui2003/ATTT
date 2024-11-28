@@ -7,7 +7,7 @@
 package nlu.fit.leanhduc;
 
 import nlu.fit.leanhduc.service.cipher.classic.VigenereCipher;
-import nlu.fit.leanhduc.service.key.ViginereKey;
+import nlu.fit.leanhduc.service.key.classic.ViginereKeyClassic;
 import nlu.fit.leanhduc.util.CipherException;
 import nlu.fit.leanhduc.util.alphabet.EnglishAlphabetUtil;
 import nlu.fit.leanhduc.util.alphabet.VietnameseAlphabetUtil;
@@ -21,13 +21,13 @@ class VigenereCipherTest {
     private VigenereCipher englishCipher;
     private VigenereCipher vietnameseCipher;
 
-    private ViginereKey keys;
+    private ViginereKeyClassic keys;
 
     @BeforeEach
     void setup() {
         englishCipher = new VigenereCipher(new EnglishAlphabetUtil());
         vietnameseCipher = new VigenereCipher(new VietnameseAlphabetUtil());
-        keys = new ViginereKey(List.of(1, 5, 10, 2));
+        keys = new ViginereKeyClassic(List.of(1, 5, 10, 2));
     }
 
     @Test

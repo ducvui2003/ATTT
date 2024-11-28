@@ -6,7 +6,7 @@ import nlu.fit.leanhduc.service.cipher.classic.HillCipher;
 import nlu.fit.leanhduc.service.cipher.classic.ShiftCipher;
 import nlu.fit.leanhduc.service.cipher.classic.ClassicCipher;
 import nlu.fit.leanhduc.service.cipher.classic.VigenereCipher;
-import nlu.fit.leanhduc.service.key.*;
+import nlu.fit.leanhduc.service.key.classic.*;
 import nlu.fit.leanhduc.util.CipherException;
 import nlu.fit.leanhduc.util.alphabet.AlphabetUtil;
 import nlu.fit.leanhduc.util.alphabet.EnglishAlphabetUtil;
@@ -33,7 +33,7 @@ public class SubstitutionCipherController {
         return INSTANCE;
     }
 
-    public String encrypt(String plainText, IKeyDisplay key, Cipher cipher, Language language) throws Exception {
+    public String encrypt(String plainText, IKeyClassic key, Cipher cipher, Language language) throws CipherException {
         ICipher textEncrypt = null;
         AlphabetUtil alphabetUtil;
         if (language == Language.ENGLISH)
@@ -41,28 +41,19 @@ public class SubstitutionCipherController {
         else
             alphabetUtil = new VietnameseAlphabetUtil();
 
-        switch (cipher) {
-            case SHIFT:
-                textEncrypt = new ShiftCipher(alphabetUtil);
-                break;
-            case SUBSTITUTION:
-                textEncrypt = new ClassicCipher(alphabetUtil);
-                break;
-            case AFFINE:
-                textEncrypt = new AffineCipher(alphabetUtil);
-                break;
-            case VIGENERE:
-                textEncrypt = new VigenereCipher(alphabetUtil);
-                break;
-            case HILL:
-                textEncrypt = new HillCipher(alphabetUtil);
-                break;
-        }
+        textEncrypt = switch (cipher) {
+            case SHIFT -> new ShiftCipher(alphabetUtil);
+            case SUBSTITUTION -> new ClassicCipher(alphabetUtil);
+            case AFFINE -> new AffineCipher(alphabetUtil);
+            case VIGINERE -> new VigenereCipher(alphabetUtil);
+            case HILL -> new HillCipher(alphabetUtil);
+            default -> throw new IllegalStateException("Unexpected value: " + cipher);
+        };
         textEncrypt.loadKey(key);
         return textEncrypt.encrypt(plainText);
     }
 
-    public String decrypt(String encrypt, IKeyDisplay key, Cipher cipher, Language language) throws CipherException {
+    public String decrypt(String encrypt, IKeyClassic key, Cipher cipher, Language language) throws CipherException {
         ICipher textEncrypt = null;
         AlphabetUtil alphabetUtil;
         if (language == Language.ENGLISH)
@@ -70,73 +61,64 @@ public class SubstitutionCipherController {
         else
             alphabetUtil = new VietnameseAlphabetUtil();
 
-        switch (cipher) {
-            case SHIFT:
-                textEncrypt = new ShiftCipher(alphabetUtil);
-                break;
-            case SUBSTITUTION:
-                textEncrypt = new ClassicCipher(alphabetUtil);
-                break;
-            case AFFINE:
-                textEncrypt = new AffineCipher(alphabetUtil);
-                break;
-            case VIGENERE:
-                textEncrypt = new VigenereCipher(alphabetUtil);
-                break;
-            case HILL:
-                textEncrypt = new HillCipher(alphabetUtil);
-                break;
-        }
+        textEncrypt = switch (cipher) {
+            case SHIFT -> new ShiftCipher(alphabetUtil);
+            case SUBSTITUTION -> new ClassicCipher(alphabetUtil);
+            case AFFINE -> new AffineCipher(alphabetUtil);
+            case VIGINERE -> new VigenereCipher(alphabetUtil);
+            case HILL -> new HillCipher(alphabetUtil);
+            default -> throw new IllegalStateException("Unexpected value: " + cipher);
+        };
         textEncrypt.loadKey(key);
         return textEncrypt.decrypt(encrypt);
     }
 
 
-    public SubstitutionKey generateSubstitutionKey(List<Character> character, List<Character> mappingCharacter) {
+    public SubstitutionKeyClassic generateSubstitutionKey(List<Character> character, List<Character> mappingCharacter) {
         Map<Character, Character> key = new HashMap<>();
         for (int i = 0; i < character.size(); i++)
             key.put(character.get(i), mappingCharacter.get(i));
-        return new SubstitutionKey(key);
+        return new SubstitutionKeyClassic(key);
     }
 
-    public ViginereKey generateVigenereKey(String keys, Language language) {
+    public ViginereKeyClassic generateVigenereKey(String keys, Language language) {
         AlphabetUtil alphabetUtil = language == Language.ENGLISH ? new EnglishAlphabetUtil() : new VietnameseAlphabetUtil();
         List<Integer> list = new ArrayList<>();
         for (Character key : keys.toCharArray()) {
             list.add(alphabetUtil.indexOf(key));
         }
-        return new ViginereKey(list);
+        return new ViginereKeyClassic(list);
     }
 
 
-    public ShiftKey generateShiftCipher(int shift) {
-        return new ShiftKey(shift);
+    public ShiftKeyClassic generateShiftCipher(int shift) {
+        return new ShiftKeyClassic(shift);
     }
 
-    public AffineKey generateAffineKey(int a, int b) {
-        return new AffineKey(a, b);
+    public AffineKeyClassic generateAffineKey(int a, int b) {
+        return new AffineKeyClassic(a, b);
     }
 
-    public HillKey generateHillKey(String[][] matrix) {
+    public HillKeyClassic generateHillKey(String[][] matrix) {
         int[][] key = new int[matrix.length][matrix.length];
         for (int i = 0; i < matrix.length; i++)
             for (int j = 0; j < matrix.length; j++)
                 key[i][j] = Integer.parseInt(matrix[i][j]);
-        return new HillKey(key);
+        return new HillKeyClassic(key);
     }
 
     public <T> T loadKey(String src, Cipher cipher) throws IOException {
         switch (cipher) {
             case SHIFT:
-                return (T) new ShiftKey(0);
+                return (T) new ShiftKeyClassic(0);
             case SUBSTITUTION:
-                return (T) new SubstitutionKey(new HashMap<>());
+                return (T) new SubstitutionKeyClassic(new HashMap<>());
             case AFFINE:
-                return (T) new AffineKey(0, 0);
-            case VIGENERE:
-                return (T) new ViginereKey(new ArrayList<>());
+                return (T) new AffineKeyClassic(0, 0);
+            case VIGINERE:
+                return (T) new ViginereKeyClassic(new ArrayList<>());
             case HILL:
-                return (T) new HillKey(new int[0][0]);
+                return (T) new HillKeyClassic(new int[0][0]);
         }
         return null;
     }

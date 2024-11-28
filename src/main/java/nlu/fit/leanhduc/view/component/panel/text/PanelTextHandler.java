@@ -115,9 +115,15 @@ public class PanelTextHandler extends PanelHandler implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         String command = e.getActionCommand();
         if (command.equals(commandEncrypt)) {
+            if (!this.event.canEncrypt(plainTextBlock.getText())) {
+                return;
+            }
             String encryptText = this.event.onEncrypt(plainTextBlock.getText());
             this.encryptBlock.setText(encryptText);
         } else if (command.equals(commandDecrypt)) {
+            if (!this.event.canDecrypt(encryptBlock.getText())) {
+                return;
+            }
             String decryptText = this.event.onDecrypt(encryptBlock.getText());
             this.decryptBlock.setText(decryptText);
         }

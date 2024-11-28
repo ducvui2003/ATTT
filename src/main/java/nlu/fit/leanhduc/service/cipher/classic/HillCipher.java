@@ -1,24 +1,21 @@
 package nlu.fit.leanhduc.service.cipher.classic;
 
-import nlu.fit.leanhduc.service.key.HillKey;
+import nlu.fit.leanhduc.service.key.classic.HillKeyClassic;
 import nlu.fit.leanhduc.util.CipherException;
 import nlu.fit.leanhduc.util.MatrixUtil;
 import nlu.fit.leanhduc.util.ModularUtil;
 import nlu.fit.leanhduc.util.alphabet.AlphabetUtil;
 
-import javax.crypto.NoSuchPaddingException;
-import java.io.FileNotFoundException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-
-public class HillCipher extends AbsClassicCipher<HillKey> {
+public class HillCipher extends AbsClassicCipher<HillKeyClassic> {
 
     public HillCipher(AlphabetUtil alphabet) {
         super(alphabet);
     }
 
+
+
     @Override
-    public HillKey generateKey() {
+    public HillKeyClassic generateKey() {
         int size = 3;
         int[][] key = new int[size][size];
         do {
@@ -28,7 +25,7 @@ public class HillCipher extends AbsClassicCipher<HillKey> {
                 }
             }
         } while (MatrixUtil.determinant(key) == 0);
-        return new HillKey(key);
+        return new HillKeyClassic(key);
     }
 
     @Override

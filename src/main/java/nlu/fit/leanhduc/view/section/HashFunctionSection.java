@@ -21,7 +21,6 @@ public class HashFunctionSection extends JPanel implements PanelTextHashEvent, P
     JPanel container;
     JComboBox<Hash> comboBoxHash;
     FileChooserButton btnLoadKey;
-    String commandToggleBtnHMAC = "toggleBtnHMAC";
     JTextField textFieldKeyHMAC;
     JPanel panelKeyHMAC;
     JToggleButton checkBoxHMAC;
