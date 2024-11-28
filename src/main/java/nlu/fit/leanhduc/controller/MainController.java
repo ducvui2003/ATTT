@@ -28,7 +28,7 @@ public class MainController {
         AlphabetUtil alphabetUtil = language == Language.ENGLISH ? new EnglishAlphabetUtil() : new VietnameseAlphabetUtil();
         return switch (cipher) {
             case SHIFT -> new ShiftCipher(alphabetUtil);
-            case SUBSTITUTION -> new ClassicCipher(alphabetUtil);
+            case SUBSTITUTION -> new SubstitutionCipher(alphabetUtil);
             case AFFINE -> new AffineCipher(alphabetUtil);
             case VIGINERE -> new VigenereCipher(alphabetUtil);
             case HILL -> new HillCipher(alphabetUtil);

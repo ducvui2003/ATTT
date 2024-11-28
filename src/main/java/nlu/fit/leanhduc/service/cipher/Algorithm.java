@@ -1,19 +1,59 @@
 package nlu.fit.leanhduc.service.cipher;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.experimental.FieldDefaults;
 import nlu.fit.leanhduc.util.constraint.*;
 
+/**
+ * Class {@code Algorithm }
+ * <p>
+ * Đại diện cho các thuật toán mã hóa </p>
+ * <p>
+ * Chứa các cấu hình về mode, padding, keySize, ivSize, hashFunction, provider
+ * để lấy ra thuật toán Java hỗ trợ
+ * </p>
+ *
+ * @author Lê Anh Đức
+ * @version 1.0
+ * @since 2024-11-28
+ */
 @Data
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Algorithm {
+    /**
+     * Tên thuật toán
+     */
     String cipher;
+    /**
+     * Kích thước block
+     */
     int blockSize;
+    /**
+     * Mode
+     */
     String mode;
+    /**
+     * Padding
+     */
     String padding;
-    //  đơn vị: bit
+    /**
+     * Kích thước key
+     * đơn vị: bit
+     */
     int keySize;
-    //  đơn vị: bit
+    /**
+     * Kích thước iv
+     * đơn vị: bit
+     */
     int ivSize;
+    /**
+     * Hàm băm
+     */
     String hashFunction;
+    /**
+     * Provider cung cấp thuật toán
+     */
     String provider;
 
 

@@ -6,6 +6,17 @@ import nlu.fit.leanhduc.util.MatrixUtil;
 import nlu.fit.leanhduc.util.ModularUtil;
 import nlu.fit.leanhduc.util.alphabet.AlphabetUtil;
 
+/**
+ * Class {@code HillCipher } implement lại thuật toán Hill
+ * <p>
+ * Thuật toán Hill là một dạng thuật toán thay thế
+ * <p>Sử dụng {@code m} tổ hợp tuyến tính của {@code m} ký tự trong bản rõ để tạo ra m ký tự trong bản mã</p>
+ * </p>
+ *
+ * @author Lê Anh Đức
+ * @version 1.0
+ * @since 2024-11-28
+ */
 public class HillCipher extends AbsClassicCipher<HillKeyClassic> {
 
     public HillCipher(AlphabetUtil alphabet) {
@@ -13,7 +24,10 @@ public class HillCipher extends AbsClassicCipher<HillKeyClassic> {
     }
 
 
-
+    /**
+     * Khởi tạo key cho thuật toán
+     * Mặc định đối với hill, khởi tạo khóa với kích thước là ma trận 3x3
+     */
     @Override
     public HillKeyClassic generateKey() {
         int size = 3;
@@ -28,6 +42,12 @@ public class HillCipher extends AbsClassicCipher<HillKeyClassic> {
         return new HillKeyClassic(key);
     }
 
+    /**
+     * Mã hóa văn bản bằng thuật toán Hill
+     *
+     * @param plainText bản rõ
+     * @return bản mã
+     */
     @Override
     public String encrypt(String plainText) throws CipherException {
         String result = "";
@@ -38,6 +58,7 @@ public class HillCipher extends AbsClassicCipher<HillKeyClassic> {
             int[] plainTextArr = new int[lengthKey];
             boolean[] isLower = new boolean[lengthKey];
             int lengthKeyTemp = 0;
+            // Thiết lập ma trận P từ văn bản cần mã hóa
             while (lengthKeyTemp < lengthKey) {
                 char text = plainText.charAt(start);
                 if (Character.isLetter(text)) {
@@ -48,6 +69,7 @@ public class HillCipher extends AbsClassicCipher<HillKeyClassic> {
                 }
                 start++;
             }
+            // Tiến hành nhân hai ma trận K và P
             int[] encryptArr = MatrixUtil.multiMatrix(plainTextArr, this.key.getKey());
             lengthKeyTemp = 0;
             for (int i = 0; i < lengthKey; i++) {
@@ -57,6 +79,12 @@ public class HillCipher extends AbsClassicCipher<HillKeyClassic> {
         return result;
     }
 
+    /**
+     * Giải mã văn bản đã được mã hóa bằng thuật toán Hill
+     *
+     * @param encryptText bản mã
+     * @return bản rõ
+     */
     @Override
     public String decrypt(String encryptText) throws CipherException {
         String result = "";
@@ -96,8 +124,7 @@ public class HillCipher extends AbsClassicCipher<HillKeyClassic> {
      * <p>det(K): định thức ma trận vuông K</p>
      * <p>A^T: ma trận phụ hợp đã chuyển vị</p>
      *
-     * @param
-     * @return the amount of health hero has after attack
+     * @return  ma trận nghịch đảo K^-1
      */
     private int[][] findInverseKey() {
 //        Định thức của khóa K

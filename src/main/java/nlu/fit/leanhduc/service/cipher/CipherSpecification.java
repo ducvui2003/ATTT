@@ -1,6 +1,8 @@
 package nlu.fit.leanhduc.service.cipher;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.experimental.FieldDefaults;
 import nlu.fit.leanhduc.util.constraint.Cipher;
 import nlu.fit.leanhduc.util.constraint.Mode;
 import nlu.fit.leanhduc.util.constraint.Padding;
@@ -8,13 +10,38 @@ import nlu.fit.leanhduc.util.constraint.Size;
 
 import java.util.*;
 
+/**
+ * Class {@code CipherSpecification}  chứa thông tin về thuật toán mã hóa.
+ * <p>Nó bao gồm tên thuật toán, chế độ hoạt động (mode) và cách đệm (padding).</p>
+ * <p>Lớp này hỗ trợ tạo chuỗi đặc tả mã hóa hoàn chỉnh theo định dạng chuẩn.</p>
+ * <p>Các thuật toán sẽ được định nghĩa trước và được lấy thông qua {@link #findCipherSpecification }</p>
+ */
 @Getter
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class CipherSpecification {
-    private Cipher algorithm;
-    private Map<Mode, List<Padding>> validModePaddingCombinations;
-    private Set<Size> supportedKeySizes;  // Set to hold supported key sizes
-    private Map<Mode, Size> ivSizes;  // Map to hold IV sizes for each mode
+    /*
+     * Tên thuật toán
+     */
+    Cipher algorithm;
+    /*
+     * Mode và danh sách padding đi kèm
+     */
+    Map<Mode, List<Padding>> validModePaddingCombinations;
+    /*
+     * Kích thước key hỗ trợ
+     */
+    Set<Size> supportedKeySizes;
+    /*
+     * Kích thước iv (vecto khởi đầu) theo mode
+     */
+    Map<Mode, Size> ivSizes;
 
+    /**
+     * Tìm thông số mã hóa tương ứng với thuật toán mã hóa
+     *
+     * @param cipher thuật toán mã hóa
+     * @return thông số mã hóa tương ứng
+     */
     public static final CipherSpecification findCipherSpecification(Cipher cipher) {
         CipherSpecification result = switch (cipher) {
             case AES -> AES;
@@ -66,7 +93,7 @@ public class CipherSpecification {
                     Map.entry(Mode.CTR, List.of(Padding.NoPadding)),
                     Map.entry(Mode.CTS, List.of(Padding.NoPadding))
             ),
-            Set.of(Size.Size_16, Size.Size_24, Size.Size_32),  // Supported key sizes for AES
+            Set.of(Size.Size_16, Size.Size_24, Size.Size_32),
             Map.ofEntries(
                     Map.entry(Mode.NONE, Size.Size_0),
                     Map.entry(Mode.ECB, Size.Size_0),
@@ -109,7 +136,7 @@ public class CipherSpecification {
                     Map.entry(Mode.CTR, List.of(Padding.NoPadding)),
                     Map.entry(Mode.CTS, List.of(Padding.NoPadding))
             ),
-            Set.of(Size.Size_7),  // Supported key size for DES (56-bit)
+            Set.of(Size.Size_7),
             Map.ofEntries(
                     Map.entry(Mode.NONE, Size.Size_0),
                     Map.entry(Mode.CBC, Size.Size_8),
@@ -149,7 +176,7 @@ public class CipherSpecification {
                     Map.entry(Mode.CTR, List.of(Padding.NoPadding)),
                     Map.entry(Mode.CTS, List.of(Padding.NoPadding))
             ),
-            Set.of(Size.Size_14, Size.Size_21),  // Supported key sizes for DESede (112-bit, 168-bit)
+            Set.of(Size.Size_14, Size.Size_21),
             Map.ofEntries(
                     Map.entry(Mode.NONE, Size.Size_0),
                     Map.entry(Mode.CBC, Size.Size_8),
@@ -170,17 +197,15 @@ public class CipherSpecification {
     );
 
 
-    // RSA doesn't require IVs but supports different key sizes
     private static final CipherSpecification RSA = new CipherSpecification(
             Cipher.RSA,
             Map.of(
                     Mode.ECB, List.of(Padding.NoPadding, Padding.PKCS1Padding, Padding.OAEPPadding, Padding.OAEPWithMD5AndMGF1Padding)
             ),
-            Set.of(Size.Size_64, Size.Size_128, Size.Size_256, Size.Size_512),  // RSA supports these key sizes
+            Set.of(Size.Size_64, Size.Size_128, Size.Size_256, Size.Size_512),
             Map.of()
     );
 
-    // Blowfish cipher specification
     private static final CipherSpecification Blowfish = new CipherSpecification(
             Cipher.BLOWFISH,
             Map.ofEntries(
@@ -200,7 +225,7 @@ public class CipherSpecification {
                     Map.entry(Mode.OFB64, List.of(Padding.NoPadding, Padding.PKCS5Padding, Padding.ISO10126Padding)),
                     Map.entry(Mode.CTR, List.of(Padding.NoPadding)),
                     Map.entry(Mode.CTS, List.of(Padding.NoPadding))),
-            Set.of(Size.Size_4, Size.Size_12, Size.Size_24, Size.Size_32, Size.Size_56),  // Blowfish supports key sizes of 128-bit, 192-bit, and 256-bit
+            Set.of(Size.Size_4, Size.Size_12, Size.Size_24, Size.Size_32, Size.Size_56),
             Map.ofEntries(
                     Map.entry(Mode.NONE, Size.Size_0),
                     Map.entry(Mode.CBC, Size.Size_8),
@@ -242,7 +267,7 @@ public class CipherSpecification {
                     Map.entry(Mode.CTR, List.of(Padding.NoPadding)),
                     Map.entry(Mode.CTS, List.of(Padding.NoPadding))
             ),
-            Set.of(Size.Size_5, Size.Size_8, Size.Size_16),  // RC2 supports key sizes from 40 bits to 128 bits
+            Set.of(Size.Size_5, Size.Size_8, Size.Size_16),
             Map.ofEntries(
                     Map.entry(Mode.NONE, Size.Size_0),
                     Map.entry(Mode.CBC, Size.Size_8),
@@ -262,15 +287,14 @@ public class CipherSpecification {
             )
     );
 
-    // RC4 cipher specification (stream cipher, no IV)
     private static final CipherSpecification RC4 = new CipherSpecification(
             Cipher.RC4,
             Map.of(
                     Mode.NONE, List.of(Padding.NoPadding),
                     Mode.ECB, List.of(Padding.NoPadding)
             ),
-            Set.of(Size.Size_5, Size.Size_7, Size.Size_16),  // RC4 supports key sizes of 40, 56, and 128 bits
-            Map.of()  // RC4 does not require an IV
+            Set.of(Size.Size_5, Size.Size_7, Size.Size_16),
+            Map.of()
     );
 
     private static final CipherSpecification TWOFISH = new CipherSpecification(

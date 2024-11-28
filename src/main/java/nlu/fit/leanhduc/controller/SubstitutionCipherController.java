@@ -4,7 +4,7 @@ import nlu.fit.leanhduc.service.ICipher;
 import nlu.fit.leanhduc.service.cipher.classic.AffineCipher;
 import nlu.fit.leanhduc.service.cipher.classic.HillCipher;
 import nlu.fit.leanhduc.service.cipher.classic.ShiftCipher;
-import nlu.fit.leanhduc.service.cipher.classic.ClassicCipher;
+import nlu.fit.leanhduc.service.cipher.classic.SubstitutionCipher;
 import nlu.fit.leanhduc.service.cipher.classic.VigenereCipher;
 import nlu.fit.leanhduc.service.key.classic.*;
 import nlu.fit.leanhduc.util.CipherException;
@@ -43,7 +43,7 @@ public class SubstitutionCipherController {
 
         textEncrypt = switch (cipher) {
             case SHIFT -> new ShiftCipher(alphabetUtil);
-            case SUBSTITUTION -> new ClassicCipher(alphabetUtil);
+            case SUBSTITUTION -> new SubstitutionCipher(alphabetUtil);
             case AFFINE -> new AffineCipher(alphabetUtil);
             case VIGINERE -> new VigenereCipher(alphabetUtil);
             case HILL -> new HillCipher(alphabetUtil);
@@ -63,7 +63,7 @@ public class SubstitutionCipherController {
 
         textEncrypt = switch (cipher) {
             case SHIFT -> new ShiftCipher(alphabetUtil);
-            case SUBSTITUTION -> new ClassicCipher(alphabetUtil);
+            case SUBSTITUTION -> new SubstitutionCipher(alphabetUtil);
             case AFFINE -> new AffineCipher(alphabetUtil);
             case VIGINERE -> new VigenereCipher(alphabetUtil);
             case HILL -> new HillCipher(alphabetUtil);

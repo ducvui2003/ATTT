@@ -12,9 +12,6 @@ public class Constraint {
     public static final String APP_VERSION = "1.0";
     public static final String APP_AUTHOR = "Leanhduc";
     public static final String APP_DESCRIPTION = "This is a simple Java Swing application";
-    public static final int APP_FONT_SIZE = 14;
-    public static final int WIDTH = 1000;
-    public static final int HEIGHT = 800;
 
     public static final Font FONT_REGULAR = FontConfig.getInstance().getFontRegular();
     public static final Font FONT_MEDIUM = FontConfig.getInstance().getFontRegular();

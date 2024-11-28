@@ -1,7 +1,7 @@
 package nlu.fit.leanhduc;
 
 
-import nlu.fit.leanhduc.service.cipher.classic.ClassicCipher;
+import nlu.fit.leanhduc.service.cipher.classic.SubstitutionCipher;
 import nlu.fit.leanhduc.service.key.classic.SubstitutionKeyClassic;
 import nlu.fit.leanhduc.util.CipherException;
 import nlu.fit.leanhduc.util.alphabet.EnglishAlphabetUtil;
@@ -14,8 +14,8 @@ import java.util.Map;
 
 public class SubstitutionCipherTest {
 
-    ClassicCipher substitutionCipherVietnamese = new ClassicCipher(new VietnameseAlphabetUtil());
-    ClassicCipher substitutionCipherEnglish = new ClassicCipher(new EnglishAlphabetUtil());
+    SubstitutionCipher substitutionCipherVietnamese = new SubstitutionCipher(new VietnameseAlphabetUtil());
+    SubstitutionCipher substitutionCipherEnglish = new SubstitutionCipher(new EnglishAlphabetUtil());
     SubstitutionKeyClassic keyEnglish = new SubstitutionKeyClassic(Map.of('a', 'b', 'c', 'd'));
     SubstitutionKeyClassic keyVietnamese = new SubstitutionKeyClassic(Map.of('â', 'b', 'đ', 'd'));
 

@@ -64,7 +64,7 @@ public class SymmetricCipherNative extends AbsCipherNative<KeySymmetric> {
         KeySymmetric key = new KeySymmetric();
         try {
             String provider = algorithm.getProvider() != null ? algorithm.getProvider() : Constraint.DEFAULT_PROVIDER;
-            KeyGenerator keyGenerator = KeyGenerator.getInstance(this.algorithm.cipher, provider);
+            KeyGenerator keyGenerator = KeyGenerator.getInstance(this.algorithm.getCipher(), provider);
             keyGenerator.init(algorithm.getKeySize());
             SecretKey secretKey = keyGenerator.generateKey();
             IvParameterSpec iv = generateIV();
