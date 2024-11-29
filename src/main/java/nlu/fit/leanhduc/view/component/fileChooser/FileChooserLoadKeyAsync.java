@@ -24,7 +24,14 @@ public class FileChooserLoadKeyAsync extends FileChooserButton implements FileCh
 
     @Override
     public void onFileSelected(File file) {
-        Map<String, String> keyInfo = AsymmetricCipherController.getInstance().loadKey(file.getAbsolutePath());
+        Map<String, String> keyInfo;
+        try {
+            keyInfo = AsymmetricCipherController.getInstance().loadKey(file.getAbsolutePath());
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(section, "Tải khóa thất bại", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
         Cipher cipher = Cipher.valueOf(keyInfo.get("cipher"));
         Mode mode = Mode.valueOf(keyInfo.get("mode"));
         Padding padding = Padding.valueOf(keyInfo.get("padding"));

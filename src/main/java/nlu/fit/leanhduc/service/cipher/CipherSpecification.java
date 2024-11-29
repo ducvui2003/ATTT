@@ -246,7 +246,7 @@ public class CipherSpecification {
 
     );
 
-    // RC2 cipher specification
+    
     private static final CipherSpecification RC2 = new CipherSpecification(
             Cipher.RC2,
             Map.ofEntries(

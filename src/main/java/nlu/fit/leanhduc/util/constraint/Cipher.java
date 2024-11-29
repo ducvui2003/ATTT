@@ -18,7 +18,7 @@ public enum Cipher {
     RSA("RSA", "RSA"),
     DESEDE("DESede", "DESede", 8),
     RC2("RC2", "RC2", 8),
-    RC4("RC4", "RC4"),
+    RC4("RC4", "RC4", "BC"),
     CAMELLIA("Camellia", "Camellia", 16, "BC"),
     TWOFISH("Twofish", "Twofish", 16, "BC"),
     IDEA("IDEA", "IDEA", 8, "BC"),

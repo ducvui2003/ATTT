@@ -8,6 +8,7 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import javax.swing.*;
 import java.awt.*;
 import java.security.Security;
+import java.util.List;
 
 public class App {
     public static void main(String[] args) {
@@ -37,8 +38,6 @@ public class App {
 
             UIManager.put("Label.font", Constraint.FONT_MEDIUM);
             UIManager.put("TextField.font", Constraint.FONT_REGULAR);
-            Security.addProvider(new BouncyCastleProvider());
-
         } catch (Exception ex) {
             System.err.println("Failed to initialize LaF");
         }
